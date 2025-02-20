@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if git diff --cached | grep -i "api_key=\|secret=\|password=\|token=" > /dev/null; then
+    echo "ERROR: Potential sensitive data detected in commit"
+    exit 1
+fi
+
+if git diff --cached --numstat | awk '$1 >= 500000 || $2 >= 500000 { print $3 }' | grep . > /dev/null; then
+    echo "ERROR: Files exceeding 500KB detected"
+    exit 1
+fi
+
+exit 0
