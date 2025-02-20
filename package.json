@@ -1,0 +1,14 @@
+{
+  "name": "fomo-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "security-check": "npm run security-check --workspaces"
+  }
+}
