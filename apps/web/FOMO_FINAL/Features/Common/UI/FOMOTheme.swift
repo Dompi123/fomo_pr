@@ -23,18 +23,83 @@ enum FOMOTheme {
     }
     
     enum Typography {
+        // Font Families
         private static let spaceGroteskBold = "SpaceGrotesk-Bold"
         private static let spaceGroteskMedium = "SpaceGrotesk-Medium"
+        private static let sfPro = "SF Pro"
+        private static let sfProDisplay = "SF Pro Display"
         
-        static let header = Font.custom(spaceGroteskBold, size: 22)
-        static let body = Font.custom(spaceGroteskMedium, size: 16)
+        // Text Styles
+        struct TextStyle {
+            let font: Font
+            let lineSpacing: CGFloat
+            let letterSpacing: CGFloat
+            
+            init(font: Font, lineSpacing: CGFloat = 1.2, letterSpacing: CGFloat = 0) {
+                self.font = font
+                self.lineSpacing = lineSpacing
+                self.letterSpacing = letterSpacing
+            }
+        }
         
-        static let titleLarge = Font.custom(spaceGroteskBold, size: 28)
-        static let titleMedium = Font.custom(spaceGroteskBold, size: 22)
-        static let titleSmall = Font.custom(spaceGroteskBold, size: 20)
-        static let bodyLarge = Font.custom(spaceGroteskMedium, size: 17)
-        static let bodyMedium = Font.custom(spaceGroteskMedium, size: 15)
-        static let bodySmall = Font.custom(spaceGroteskMedium, size: 13)
+        // Legacy Styles (with improved typography)
+        static let h1 = TextStyle(
+            font: .custom(sfProDisplay, size: 32).weight(.bold),
+            lineSpacing: 1.2,
+            letterSpacing: -0.5
+        )
+        
+        static let h2 = TextStyle(
+            font: .custom(sfProDisplay, size: 24).weight(.semibold),
+            lineSpacing: 1.2,
+            letterSpacing: -0.3
+        )
+        
+        static let body = TextStyle(
+            font: .custom(sfPro, size: 16),
+            lineSpacing: 1.4,
+            letterSpacing: 0
+        )
+        
+        static let caption = TextStyle(
+            font: .custom(sfPro, size: 14),
+            lineSpacing: 1.2,
+            letterSpacing: 0.2
+        )
+        
+        // Modern Styles
+        static let titleLarge = TextStyle(
+            font: .custom(spaceGroteskBold, size: 28),
+            lineSpacing: 1.3,
+            letterSpacing: -0.4
+        )
+        
+        static let titleMedium = TextStyle(
+            font: .custom(spaceGroteskBold, size: 22),
+            lineSpacing: 1.3,
+            letterSpacing: -0.3
+        )
+        
+        static let titleSmall = TextStyle(
+            font: .custom(spaceGroteskBold, size: 20),
+            lineSpacing: 1.2,
+            letterSpacing: -0.2
+        )
+        
+        static let bodyLarge = TextStyle(
+            font: .custom(spaceGroteskMedium, size: 17),
+            lineSpacing: 1.4
+        )
+        
+        static let bodyMedium = TextStyle(
+            font: .custom(spaceGroteskMedium, size: 15),
+            lineSpacing: 1.4
+        )
+        
+        static let bodySmall = TextStyle(
+            font: .custom(spaceGroteskMedium, size: 13),
+            lineSpacing: 1.3
+        )
     }
 }
 
@@ -45,5 +110,23 @@ extension Color {
         let green = Double((hex >> 8) & 0xFF) / 255.0
         let blue = Double(hex & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue)
+    }
+}
+
+// MARK: - Typography View Modifiers
+struct FOMOTextStyle: ViewModifier {
+    let style: FOMOTheme.Typography.TextStyle
+    
+    func body(content: Content) -> some View {
+        content
+            .font(style.font)
+            .lineSpacing(style.lineSpacing)
+            .tracking(style.letterSpacing)
+    }
+}
+
+extension View {
+    func fomoTextStyle(_ style: FOMOTheme.Typography.TextStyle) -> some View {
+        modifier(FOMOTextStyle(style: style))
     }
 }
