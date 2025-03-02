@@ -1,0 +1,149 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/master.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/App/Core/Network/MockBackend.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockBackend.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockBackend.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockBackend~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockBackend.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/App/Features/Drinks/DrinkListView.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkListView.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkListView.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkListView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkListView.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/AppIntegration.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Animations.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/APIClientHelper.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/DirectImports.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/FOMOApp.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/FOMOImports.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/FOMOTypes.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/Models/DrinkEndpoints.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Orders/Models/OrderEndpoints.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/OrderEndpoints.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/OrderEndpoints.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/OrderEndpoints~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/OrderEndpoints.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Models/PassEndpoints.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassEndpoints.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassEndpoints.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassEndpoints~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassEndpoints.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/Models/ProfileEndpoints.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Models/VenueEndpoints.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueEndpoints.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueEndpoints.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueEndpoints~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueEndpoints.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Tests/VenuePreviewViewTests.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewTests.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewTests.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewTests.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/ProfileViewModel.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/FileStructureTest.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/ModuleDefinition.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/ModuleTest.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/TypesTest.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/TypesTestEntry.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/resource_bundle_accessor.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/resource_bundle_accessor.swiftdeps"
+  }
+}

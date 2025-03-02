@@ -1,0 +1,4 @@
+module Network {
+    header "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network-Swift.h"
+    requires objc
+}

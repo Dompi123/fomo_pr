@@ -1,0 +1,4 @@
+module FOMO_PR {
+    header "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMO_PR-Swift.h"
+    requires objc
+}

@@ -1,0 +1,128 @@
+name: FOMO_PR
+packages: {}
+targets:
+  Models:
+    type: framework
+    platform: iOS
+    deploymentTarget: "18.1"
+    sources:
+      - path: FOMO_PR/Core/Models
+        includes:
+          - "*.swift"
+          - "NetworkError.swift"
+    settings:
+      base:
+        SWIFT_VERSION: 5.9
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        DEFINES_MODULE: YES
+        PRODUCT_MODULE_NAME: Models
+
+  Core:
+    type: framework
+    platform: iOS
+    deploymentTarget: "18.1"
+    sources:
+      - path: FOMO_PR/Core
+        includes:
+          - "Payment/**/*.swift"
+          - "Extensions/**/*.swift"
+          - "Network/EndpointProtocol.swift"
+          - "Storage/**/*.swift"
+          - "Utilities/**/*.swift"
+        excludes:
+          - "Models/**"
+          - "**/Tests/**"
+          - "**/*.generated.swift"
+          - "**/NetworkError.swift"
+    settings:
+      base:
+        SWIFT_VERSION: 5.9
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        DEFINES_MODULE: YES
+        PRODUCT_MODULE_NAME: Core
+    dependencies:
+      - target: Models
+
+  FOMO_PR:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.1"
+    sources: 
+      - path: FOMO_PR
+        excludes:
+          - "Core/**"
+          - "**/Tests/**"
+          - "**/.DS_Store"
+          - "**/xcuserdata/**"
+          - "**/*.generated.swift"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fomoapp.fomopr
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        MARKETING_VERSION: 1.0
+        CURRENT_PROJECT_VERSION: 1
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: 5.9
+        TARGETED_DEVICE_FAMILY: 1
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        ENABLE_PREVIEWS: YES
+        DEFINES_MODULE: YES
+        PRODUCT_MODULE_NAME: FOMO_PR
+    dependencies:
+      - target: Models
+      - target: Core
+      - framework: Network.framework
+      - framework: Security.framework
+    info:
+      path: FOMO_PR/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: en
+        CFBundleDisplayName: FOMO PR
+        LSRequiresIPhoneOS: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+        UIRequiredDeviceCapabilities:
+          - arm64
+
+  FOMO_PRTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.1"
+    sources:
+      - path: FOMO_PR
+        includes:
+          - "**/Tests/**/*.swift"
+    settings:
+      base:
+        SWIFT_VERSION: 5.9
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: FOMO_PR
+      - target: Models
+      - target: Core
+
+schemes:
+  FOMO_PR:
+    build:
+      targets:
+        Models: all
+        Core: all
+        FOMO_PR: all
+        FOMO_PRTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FOMO_PRTests
+      gatherCoverageData: true

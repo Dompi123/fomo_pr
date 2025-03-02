@@ -1,0 +1,17 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/master.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/Network/Sources/Network/APIClient.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/Network/Sources/Network/Network.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network.swiftdeps"
+  }
+}

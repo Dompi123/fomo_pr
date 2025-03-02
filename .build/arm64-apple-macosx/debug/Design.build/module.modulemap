@@ -1,0 +1,4 @@
+module Design {
+    header "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Design-Swift.h"
+    requires objc
+}

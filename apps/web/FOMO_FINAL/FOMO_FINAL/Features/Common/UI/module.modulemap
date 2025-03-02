@@ -1,5 +1,0 @@
-framework module FOMOTheme {
-    umbrella header "FOMOTheme.h"
-    export *
-    module * { export * }
-}

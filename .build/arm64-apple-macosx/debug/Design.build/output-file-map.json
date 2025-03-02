@@ -1,0 +1,41 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/master.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Animations.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Animations.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Animations.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Animations~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Animations.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Colors.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Colors.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Colors.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Colors~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Colors.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Design.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Design.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Design.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Design~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Design.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOAnimations.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOAnimations.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOAnimations.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOAnimations~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOAnimations.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOTheme.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOTheme.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOTheme~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/FOMOTheme.swiftdeps"
+  },
+  "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Typography.swift": {
+    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Typography.d",
+    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Typography.swift.o",
+    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Typography~partial.swiftmodule",
+    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Design.build/Typography.swiftdeps"
+  }
+}

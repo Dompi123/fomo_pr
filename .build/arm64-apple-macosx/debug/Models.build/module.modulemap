@@ -1,0 +1,4 @@
+module Models {
+    header "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models-Swift.h"
+    requires objc
+}
