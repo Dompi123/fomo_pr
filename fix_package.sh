@@ -1,3 +1,13 @@
+#!/bin/bash
+
+# Navigate to the project directory
+cd /Users/dom.khr/fomopr
+
+# Create a backup of the original Package.swift
+cp Package.swift Package.swift.bak
+
+# Modify the Package.swift file to use static libraries
+cat > Package.swift << 'EOF'
 // swift-tools-version:5.5
 import PackageDescription
 
@@ -124,3 +134,8 @@ let package = Package(
             ]),
     ]
 )
+EOF
+
+echo "Package.swift modified to use static libraries."
+echo "Now open the project in Xcode and rebuild it."
+echo "This should fix the framework loading issue at runtime." 
