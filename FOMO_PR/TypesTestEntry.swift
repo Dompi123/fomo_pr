@@ -1,6 +1,5 @@
 import SwiftUI
 
-// Add this to your app's main navigation or ContentView
 struct TypesTestEntry: View {
     var body: some View {
         NavigationView {
@@ -23,22 +22,6 @@ struct TypesTestEntry: View {
     }
 }
 
-// You can add this to your app's main view like this:
-/*
-struct ContentView: View {
-    var body: some View {
-        TabView {
-            // Your existing tabs
-            
-            TypesTestEntry()
-                .tabItem {
-                    Label("Types Test", systemImage: "checkmark.circle")
-                }
-        }
-    }
-}
-*/
-
 #Preview {
     TypesTestEntry()
-} 
+}

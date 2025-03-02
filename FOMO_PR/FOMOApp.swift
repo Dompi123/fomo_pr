@@ -18,8 +18,8 @@ struct MainContentView: View {
                     Label("Types Test", systemImage: "checkmark.circle")
                 }
             
-            // Second tab - Module Test
-            ModuleTestView()
+            // Second tab - Temporarily removed until ModuleTestView is implemented
+            Text("Module Test Coming Soon")
                 .tabItem {
                     Label("Module Test", systemImage: "gear")
                 }
@@ -29,4 +29,4 @@ struct MainContentView: View {
 
 #Preview {
     MainContentView()
-} 
+}

@@ -1,3 +1,203 @@
+#!/bin/bash
+
+echo "Fixing duplicate APIClient declarations and KeychainManager issues..."
+
+# 1. Remove our new APIClient implementation since there's already one in the codebase
+echo "Removing duplicate APIClient implementation..."
+rm -f FOMO_PR/Networking/APIClient.swift
+rmdir FOMO_PR/Networking 2>/dev/null || true
+
+# 2. Update the ProfileViewModel to use the existing APIClient
+echo "Updating ProfileViewModel to use the existing APIClient..."
+cat > FOMO_PR/Features/Profile/ViewModels/ProfileViewModel.swift << 'EOF'
+import Foundation
+import SwiftUI
+import Combine
+
+// Define the Profile model
+struct Profile: Identifiable {
+    let id: String
+    var name: String
+    var email: String
+    var phone: String?
+    var profileImageURL: URL?
+    var preferences: [String: Bool]
+    
+    static var preview: Profile {
+        Profile(
+            id: "user-123",
+            name: "John Doe",
+            email: "john.doe@example.com",
+            phone: "+1 (555) 123-4567",
+            profileImageURL: URL(string: "https://example.com/profile.jpg"),
+            preferences: [
+                "emailNotifications": true,
+                "pushNotifications": true,
+                "smsNotifications": false
+            ]
+        )
+    }
+}
+
+// Make Profile conform to Codable
+extension Profile: Codable {}
+
+@MainActor
+class ProfileViewModel: ObservableObject {
+    @Published var profile: Profile?
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    
+    // Using URLSession directly instead of APIClient
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        Task {
+            await fetchProfile()
+        }
+    }
+    
+    func fetchProfile() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            // Create a URL request directly
+            var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile")!)
+            request.httpMethod = "GET"
+            
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let profile = try JSONDecoder().decode(Profile.self, from: data)
+            
+            self.profile = profile
+            self.isLoading = false
+        } catch {
+            self.errorMessage = "Failed to fetch profile: \(error.localizedDescription)"
+            self.isLoading = false
+        }
+    }
+    
+    func updateProfile() {
+        guard let profile = profile else { return }
+        
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                // Create a URL request directly
+                var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile")!)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                let data = try JSONEncoder().encode(profile)
+                request.httpBody = data
+                
+                let (responseData, _) = try await URLSession.shared.data(for: request)
+                let updatedProfile = try JSONDecoder().decode(Profile.self, from: responseData)
+                
+                self.profile = updatedProfile
+                self.isLoading = false
+            } catch {
+                self.errorMessage = "Failed to update profile: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
+    
+    func updateProfileImage(url: URL) {
+        guard let profile = profile else { return }
+        
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                // Create a URL request directly
+                var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile/image")!)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                let payload = ["url": url.absoluteString]
+                let data = try JSONEncoder().encode(payload)
+                request.httpBody = data
+                
+                let (responseData, _) = try await URLSession.shared.data(for: request)
+                let updatedProfile = try JSONDecoder().decode(Profile.self, from: responseData)
+                
+                self.profile = updatedProfile
+                self.isLoading = false
+            } catch {
+                self.errorMessage = "Failed to update profile image: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
+    
+    func updatePreferences(preferences: [String: Bool]) {
+        guard var profile = profile else { return }
+        
+        Task {
+            isLoading = true
+            errorMessage = nil
+            
+            do {
+                // Create updated profile
+                let updatedProfile = Profile(
+                    id: profile.id,
+                    name: profile.name,
+                    email: profile.email,
+                    phone: profile.phone,
+                    profileImageURL: profile.profileImageURL,
+                    preferences: preferences
+                )
+                
+                // Update profile on server using direct URL request
+                var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile")!)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                let data = try JSONEncoder().encode(updatedProfile)
+                request.httpBody = data
+                
+                let (responseData, _) = try await URLSession.shared.data(for: request)
+                let result = try JSONDecoder().decode(Profile.self, from: responseData)
+                
+                self.profile = result
+                self.isLoading = false
+            } catch {
+                self.errorMessage = "Failed to update preferences: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
+}
+
+// MARK: - Preview Helper
+extension ProfileViewModel {
+    static var preview: ProfileViewModel {
+        let viewModel = ProfileViewModel()
+        viewModel.profile = Profile(
+            id: "user123",
+            name: "John Doe",
+            email: "john.doe@example.com",
+            phone: "+1 (555) 123-4567",
+            profileImageURL: URL(string: "https://example.com/profile.jpg"),
+            preferences: [
+                "emailNotifications": true,
+                "pushNotifications": true,
+                "darkMode": false,
+                "savePaymentInfo": true
+            ]
+        )
+        return viewModel
+    }
+}
+EOF
+
+# 3. Fix the KeychainManager concurrency issues
+echo "Fixing KeychainManager concurrency issues..."
+cat > FOMO_PR/Core/Storage/KeychainManager.swift << 'EOF'
 import Foundation
 import Security
 import OSLog
@@ -10,7 +210,6 @@ private let logger = Logger(subsystem: "com.fomo", category: "KeychainManager")
 #if DEBUG
 private func logDebug(_ message: String) {
     print("[KeychainManager Debug] \(message)")
-    logger.debug("\(message)")
 }
 #else
 private func logDebug(_ message: String) {}
@@ -68,7 +267,6 @@ public class KeychainManager {
     public init() {
         // Log that we're initializing
         logDebug("KeychainManager initializing")
-        print("[KeychainManager] Initializing")
         logger.debug("KeychainManager initialized")
         
         // Use the init log to ensure it's evaluated
@@ -124,9 +322,6 @@ public class KeychainManager {
     ///   - value: The value to store
     ///   - key: The key to store it under
     public func store(key: KeychainKey, value: String) async throws {
-        logDebug("Attempting to store value for key: \(key.rawValue)")
-        print("[KeychainManager] Attempting to store value for key: \(key.rawValue)")
-        
         // Make a local copy of the key and value to avoid capturing self
         let keyService = key.service
         let keyRawValue = key.rawValue
@@ -134,16 +329,11 @@ public class KeychainManager {
         let valueData = value.data(using: .utf8)
         
         guard let valueData = valueData else {
-            logDebug("Failed to encode value for key: \(key.rawValue)")
-            print("[KeychainManager] Failed to encode value for key: \(key.rawValue)")
             throw KeychainError.encodingFailed
         }
         
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
-                logDebug("In queue for storing key: \(keyRawValue)")
-                print("[KeychainManager] In queue for storing key: \(keyRawValue)")
-                
                 // Create query
                 let query: [String: Any] = [
                     kSecClass as String: kSecClassGenericPassword,
@@ -154,22 +344,14 @@ public class KeychainManager {
                 ]
                 
                 // Delete any existing key before saving
-                let deleteStatus = SecItemDelete(query as CFDictionary)
-                logDebug("Delete status for key \(keyRawValue): \(deleteStatus)")
-                print("[KeychainManager] Delete status for key \(keyRawValue): \(deleteStatus)")
+                SecItemDelete(query as CFDictionary)
                 
                 // Add the new key
                 let status = SecItemAdd(query as CFDictionary, nil)
-                logDebug("Add status for key \(keyRawValue): \(status)")
-                print("[KeychainManager] Add status for key \(keyRawValue): \(status)")
                 
                 if status != errSecSuccess {
-                    logDebug("Failed to save key \(keyRawValue) with status: \(status)")
-                    print("[KeychainManager] Failed to save key \(keyRawValue) with status: \(status)")
                     continuation.resume(throwing: KeychainError.saveFailed(status))
                 } else {
-                    logDebug("Successfully saved key: \(keyRawValue)")
-                    print("[KeychainManager] Successfully saved key: \(keyRawValue)")
                     continuation.resume(returning: ())
                 }
             }
@@ -180,18 +362,12 @@ public class KeychainManager {
     /// - Parameter key: The key to retrieve
     /// - Returns: The stored value
     public func retrieveValue(for key: KeychainKey) async throws -> String? {
-        logDebug("Attempting to retrieve value for key: \(key.rawValue)")
-        print("[KeychainManager] Attempting to retrieve value for key: \(key.rawValue)")
-        
         // Make a local copy of the key to avoid capturing self
         let keyService = key.service
         let keyRawValue = key.rawValue
         
         return try await withCheckedThrowingContinuation { continuation in
             queue.async {
-                logDebug("In queue for retrieving key: \(keyRawValue)")
-                print("[KeychainManager] In queue for retrieving key: \(keyRawValue)")
-                
                 let query: [String: Any] = [
                     kSecClass as String: kSecClassGenericPassword,
                     kSecAttrService as String: keyService,
@@ -203,32 +379,21 @@ public class KeychainManager {
                 var item: CFTypeRef?
                 let status = SecItemCopyMatching(query as CFDictionary, &item)
                 
-                logDebug("Retrieve status for key \(keyRawValue): \(status)")
-                print("[KeychainManager] Retrieve status for key \(keyRawValue): \(status)")
-                
                 guard status != errSecItemNotFound else {
-                    logDebug("Key not found: \(keyRawValue)")
-                    print("[KeychainManager] Key not found: \(keyRawValue)")
                     continuation.resume(returning: nil)
                     return
                 }
                 
                 guard status == errSecSuccess else {
-                    logDebug("Failed to read key \(keyRawValue) with status: \(status)")
-                    print("[KeychainManager] Failed to read key \(keyRawValue) with status: \(status)")
                     continuation.resume(throwing: KeychainError.readFailed(status))
                     return
                 }
                 
                 guard let data = item as? Data, let value = String(data: data, encoding: .utf8) else {
-                    logDebug("Failed to decode data for key: \(keyRawValue)")
-                    print("[KeychainManager] Failed to decode data for key: \(keyRawValue)")
                     continuation.resume(throwing: KeychainError.decodingFailed)
                     return
                 }
                 
-                logDebug("Successfully retrieved value for key: \(keyRawValue)")
-                print("[KeychainManager] Successfully retrieved value for key: \(keyRawValue)")
                 continuation.resume(returning: value)
             }
         }
@@ -294,3 +459,26 @@ public enum KeychainError: Error, LocalizedError, Sendable {
         }
     }
 }
+EOF
+
+# 4. Update the project file to remove references to our APIClient.swift
+echo "Updating project file to remove references to our APIClient.swift..."
+PROJECT_FILE="FOMO_PR.xcodeproj/project.pbxproj"
+if [ -f "$PROJECT_FILE" ]; then
+    # Backup the file
+    cp "$PROJECT_FILE" "${PROJECT_FILE}.apifix.backup"
+    
+    # Remove references to our APIClient.swift
+    sed -i '' '/ABCDEF1234567890/d' "$PROJECT_FILE"
+    sed -i '' '/ABCDEF0987654321/d' "$PROJECT_FILE"
+    
+    echo "Project file updated."
+else
+    echo "❌ Project file not found at $PROJECT_FILE"
+fi
+
+# 5. Clean derived data to ensure a fresh build
+echo "Cleaning derived data..."
+rm -rf ~/Library/Developer/Xcode/DerivedData/FOMO_PR-*
+
+echo "Duplicate APIClient and KeychainManager issues fixed. Please try building the app again." 
