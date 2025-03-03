@@ -5,6 +5,7 @@ const TokenService = require('../../utils/auth.cjs');
 const SessionManager = require('../../utils/sessionManager.cjs');
 const FeatureManager = require('../../services/payment/FeatureManager.cjs');
 const { auth } = require('express-openid-connect');
+const { AuthenticationClient } = require('auth0');
 const { config } = require('../../config/environment.cjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User.cjs');
@@ -35,13 +36,6 @@ class AuthenticationService extends BaseService {
 
     async _init() {
         try {
-            // In development mode, set as ready without full auth
-            if (process.env.NODE_ENV === 'development') {
-                this.ready = true;
-                this.logger.info('Auth service initialized in development mode');
-                return;
-            }
-
             // Initialize Auth0 client
             await this.initializeAuth0Client();
             
@@ -49,19 +43,23 @@ class AuthenticationService extends BaseService {
             this.logger.info('Auth service initialized successfully');
         } catch (error) {
             this.logger.error('Auth service initialization failed:', error);
-            if (process.env.NODE_ENV === 'development') {
-                this.ready = true;
-                this.logger.warn('Continuing in development mode with degraded auth');
-            } else {
-                throw error;
-            }
+            throw error;
         }
     }
 
     async initializeAuth0Client() {
         // Initialize Auth0 client
         const auth0Config = this.getAuth0Config();
+        
+        // Create middleware for route protection (used by Express)
         this.auth0Client = auth(auth0Config);
+        
+        // Create proper Auth0 client for programmatic access
+        this.auth0ApiClient = new AuthenticationClient({
+            domain: auth0Config.issuerBaseURL.replace('https://', ''),
+            clientId: auth0Config.clientID,
+            clientSecret: auth0Config.clientSecret
+        });
 
         logger.info('Auth0 client initialized', {
             baseURL: auth0Config.baseURL,
@@ -98,6 +96,12 @@ class AuthenticationService extends BaseService {
             session: {
                 absoluteDuration: this.config.sessionDuration,
                 rollingDuration: this.config.refreshWindow
+            },
+            authorizationParams: {
+                response_type: 'code',
+                response_mode: 'query',
+                scope: 'openid profile email',
+                audience: config.auth0.audience
             }
         };
     }
@@ -118,17 +122,11 @@ class AuthenticationService extends BaseService {
                 );
             }
 
-            // In development, allow any token
-            if (process.env.NODE_ENV === 'development') {
-                req.user = { _id: 'dev-user', roles: ['admin'] };
-                return next();
-            }
-
             // Verify token
             const decoded = await TokenService.verifyAuth0Token(token, {
                 refreshToken: req.headers['x-refresh-token']
             });
-
+            
             // Get or create user
             const user = await this.getOrCreateUser(decoded);
             if (!user) {
@@ -162,18 +160,6 @@ class AuthenticationService extends BaseService {
 
     async login(credentials) {
         try {
-            // In development, return mock tokens
-            if (process.env.NODE_ENV === 'development') {
-                return {
-                    user: { _id: 'dev-user', roles: ['admin'] },
-                    tokens: {
-                        access_token: 'dev-token',
-                        refresh_token: 'dev-refresh-token',
-                        expires_in: 3600
-                    }
-                };
-            }
-
             // Validate credentials
             if (!credentials.email || !credentials.password) {
                 throw createError.validation(
@@ -191,10 +177,12 @@ class AuthenticationService extends BaseService {
                 );
             }
 
-            // Authenticate with Auth0
-            const tokens = await this.auth0Client.getTokenSilently({
-                ...credentials,
-                scope: 'openid profile email'
+            // Authenticate with Auth0 using the proper client
+            const tokens = await this.auth0ApiClient.oauth.passwordGrant({
+                username: credentials.email,
+                password: credentials.password,
+                scope: 'openid profile email',
+                audience: config.auth0.audience
             });
 
             // Get or create user
@@ -231,7 +219,18 @@ class AuthenticationService extends BaseService {
 
     async handleCallback(req) {
         try {
-            const tokens = await this.auth0Client.handleCallback(req);
+            const { code } = req.query;
+            
+            if (!code) {
+                throw new Error('Authorization code is missing');
+            }
+            
+            // Use the proper Auth0 client for handling callbacks
+            const tokens = await this.auth0ApiClient.oauth.authorizationCodeGrant({
+                code,
+                redirect_uri: `${config.auth0.baseURL || config.server.baseUrl}/api/auth/callback`
+            });
+            
             const decoded = await TokenService.verifyAuth0Token(tokens.access_token);
             const user = await this.getOrCreateUser(decoded);
 
@@ -283,8 +282,11 @@ class AuthenticationService extends BaseService {
     }
 
     getClientIP(req) {
-        return req.headers['x-forwarded-for']?.split(',')[0].trim() || 
-               req.socket.remoteAddress;
+        if (!req || !req.headers) {
+            return 'unknown';
+        }
+        return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
+               req.socket?.remoteAddress || 'unknown';
     }
 
     async getLoginAttempts(email) {
@@ -306,6 +308,7 @@ class AuthenticationService extends BaseService {
 
     async _cleanup() {
         this.auth0Client = null;
+        this.auth0ApiClient = null;
         logger.info('Authentication service cleaned up');
     }
 

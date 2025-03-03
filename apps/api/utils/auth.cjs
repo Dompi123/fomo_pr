@@ -9,8 +9,12 @@ const { createError, ERROR_CODES } = require('./errors.cjs');
 // Validate JWT secret
 if (!config.jwt?.secret) {
     config.jwt = {
-        secret: process.env.JWT_SECRET || 'development-secret-key'
+        secret: process.env.JWT_SECRET || process.env.AUTH0_SECRET || 'development-secret-key'
     };
+    
+    if (config.jwt.secret === 'development-secret-key') {
+        logger.warn('Using insecure default JWT secret. Set JWT_SECRET or AUTH0_SECRET environment variable for production.');
+    }
 }
 
 // Maintain singleton for backward compatibility

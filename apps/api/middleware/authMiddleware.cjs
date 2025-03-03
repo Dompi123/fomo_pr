@@ -8,6 +8,8 @@ const { USER_ROLES } = require('../utils/constants.cjs');
 const { createError, ERROR_CODES } = require('../utils/errors.cjs');
 const sessionManager = require('../utils/sessionManager.cjs');
 const { authEvents } = require('../utils/authEvents.cjs');
+const authUtils = require('../utils/authUtils.cjs');
+const featureManager = require('../services/payment/FeatureManager.cjs');
 
 // Create specialized logger
 const authLogger = logger.child({
@@ -208,7 +210,17 @@ const requireAdmin = (options = {}) => {
 
 // Middleware to require venue owner role
 const requireVenueOwner = (options = {}) => {
-    return requireAuth({ ...options, role: USER_ROLES.VENUE_OWNER });
+    return requireAuth({ ...options, role: USER_ROLES.OWNER });
+};
+
+// Middleware to require staff role
+const requireStaff = (options = {}) => {
+    return requireAuth({ ...options, role: USER_ROLES.STAFF });
+};
+
+// Middleware that uses either staff role or client-side verification based on feature flag
+const requireVenueAccess = (options = {}) => {
+    return requireStaff(options);
 };
 
 module.exports = {
@@ -216,6 +228,9 @@ module.exports = {
     requireCustomer,
     requireAdmin,
     requireVenueOwner,
+    requireStaff,
+    requireVenueAccess,
+    getAuth0Config,
     isPublicRoute
 };
 
