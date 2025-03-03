@@ -180,10 +180,11 @@ class OrderService {
         order.completedAt = new Date();
         await order.save();
 
-        // Track manual verification ("I Am The Bartender" click)
+        // Track manual verification (on customer device)
         await metricService.record(FOMO_METRIC_TYPES.DRINK.FULFILLMENT, {
             venueId: order.venueId,
-            itemCount: order.items.length
+            itemCount: order.items.length,
+            verificationType: 'customer-device'
         });
 
         return order;

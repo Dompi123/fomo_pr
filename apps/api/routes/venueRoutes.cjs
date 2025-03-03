@@ -375,7 +375,7 @@ router.patch('/:id/cover-pass', requireVenueOwner(), async (req, res) => {
       if (!venue) return res.status(404).json({ error: 'Venue not found' });
       
       // Admin bypass or regular owner check
-      if (req.user.role !== 'admin' && !req.user.managedVenues.includes(req.params.id)) {
+      if (!req.user.hasRole('admin') && !req.user.managedVenues.includes(req.params.id)) {
           return res.status(403).json({ error: 'Not authorized to manage this venue' });
       }
 

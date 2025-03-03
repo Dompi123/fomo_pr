@@ -188,14 +188,15 @@ function initializeSocket(server) {
             // Order status updates
             socket.on('updateOrderStatus', async (data) => {
                 try {
-                    const { orderId, status, bartenderId, verificationCode, venueId } = data;
+                    const { orderId, status, verificationCode, venueId } = data;
+                    const verificationType = 'customer-device';
                     
                     eventService.emitVenueEvent('UPDATED', venueId, {
                         type: 'orderStatus',
                         orderId,
                         status,
                         timestamp: new Date(),
-                        bartenderId,
+                        verificationType,
                         verificationCode
                     });
 

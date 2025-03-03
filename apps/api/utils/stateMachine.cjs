@@ -11,9 +11,9 @@ const OrderStateMachine = {
     verified: {
         allowedTransitions: ['completed'],
         validate: async (order) => {
-            // Verify bartender validation exists
-            if (!order.bartenderVerification?.verifiedAt) {
-                throw new Error('Missing bartender verification');
+            // Verify staff validation exists
+            if (!order.verification?.verifiedAt) {
+                throw new Error('Missing verification');
             }
         }
     },

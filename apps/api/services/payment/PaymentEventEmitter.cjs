@@ -185,6 +185,17 @@ class PaymentEventEmitter extends BaseService {
         return 'low';
     }
 
+    async setupEventListeners() {
+        const events = this.getDependency('events');
+        if (!events) {
+            this.logger.warn('Events system not available, skipping event listener setup');
+            return;
+        }
+
+        this.logger.info('Setting up payment event listeners');
+        // No actual listeners needed at this time, but the method exists to satisfy the call in server.cjs
+    }
+
     async _cleanup() {
         this.logger.info('Payment event emitter cleaned up');
     }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const PassService = require('../services/passService.cjs');
-const { requireCustomer, requireBartender } = require('../middleware/authMiddleware.cjs');
+const { requireCustomer, requireVenueAccess } = require('../middleware/authMiddleware.cjs');
 const OrderMetricsService = require('../services/orderMetricsService.cjs');
 const { requireAuth } = require('../middleware/authMiddleware.cjs');
 const Pass = require('../models/Pass.cjs');
@@ -9,6 +9,7 @@ const User = require('../models/User.cjs');
 const { createError, ERROR_CODES } = require('../utils/errors.cjs');
 const PaymentProcessor = require('../services/payment/PaymentProcessor.cjs');
 const logger = require('../utils/logger.cjs');
+const authUtils = require('../utils/authUtils.cjs');
 
 // Create specialized logger
 const passLogger = logger.child({
@@ -92,7 +93,7 @@ router.get('/:passId', requireAuth(), async (req, res, next) => {
         }
 
         // Verify ownership or staff access
-        if (!pass.userId.equals(req.user._id) && !req.user.hasRole(['admin', 'bartender'])) {
+        if (!pass.userId.equals(req.user._id) && !authUtils.isVenueStaff(req.user, pass.venueId)) {
             throw createError.authorization(ERROR_CODES.UNAUTHORIZED);
         }
 
@@ -118,10 +119,10 @@ router.post('/:passId/redeem', requireCustomer(), async (req, res) => {
     }
 });
 
-// Bartender Pass Routes
+// Staff Pass Routes
 // ===================
 
-router.get('/venue/:venueId/active', requireBartender(), async (req, res, next) => {
+router.get('/venue/:venueId/active', requireVenueAccess(), async (req, res, next) => {
     try {
         const { venueId } = req.params;
         const passes = await PassService.getActivePasses(venueId);
@@ -132,7 +133,7 @@ router.get('/venue/:venueId/active', requireBartender(), async (req, res, next) 
     }
 });
 
-router.patch('/:passId/status', requireBartender, async (req, res) => {
+router.patch('/:passId/status', requireVenueAccess(), async (req, res) => {
     try {
         const { passId } = req.params;
         const { status } = req.body;
@@ -145,13 +146,30 @@ router.patch('/:passId/status', requireBartender, async (req, res) => {
     }
 });
 
-router.post('/:passId/verify', requireBartender, async (req, res) => {
+router.post('/:passId/verify', requireCustomer(), async (req, res) => {
     try {
         const { passId } = req.params;
         const { verificationCode } = req.body;
-        const pass = await PassService.verifyPassByBartender(passId, verificationCode);
-        await OrderMetricsService.trackPassVerification(pass, true);
-        res.json({ status: 'success', data: pass });
+        
+        // Add verification that this is the pass owner or venue staff
+        const pass = await PassService.getPassById(passId);
+        if (!pass) {
+            return res.status(404).json({ status: 'error', message: 'Pass not found' });
+        }
+        
+        // Allow verification by pass owner (customer showing pass to venue staff)
+        const isOwner = pass.userId.equals(req.user._id);
+        const isStaff = authUtils.isVenueStaff(req.user, pass.venueId);
+        
+        if (!isOwner && !isStaff) {
+            return res.status(403).json({ status: 'error', message: 'Not authorized' });
+        }
+        
+        // Pass the staff user ID if the user is a staff member
+        const staffUserId = isStaff ? req.user._id : null;
+        const verifiedPass = await PassService.verifyPassByStaff(passId, verificationCode, staffUserId);
+        await OrderMetricsService.trackPassVerification(verifiedPass, true);
+        res.json({ status: 'success', data: verifiedPass });
     } catch (error) {
         console.error('Error verifying pass:', error);
         const { passId } = req.params;
@@ -179,7 +197,7 @@ router.get('/mine', requireCustomer(), async (req, res, next) => {
 });
 
 // Validate pass
-router.post('/:passId/validate', requireBartender(), async (req, res, next) => {
+router.post('/:passId/validate', requireVenueAccess(), async (req, res, next) => {
     try {
         const { passId } = req.params;
         const isValid = await PassService.validatePass(passId);

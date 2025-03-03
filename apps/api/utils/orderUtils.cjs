@@ -75,7 +75,7 @@ const formatOrderForDisplay = (order) => {
         statusHistory: order.statusHistory.map(history => ({
             status: history.status,
             timestamp: history.timestamp,
-            by: history.bartenderId ? 'Bartender' : 'System'
+            by: history.verifiedBy || 'customer-device'
         }))
     };
 };

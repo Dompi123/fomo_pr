@@ -176,7 +176,7 @@ router.post('/assign-venue/:venueId/:userId', async (req, res) => {
         const user = await User.findById(req.params.userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
         
-        if (user.role !== 'owner') {
+        if (!user.hasRole('owner')) {
             user.role = 'owner';
         }
         
@@ -203,7 +203,7 @@ router.put('/users/:userId/role', requireAdmin(), async (req, res) => {
       });
 
       // Verify admin status explicitly
-      if (req.user.role !== 'admin') {
+      if (!req.user.hasRole('admin')) {
           return res.status(403).json({ error: 'Requires admin privileges' });
       }
 

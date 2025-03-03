@@ -165,6 +165,53 @@ class PassService {
         });
         return pass;
     }
+
+    // Verify pass by staff
+    static async verifyPassByStaff(passId, verificationCode, staffUserId = null) {
+        // Find the pass
+        const pass = await Pass.findById(new mongoose.Types.ObjectId(passId));
+        if (!pass) {
+            throw new Error('Pass not found');
+        }
+
+        // Check if pass is valid
+        if (!pass.isValid()) {
+            throw new Error('Pass is not valid for verification');
+        }
+
+        // Verify the verification code if provided
+        if (verificationCode && pass.verificationCode && pass.verificationCode !== verificationCode) {
+            throw new Error('Invalid verification code');
+        }
+
+        // Update the pass status history
+        pass.statusHistory.push({
+            status: 'active', // Using 'active' which is in the enum
+            timestamp: new Date(),
+            updatedBy: staffUserId
+        });
+
+        // Update redemption status to indicate verification by staff
+        // Using redemptionStatus which is defined in the Pass schema
+        pass.redemptionStatus = {
+            ...pass.redemptionStatus,
+            verifiedAt: new Date(),
+            verifiedBy: staffUserId || 'staff',
+            verificationMethod: 'manual'
+        };
+
+        // Save the updated pass
+        await pass.save();
+
+        // Emit real-time update
+        emitVenueUpdate(pass.venueId, PASS_EVENTS.PASS_VALIDATED, {
+            passId: pass._id,
+            timestamp: new Date(),
+            verifiedBy: 'staff'
+        });
+
+        return pass;
+    }
 }
 
 module.exports = PassService; 

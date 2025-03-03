@@ -45,10 +45,12 @@ class OrderMetricsService {
             eventType: 'status_change',
             orderType: 'drink',
             processingTime,
+            verifiedBy: order.verifiedBy || 'customer-device',
             metadata: {
                 oldStatus,
                 newStatus: order.status,
-                updatedBy: order.bartenderId
+                updatedByRole: order.verifiedBy || 'customer-device',
+                verificationMethod: order.verifiedBy === 'staff' ? 'manual' : 'automatic'
             }
         });
     }
@@ -66,9 +68,10 @@ class OrderMetricsService {
             eventType: 'verification',
             orderType: 'drink',
             processingTime,
+            verifiedBy: order.verifiedBy || 'customer-device',
             metadata: {
                 success,
-                verifiedBy: order.bartenderVerification?.bartenderId
+                verificationMethod: order.verifiedBy === 'staff' ? 'manual' : 'automatic'
             }
         });
     }
