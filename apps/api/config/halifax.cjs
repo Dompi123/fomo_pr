@@ -13,7 +13,7 @@ exports.CORE_METRIC_TYPES = Object.freeze({
     },
     DRINK: {
         ORDER: 'drink.order',
-        FULFILLMENT: 'drink.fulfillment' // "I Am The Bartender" clicks
+        FULFILLMENT: 'drink.fulfillment' // "Verification" clicks
     },
     OPERATIONS: {
         PAYMENT_SUCCESS: 'ops.payment_success',

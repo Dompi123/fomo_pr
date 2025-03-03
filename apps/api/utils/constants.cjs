@@ -57,12 +57,12 @@ const SCHEDULE_TYPES = [
 ];
 
 // User roles
-const USER_ROLES = [
-    'customer',
-    'bartender',
-    'owner',
-    'admin'
-];
+const USER_ROLES = {
+    CUSTOMER: 'customer',
+    STAFF: 'staff',
+    OWNER: 'owner',
+    ADMIN: 'admin'
+};
 
 // Order types
 const ORDER_TYPES = [
