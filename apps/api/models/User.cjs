@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const featureManager = require('../services/payment/FeatureManager.cjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -12,8 +13,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['customer', 'bartender', 'owner', 'admin'],
-    required: true
+    enum: ['customer', 'staff', 'owner', 'admin'],
+    default: 'customer'
   },
   auth0Id: {
     type: String,
@@ -135,6 +136,16 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+// Add hasRole method to check if user has a specific role or one of multiple roles
+userSchema.methods.hasRole = function(roles) {
+  if (Array.isArray(roles)) {
+    return roles.includes(this.role);
+  }
+  
+  // Handle single role check
+  return this.role === roles;
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = { User };

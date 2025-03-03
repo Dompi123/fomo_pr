@@ -11,9 +11,10 @@ const orderMetricsSchema = new mongoose.Schema({
         ref: 'Venue',
         required: true
     },
-    bartenderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+    verifiedBy: {
+        type: String,
+        enum: ['staff', 'system', 'customer'],
+        default: 'system'
     },
     eventType: {
         type: String,
@@ -77,13 +78,15 @@ const orderMetricsSchema = new mongoose.Schema({
         uniqueCustomerId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-        }
+        },
+        verificationMethod: String,
+        updatedByRole: String
     }
 });
 
 // Indexes for efficient querying
 orderMetricsSchema.index({ venueId: 1, timestamp: -1 });
-orderMetricsSchema.index({ bartenderId: 1, timestamp: -1 });
+orderMetricsSchema.index({ verifiedBy: 1, timestamp: -1 });
 orderMetricsSchema.index({ orderId: 1, eventType: 1 });
 
 module.exports = mongoose.model('OrderMetrics', orderMetricsSchema); 
