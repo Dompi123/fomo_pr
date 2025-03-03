@@ -1,4 +1,6 @@
 import SwiftUI
+import Models
+import Core
 
 @main
 struct FOMOApp: App {
@@ -12,16 +14,42 @@ struct FOMOApp: App {
 struct MainContentView: View {
     var body: some View {
         TabView {
-            // First tab - Types Test
-            TypesTestEntry()
+            // Venues Tab
+            NavigationView {
+                VenueListView()
+            }
+            .tabItem {
+                Label("Venues", systemImage: "building.2")
+            }
+            
+            // Drinks Tab
+            Text("Drinks Coming Soon")
                 .tabItem {
-                    Label("Types Test", systemImage: "checkmark.circle")
+                    Label("Drinks", systemImage: "wineglass")
                 }
             
-            // Second tab - Temporarily removed until ModuleTestView is implemented
-            Text("Module Test Coming Soon")
+            // Passes Tab
+            Text("Passes Coming Soon")
                 .tabItem {
-                    Label("Module Test", systemImage: "gear")
+                    Label("Passes", systemImage: "ticket")
+                }
+            
+            // Orders Tab
+            Text("Orders Coming Soon")
+                .tabItem {
+                    Label("Orders", systemImage: "bag")
+                }
+            
+            // Profile Tab
+            Text("Profile Coming Soon")
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
+            
+            // For debugging - keep the Types Test accessible
+            TypesTestEntry()
+                .tabItem {
+                    Label("Debug", systemImage: "ladybug")
                 }
         }
     }
