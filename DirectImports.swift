@@ -128,7 +128,7 @@ public func verifyDirectImports() {
     // Verify that the types are available
     let _ = Card(id: "test", last4: "1234", brand: Card.CardBrand.visa, expiryMonth: 12, expiryYear: 2025)
     let _ = APIClient.shared
-    // Commenting out FOMOSecurity reference to avoid conflicts
+    // Commenting out FOMOSecurity reference as it's not available
     // let _ = FOMOSecurity.LiveTokenizationService.shared
     let _ = PaymentResult(transactionId: "test", amount: 10.0, status: PaymentStatus.success)
     let _ = PricingTier(id: "test", name: "Test", price: 10.0, description: "Test")

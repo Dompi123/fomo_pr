@@ -1,212 +1,199 @@
 import SwiftUI
 import Foundation
+import Core
+import Models
 
-// MARK: - Models
-
-// Comment out or remove duplicate definitions
-/*
-struct Venue: Identifiable {
-    let id: String
-    let name: String
-    let description: String
-    let address: String
-    let imageURL: String
-    let rating: Double
-    let priceLevel: Int
-    let category: String
-    let isOpen: Bool
-    let distance: Double?
-}
-
-extension Venue {
-    static var preview: Venue {
-        Venue(
-            id: "venue1",
-            name: "The Rooftop Bar",
-            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
-            address: "123 Main St, New York, NY 10001",
-            imageURL: "https://example.com/venue1.jpg",
-            rating: 4.7,
-            priceLevel: 3,
-            category: "Bar",
-            isOpen: true,
-            distance: 0.5
-        )
-    }
-}
-*/
-
-struct Drink: Identifiable {
+// Local Drink model to avoid conflicts with other Drink models
+struct MenuDrinkItem: Identifiable {
     let id: String
     let name: String
     let description: String
     let price: Double
-    let imageURL: URL?
-    let category: String
+    let imageURL: String?
+    let ingredients: [String]
+    let alcoholContent: Double?
     let isAvailable: Bool
-    
-    static var preview: Drink {
-        Drink(
-            id: "drink1",
-            name: "Classic Mojito",
-            description: "Refreshing mint and lime cocktail with rum",
-            price: 12.99,
-            imageURL: URL(string: "https://example.com/mojito.jpg"),
-            category: "Cocktails",
-            isAvailable: true
-        )
-    }
 }
-
-// Comment out or remove duplicate definitions
-/*
-enum FOMOTheme {
-    enum Colors {
-        static let primary = Color.blue
-        static let secondary = Color.gray
-        static let background = Color.white
-        static let text = Color.black
-        static let accent = Color.orange
-    }
-}
-
-struct TextStyle {
-    let size: CGFloat
-    let weight: Font.Weight
-}
-
-extension Text {
-    func fomoTextStyle(_ style: TextStyle) -> Text {
-        self.font(.system(size: style.size, weight: style.weight))
-    }
-}
-
-class BaseViewModel {
-    var isLoading: Bool = false
-    var error: Error?
-    
-    func simulateNetworkDelay() async {
-        do {
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-        } catch {
-            // Ignore cancellation errors
-        }
-    }
-}
-*/
 
 // MARK: - View Models
 
+@MainActor
 final class VenueMenuViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
+    @Published var drinks: [MenuDrinkItem] = []
+    @Published var selectedDrinks: [String: Int] = [:]
+    @Published var isLoading = false
     @Published var error: Error?
-    @Published var drinks: [Drink] = []
-    @Published var selectedCategory: String = "All"
-    @Published var searchText: String = ""
+    @Published var searchText = ""
+    @Published var selectedCategory: String?
     
     private let venueId: String
-    let venue: Venue
     
     init(venueId: String) {
         self.venueId = venueId
-        // Create a default venue
-        self.venue = Venue(
-            id: venueId,
-            name: "The Grand Ballroom",
-            description: "A luxurious venue for all your special events",
-            location: "123 Main Street, New York, NY",
-            imageURL: URL(string: "https://example.com/venue.jpg")
-        )
         loadDrinks()
     }
     
-    var categories: [String] {
-        let allCategories = drinks.map { $0.category }
-        let uniqueCategories = Array(Set(allCategories)).sorted()
-        return ["All"] + uniqueCategories
-    }
-    
-    var filteredDrinks: [Drink] {
+    var filteredDrinks: [MenuDrinkItem] {
         var filtered = drinks
         
-        // Apply category filter
-        if selectedCategory != "All" {
-            filtered = filtered.filter { $0.category == selectedCategory }
+        if let category = selectedCategory {
+            let categoryDrinks = filtered.filter { drink in
+                // Create categories based on drink types
+                if drink.alcoholContent != nil && drink.alcoholContent! > 0 {
+                    return category == "Alcoholic"
+                        } else {
+                    return category == "Non-Alcoholic"
+                }
+            }
+            filtered = categoryDrinks
         }
         
-        // Apply search filter
         if !searchText.isEmpty {
-            filtered = filtered.filter { drink in
-                drink.name.localizedCaseInsensitiveContains(searchText) ||
-                drink.description.localizedCaseInsensitiveContains(searchText) ||
-                drink.category.localizedCaseInsensitiveContains(searchText)
+            filtered = filtered.filter { 
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.description.localizedCaseInsensitiveContains(searchText)
             }
         }
         
         return filtered
     }
     
-    func loadDrinks() {
-        isLoading = true
-        error = nil
-        
-        // Simulate network delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: DispatchWorkItem {
-            // In a real app, this would fetch drinks from an API
-            // For now, we'll use mock data
-            self.drinks = [
-                Drink(
-                    id: "drink1",
-                    name: "Classic Mojito",
-                    description: "Refreshing mint and lime cocktail with rum",
-                    price: 12.99,
-                    imageURL: URL(string: "https://example.com/mojito.jpg"),
-                    category: "Cocktails",
-                    isAvailable: true
-                ),
-                Drink(
-                    id: "drink2",
-                    name: "Margarita",
-                    description: "Tequila, lime, and orange liqueur with salt rim",
-                    price: 11.99,
-                    imageURL: URL(string: "https://example.com/margarita.jpg"),
-                    category: "Cocktails",
-                    isAvailable: true
-                ),
-                Drink(
-                    id: "drink3",
-                    name: "Craft IPA",
-                    description: "Hoppy India Pale Ale with citrus notes",
-                    price: 8.99,
-                    imageURL: URL(string: "https://example.com/ipa.jpg"),
-                    category: "Beer",
-                    isAvailable: true
-                ),
-                Drink(
-                    id: "drink4",
-                    name: "Red Wine",
-                    description: "Full-bodied Cabernet Sauvignon",
-                    price: 9.99,
-                    imageURL: URL(string: "https://example.com/wine.jpg"),
-                    category: "Wine",
-                    isAvailable: false
-                ),
-                Drink(
-                    id: "drink5",
-                    name: "Sparkling Water",
-                    description: "Refreshing mineral water with bubbles",
-                    price: 3.99,
-                    imageURL: URL(string: "https://example.com/water.jpg"),
-                    category: "Non-Alcoholic",
-                    isAvailable: true
-                )
-            ]
-            
-            self.isLoading = false
-        })
+    var categories: [String] {
+        return ["Alcoholic", "Non-Alcoholic"]
     }
     
-    func selectCategory(_ category: String) {
+    var totalItems: Int {
+        selectedDrinks.values.reduce(0, +)
+    }
+    
+    var totalPrice: Double {
+        var total: Double = 0
+        for (drinkId, quantity) in selectedDrinks {
+            if let drink = drinks.first(where: { $0.id == drinkId }) {
+                total += drink.price * Double(quantity)
+            }
+        }
+        return total
+    }
+    
+    func loadDrinks() {
+        isLoading = true
+        
+        Task {
+            do {
+                let fetchedDrinks = try await fetchDrinksForVenue(venueId: venueId)
+                self.drinks = fetchedDrinks
+                isLoading = false
+        } catch {
+                self.error = error
+                isLoading = false
+            }
+        }
+    }
+    
+    private func fetchDrinksForVenue(venueId: String) async throws -> [MenuDrinkItem] {
+        // In a real app, this would fetch drinks from an API
+        // For now, we'll use mock data
+        return [
+            MenuDrinkItem(
+                id: "drink1",
+                name: "Classic Mojito",
+                description: "Refreshing mint and lime cocktail with rum",
+                price: 12.99,
+                imageURL: "https://example.com/mojito.jpg",
+                ingredients: ["White rum", "Mint leaves", "Lime juice", "Sugar", "Soda water"],
+                alcoholContent: 12.0,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink2",
+                name: "Margarita",
+                description: "Tequila, lime, and orange liqueur with salt rim",
+                price: 11.99,
+                imageURL: "https://example.com/margarita.jpg",
+                ingredients: ["Tequila", "Triple sec", "Lime juice", "Salt"],
+                alcoholContent: 15.0,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink3",
+                name: "Craft IPA",
+                description: "Hoppy India Pale Ale with citrus notes",
+                price: 8.99,
+                imageURL: "https://example.com/ipa.jpg",
+                ingredients: ["Malted barley", "Hops", "Yeast", "Water"],
+                alcoholContent: 6.5,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink4",
+                name: "Red Wine",
+                description: "Full-bodied Cabernet Sauvignon",
+                price: 9.99,
+                imageURL: "https://example.com/redwine.jpg",
+                ingredients: ["Cabernet Sauvignon grapes"],
+                alcoholContent: 13.5,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink5",
+                name: "White Wine",
+                description: "Crisp Chardonnay with notes of apple and oak",
+                price: 9.99,
+                imageURL: "https://example.com/whitewine.jpg",
+                ingredients: ["Chardonnay grapes"],
+                alcoholContent: 12.5,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink6",
+                name: "Espresso Martini",
+                description: "Coffee-infused cocktail with vodka and coffee liqueur",
+                price: 13.99,
+                imageURL: "https://example.com/espressomartini.jpg",
+                ingredients: ["Vodka", "Coffee liqueur", "Espresso", "Simple syrup"],
+                alcoholContent: 18.0,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink7",
+                name: "Lemonade",
+                description: "Fresh-squeezed lemonade with mint",
+                price: 4.99,
+                imageURL: "https://example.com/lemonade.jpg",
+                ingredients: ["Lemon juice", "Sugar", "Water", "Mint"],
+                alcoholContent: nil,
+                isAvailable: true
+            ),
+            MenuDrinkItem(
+                id: "drink8",
+                name: "Sparkling Water",
+                description: "Refreshing sparkling water with lime",
+                price: 3.99,
+                imageURL: "https://example.com/sparklingwater.jpg",
+                ingredients: ["Sparkling water", "Lime"],
+                alcoholContent: nil,
+                isAvailable: true
+            )
+        ]
+    }
+    
+    func incrementDrink(_ drink: MenuDrinkItem) {
+        let currentCount = selectedDrinks[drink.id] ?? 0
+        selectedDrinks[drink.id] = currentCount + 1
+    }
+    
+    func decrementDrink(_ drink: MenuDrinkItem) {
+        guard let currentCount = selectedDrinks[drink.id], currentCount > 0 else { return }
+        
+        if currentCount == 1 {
+            selectedDrinks.removeValue(forKey: drink.id)
+        } else {
+            selectedDrinks[drink.id] = currentCount - 1
+        }
+    }
+    
+    func selectCategory(_ category: String?) {
         selectedCategory = category
     }
 }
@@ -217,7 +204,6 @@ struct VenueMenuView: View {
     let venue: Venue
     @StateObject private var viewModel: VenueMenuViewModel
     @State private var showingCheckout = false
-    @State private var selectedDrinks: [Drink] = []
     
     init(venue: Venue) {
         self.venue = venue
@@ -226,240 +212,233 @@ struct VenueMenuView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Search and Filter
-            VStack(spacing: 12) {
-                // Search Bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.secondary)
-                    
-                    TextField("Search drinks", text: $viewModel.searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
-                    if !viewModel.searchText.isEmpty {
-                        Button(action: {
-                            viewModel.searchText = ""
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
-                        }
-                    }
+            // Search bar
+            searchBar
+            
+            // Category selector
+            categorySelector
+            
+            // Drinks list
+            drinksList
+            
+            // Checkout button
+            checkoutButton
+        }
+        .navigationTitle(venue.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingCheckout) {
+            checkoutView
+        }
+    }
+    
+    private var searchBar: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.gray)
+            
+            TextField("Search drinks", text: $viewModel.searchText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            if !viewModel.searchText.isEmpty {
+                Button(action: {
+                    viewModel.searchText = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+    }
+    
+    private var categorySelector: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                Button(action: {
+                    viewModel.selectCategory(nil)
+                }) {
+                    Text("All")
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(viewModel.selectedCategory == nil ? Color.accentColor : Color.gray.opacity(0.2))
+                        .foregroundColor(viewModel.selectedCategory == nil ? .white : .primary)
+                        .cornerRadius(20)
                 }
                 
-                // Categories
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(viewModel.categories, id: \.self) { category in
-                            CategoryButton(
-                                title: category,
-                                isSelected: viewModel.selectedCategory == category,
-                                action: {
-                                    viewModel.selectCategory(category)
-                                }
-                            )
-                        }
+                ForEach(viewModel.categories, id: \.self) { category in
+                    Button(action: {
+                        viewModel.selectCategory(category)
+                    }) {
+                        Text(category)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(viewModel.selectedCategory == category ? Color.accentColor : Color.gray.opacity(0.2))
+                            .foregroundColor(viewModel.selectedCategory == category ? .white : .primary)
+                            .cornerRadius(20)
                     }
-                    .padding(.horizontal)
                 }
             }
             .padding()
-            .background(Color.white)
-            
-            // Drinks List
-            if viewModel.isLoading {
-                Spacer()
-                ProgressView("Loading drinks...")
-                Spacer()
-            } else if let error = viewModel.error {
-                Spacer()
-                VStack {
-                    Text("Error loading drinks")
-                        .font(.headline)
-                    Text(error.localizedDescription)
-                        .font(.subheadline)
-                        .foregroundColor(.red)
-                    Button("Retry") {
-                        viewModel.loadDrinks()
-                    }
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
-                Spacer()
-            } else if viewModel.filteredDrinks.isEmpty {
-                Spacer()
-                Text("No drinks found")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Spacer()
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(viewModel.filteredDrinks) { drink in
-                            DrinkCard(
-                                drink: drink,
-                                isSelected: selectedDrinks.contains(where: { $0.id == drink.id }),
-                                onSelect: {
-                                    if selectedDrinks.contains(where: { $0.id == drink.id }) {
-                                        selectedDrinks.removeAll(where: { $0.id == drink.id })
-                                    } else {
-                                        selectedDrinks.append(drink)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    .padding()
-                }
-            }
-            
-            // Checkout Button
-            if !selectedDrinks.isEmpty {
-                VStack {
-                    Divider()
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("\(selectedDrinks.count) drinks selected")
-                                .font(.headline)
-                            
-                            Text("Total: $\(selectedDrinks.reduce(0) { $0 + $1.price }, specifier: "%.2f")")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            showingCheckout = true
-                        }) {
-                            Text("Checkout")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(8)
-                        }
-                    }
-                    .padding()
-                    .background(Color.white)
-                }
+        }
+        .background(Color(.systemBackground))
+    }
+    
+    private var drinksList: some View {
+        List {
+            ForEach(viewModel.filteredDrinks) { drink in
+                drinkRow(drink)
             }
         }
-        .navigationTitle("Menu")
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showingCheckout) {
-            Text("Checkout View Would Go Here")
-                .font(.title)
-                .padding()
-        }
+        .listStyle(PlainListStyle())
     }
-}
-
-struct CategoryButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
     
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.caption)
-                .fontWeight(isSelected ? .bold : .regular)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(
-                    isSelected ?
-                    Color.blue :
-                    Color.secondary.opacity(0.2)
-                )
-                .foregroundColor(
-                    isSelected ?
-                    Color.white :
-                    Color.primary
-                )
-                .cornerRadius(16)
-        }
-    }
-}
-
-struct DrinkCard: View {
-    let drink: Drink
-    let isSelected: Bool
-    let onSelect: () -> Void
-    
-    var body: some View {
+    private func drinkRow(_ drink: MenuDrinkItem) -> some View {
         HStack(spacing: 16) {
-            // Drink Image
+            // Drink image
             if let imageURL = drink.imageURL {
-                AsyncImage(url: imageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 80, height: 80)
-                            .clipped()
-                            .cornerRadius(8)
-                    } else if phase.error != nil {
-                        Color.gray
-                            .frame(width: 80, height: 80)
-                            .cornerRadius(8)
-                            .overlay(
-                                Image(systemName: "photo")
-                                    .foregroundColor(.white)
-                            )
-                    } else {
-                        Color.gray.opacity(0.3)
-                            .frame(width: 80, height: 80)
-                            .cornerRadius(8)
-                            .overlay(ProgressView())
-                    }
+                AsyncImage(url: URL(string: imageURL)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color.gray.opacity(0.3)
                 }
+                .frame(width: 80, height: 80)
+                .cornerRadius(8)
             } else {
-                Color.gray
+                Image(systemName: "wineglass")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding()
                     .frame(width: 80, height: 80)
+                    .background(Color.gray.opacity(0.3))
                     .cornerRadius(8)
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.white)
-                    )
             }
             
-            // Drink Info
+            // Drink info
             VStack(alignment: .leading, spacing: 4) {
                 Text(drink.name)
                     .font(.headline)
                 
-                Text(drink.category)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
                 Text(drink.description)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
                     .lineLimit(2)
                 
-                Text("$\(drink.price, specifier: "%.2f")")
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                Text("$\(String(format: "%.2f", drink.price))")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .padding(.top, 4)
             }
             
             Spacer()
             
-            // Selection Button
-            Button(action: onSelect) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(drink.isAvailable ? .blue : .gray)
-                    .font(.title2)
+            // Selection controls
+            if drink.isAvailable {
+                HStack {
+                    Button(action: {
+                        viewModel.decrementDrink(drink)
+                    }) {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.title2)
+                    }
+                    .disabled(viewModel.selectedDrinks[drink.id] == nil)
+                    
+                    Text("\(viewModel.selectedDrinks[drink.id] ?? 0)")
+                        .font(.headline)
+                        .frame(minWidth: 30)
+                    
+                    Button(action: {
+                        viewModel.incrementDrink(drink)
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.title2)
+                    }
+                }
+            } else {
+                Text("Unavailable")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(4)
             }
-            .disabled(!drink.isAvailable)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        .opacity(drink.isAvailable ? 1.0 : 0.6)
+        .padding(.vertical, 8)
+    }
+    
+    private var checkoutButton: some View {
+        Button(action: {
+            showingCheckout = true
+        }) {
+            HStack {
+                Text("Checkout")
+                    .font(.headline)
+                
+                Spacer()
+                
+                Text("\(viewModel.totalItems) items • $\(String(format: "%.2f", viewModel.totalPrice))")
+                    .font(.subheadline)
+            }
+            .padding()
+            .background(Color.accentColor)
+            .foregroundColor(.white)
+            .cornerRadius(12)
+            .padding()
+        }
+        .disabled(viewModel.totalItems == 0)
+        .opacity(viewModel.totalItems == 0 ? 0.5 : 1)
+    }
+    
+    private var checkoutView: some View {
+        NavigationView {
+            VStack {
+                List {
+                    ForEach(viewModel.drinks.filter { viewModel.selectedDrinks[$0.id] != nil }) { drink in
+                        HStack {
+                            Text(drink.name)
+                            Spacer()
+                            Text("x\(viewModel.selectedDrinks[drink.id] ?? 0)")
+                                .foregroundColor(.secondary)
+                            Text("$\(String(format: "%.2f", drink.price * Double(viewModel.selectedDrinks[drink.id] ?? 0)))")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    
+                    Section {
+                        HStack {
+                            Text("Total")
+                                .fontWeight(.bold)
+                            Spacer()
+                            Text("$\(String(format: "%.2f", viewModel.totalPrice))")
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
+                
+                Button(action: {
+                    // Process order
+                    showingCheckout = false
+                }) {
+                    Text("Place Order")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .padding()
+                }
+            }
+            .navigationTitle("Your Order")
+            .navigationBarItems(trailing: Button("Cancel") {
+                showingCheckout = false
+            })
+        }
     }
 }
 
@@ -472,8 +451,17 @@ struct VenueMenuView_Previews: PreviewProvider {
                 id: "venue1",
                 name: "The Grand Ballroom",
                 description: "A luxurious venue for all your special events",
-                location: "123 Main Street, New York, NY",
-                imageURL: URL(string: "https://example.com/venue.jpg")
+                address: "123 Main Street, New York, NY",
+                capacity: 500,
+                currentOccupancy: 250,
+                waitTime: 15,
+                imageURL: "https://example.com/venue.jpg",
+                latitude: 40.7128,
+                longitude: -74.0060,
+                openingHours: "Mon-Sun: 10AM-10PM",
+                tags: ["Luxury", "Events", "Ballroom"],
+                rating: 4.8,
+                isOpen: true
             ))
         }
     }

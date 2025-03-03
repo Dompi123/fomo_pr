@@ -3,6 +3,13 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.fomo", category: "PaymentState")
 
+// Add String extension for localization
+extension String {
+    var localized: String {
+        return NSLocalizedString(self, comment: "")
+    }
+}
+
 public enum PaymentState: Equatable {
     case ready
     case processing
@@ -28,8 +35,12 @@ public enum PaymentState: Equatable {
         // Log the localization key being used
         logger.debug("Using localization key: \(key)")
         
-        // Use NSLocalizedString directly instead of the extension
+        // Temporary fallback while we debug
+        #if DEBUG
         return NSLocalizedString(key, comment: "Payment button title")
+        #else
+        return key.localized
+        #endif
     }
     
     public var isEnabled: Bool {

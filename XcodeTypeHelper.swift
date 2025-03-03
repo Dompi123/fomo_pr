@@ -6,9 +6,8 @@ import SwiftUI
 
 // MARK: - Type Definitions
 // These are just empty type definitions to help Xcode recognize the types
-// COMMENTING OUT ALL TYPES TO AVOID CONFLICTS WITH FOMOTypes.swift
 
-#if false // Disabling all type definitions to avoid conflicts
+#if XCODE_HELPER && !SWIFT_PACKAGE
 // Card type
 public struct Card: Identifiable {
     public let id: String
@@ -105,6 +104,8 @@ public struct PricingTier: Identifiable, Equatable {
         lhs.id == rhs.id
     }
 }
+
+// Note: TokenizationService and Security namespace are now defined in SecurityTypes.swift
 #endif
 
 // MARK: - Helper Function

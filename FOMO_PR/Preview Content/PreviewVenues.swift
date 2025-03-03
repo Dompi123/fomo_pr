@@ -1,36 +1,39 @@
 import Foundation
 import SwiftUI
+import Models
+
+// Define the Drink type that was missing
+struct Drink: Identifiable, Codable {
+    let id: String
+    let name: String
+    let description: String
+    let price: Double
+    let imageURLString: String?
+    
+    // Remove the computed property and use a method instead
+    func getImageURL() -> URL? {
+        guard let urlString = imageURLString else { return nil }
+        return URL(string: urlString)
+    }
+    
+    init(id: String, name: String, description: String, price: Double, imageURL: URL? = nil) {
+        self.id = id
+        self.name = name
+        self.description = description
+        self.price = price
+        self.imageURLString = imageURL?.absoluteString
+    }
+}
+
+// Remove the redundant import since we're already in the FOMO_PR module
+// import FOMO_PR
 
 // MARK: - Drink Preview Data
 extension Drink {
-    static let previewList = [
-        Drink(
-            id: "drink1",
-            name: "FOMO Special",
-            description: "Our signature cocktail with premium vodka, fresh lime, and a hint of mint.",
-            price: 12.99,
-            imageURL: URL(string: "https://fomo-app.com/drinks/fomo-special.jpg"),
-            category: "Cocktails",
-            isAvailable: true
-        ),
-        Drink(
-            id: "drink2",
-            name: "Cosmic Martini",
-            description: "A twist on the classic martini with blue curaçao and edible glitter.",
-            price: 14.99,
-            imageURL: URL(string: "https://fomo-app.com/drinks/cosmic-martini.jpg"),
-            category: "Cocktails",
-            isAvailable: true
-        ),
-        Drink(
-            id: "drink3",
-            name: "Golden Hour",
-            description: "Whiskey, honey, lemon, and ginger beer - perfect for sunset vibes.",
-            price: 13.99,
-            imageURL: URL(string: "https://fomo-app.com/drinks/golden-hour.jpg"),
-            category: "Cocktails",
-            isAvailable: true
-        )
+    static var previewList: [Drink] = [
+        Drink(id: "1", name: "Mojito", description: "Classic mojito with mint and lime", price: 12.99),
+        Drink(id: "2", name: "Margarita", description: "Traditional margarita with salt rim", price: 10.99),
+        Drink(id: "3", name: "Old Fashioned", description: "Whiskey cocktail with bitters", price: 14.99)
     ]
 }
 

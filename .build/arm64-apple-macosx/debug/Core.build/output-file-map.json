@@ -2,58 +2,10 @@
   "": {
     "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/master.swiftdeps"
   },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/BaseViewModel.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/CheckoutView.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView.swiftdeps"
-  },
   "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift": {
     "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.d",
     "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.swift.o",
     "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core~partial.swiftmodule",
     "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOAnimations.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOTheme.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/LiveTokenizationService.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/MockTokenizationService.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/SecurityNamespace.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Core/Sources/Core/TokenizationService.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService.swiftdeps"
   }
 }

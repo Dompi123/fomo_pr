@@ -21,21 +21,57 @@ public struct PricingTier: Identifiable, Equatable {
     }
 }
 
+// PaymentResult to match the TokenizationService protocol
+public struct PaymentResult {
+    public let transactionId: String
+    public let amount: Decimal
+    public let status: PaymentStatus
+    
+    public init(transactionId: String, amount: Decimal, status: PaymentStatus) {
+        self.transactionId = transactionId
+        self.amount = amount
+        self.status = status
+    }
+}
+
+// Payment status enum
+public enum PaymentStatus {
+    case success
+    case failed(String)
+    case pending
+}
+
 // Rename to FOMOPaymentResult to avoid ambiguity
 public struct FOMOPaymentResult {
     public let id: String
     public let transactionId: String
     public let amount: Decimal
-    public let status: PaymentStatus
+    public let status: FOMOPaymentStatus
     
-    public init(id: String, transactionId: String, amount: Decimal, status: PaymentStatus) {
+    public init(id: String, transactionId: String, amount: Decimal, status: FOMOPaymentStatus) {
         self.id = id
         self.transactionId = transactionId
         self.amount = amount
         self.status = status
     }
     
-    public enum PaymentStatus {
+    // Convert from PaymentResult
+    public init(id: String, from paymentResult: PaymentResult) {
+        self.id = id
+        self.transactionId = paymentResult.transactionId
+        self.amount = paymentResult.amount
+        
+        switch paymentResult.status {
+        case .success:
+            self.status = .success
+        case .failure(let message):
+            self.status = .failed(message)
+        case .pending:
+            self.status = .pending
+        }
+    }
+    
+    public enum FOMOPaymentStatus {
         case success
         case failed(String)
         case pending
@@ -44,24 +80,24 @@ public struct FOMOPaymentResult {
 
 @MainActor
 public class PaymentManager: ObservableObject {
-    private let tokenizationService: FOMOSecurity.LiveTokenizationService
+    private let tokenizationService: Security.TokenizationService
     private let logger = Logger(subsystem: "com.fomo", category: "PaymentManager")
     
-    public init(tokenizationService: FOMOSecurity.LiveTokenizationService? = nil) async {
+    public init(tokenizationService: Security.TokenizationService? = nil) async {
         if let service = tokenizationService {
             self.tokenizationService = service
         } else {
-            self.tokenizationService = FOMOSecurity.LiveTokenizationService.shared
+            self.tokenizationService = await Security.LiveTokenizationService()
         }
     }
     
     public static func create() async -> PaymentManager {
-        let service = FOMOSecurity.LiveTokenizationService.shared
+        let service = await Security.LiveTokenizationService()
         return await PaymentManager(tokenizationService: service)
     }
     
     public static func createMock() async -> PaymentManager {
-        return await PaymentManager(tokenizationService: FOMOSecurity.LiveTokenizationService.shared)
+        return await PaymentManager(tokenizationService: Security.MockTokenizationService())
     }
     
     @Published public private(set) var isProcessing = false
@@ -75,12 +111,7 @@ public class PaymentManager: ObservableObject {
         
         do {
             let result = try await tokenizationService.processPayment(amount: amount, tier: tier)
-            let fomoResult = FOMOPaymentResult(
-                id: UUID().uuidString,
-                transactionId: result.transactionId,
-                amount: amount,
-                status: .success
-            )
+            let fomoResult = FOMOPaymentResult(id: UUID().uuidString, from: result)
             lastPaymentResult = fomoResult
             return fomoResult
         } catch {
@@ -92,8 +123,7 @@ public class PaymentManager: ObservableObject {
     
     public func validatePaymentMethod() async throws -> Bool {
         do {
-            // Simulate validation since the method doesn't exist in TokenizationService
-            return true
+            return try await tokenizationService.validatePaymentMethod()
         } catch {
             showError = true
             errorMessage = error.localizedDescription
@@ -103,12 +133,7 @@ public class PaymentManager: ObservableObject {
     
     public func fetchPricingTiers(for venueId: String) async throws -> [PricingTier] {
         do {
-            // Simulate fetching pricing tiers
-            return [
-                PricingTier(id: "1", name: "Basic", price: 9.99, description: "Basic tier"),
-                PricingTier(id: "2", name: "Premium", price: 19.99, description: "Premium tier"),
-                PricingTier(id: "3", name: "VIP", price: 49.99, description: "VIP tier")
-            ]
+            return try await tokenizationService.fetchPricingTiers(for: venueId)
         } catch {
             showError = true
             errorMessage = error.localizedDescription
@@ -120,7 +145,7 @@ public class PaymentManager: ObservableObject {
 #if DEBUG
 public extension PaymentManager {
     static var preview: PaymentManager {
-        let service = FOMOSecurity.LiveTokenizationService.shared
+        let service = Security.MockTokenizationService()
         let manager = Task {
             await PaymentManager(tokenizationService: service)
         }

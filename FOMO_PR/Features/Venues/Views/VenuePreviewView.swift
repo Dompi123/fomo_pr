@@ -1,6 +1,10 @@
 import SwiftUI
 import Foundation
 
+// Add import for core models
+import Models
+import Core
+
 // MARK: - Models
 
 // Comment out or remove duplicate definitions
@@ -69,8 +73,9 @@ func getMockVenueDetails(id: String) -> Venue {
 // MARK: - Views
 
 struct VenuePreviewView: View {
-    let venue: Venue
     @StateObject private var viewModel: VenuePreviewViewModel
+    
+    let venue: Venue
     
     init(venue: Venue) {
         self.venue = venue
@@ -79,75 +84,80 @@ struct VenuePreviewView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Venue Image
-            if let imageURL = venue.imageURL {
-                AsyncImage(url: imageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 200)
-                            .clipped()
-                    } else if phase.error != nil {
-                        Color.gray
-                            .frame(height: 200)
-                            .overlay(
-                                Image(systemName: "photo")
-                                    .foregroundColor(.white)
-                            )
-                    } else {
-                        Color.gray.opacity(0.3)
-                            .frame(height: 200)
-                            .overlay(ProgressView())
-                    }
-                }
-                .cornerRadius(8)
-            } else {
-                Color.gray
-                    .frame(height: 200)
-                    .cornerRadius(8)
-                    .overlay(
-                        Image(systemName: "photo")
-                            .foregroundColor(.white)
-                    )
-            }
+            // Venue image
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.gray.opacity(0.3))
+                .frame(height: 200)
+                .overlay(
+                    Text(venue.name.prefix(1))
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.white)
+                )
             
-            // Venue Info
-            VStack(alignment: .leading, spacing: 8) {
-                Text(venue.name)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                
-                Text(venue.location)
+            // Venue name
+            Text(venue.name)
+                .font(.title)
+                .fontWeight(.bold)
+            
+            // Venue category and rating
+            HStack {
+                Text(venue.category)
                     .font(.body)
                     .foregroundColor(.secondary)
                 
-                Text("Popular Venue")
+                Spacer()
+                
+                Text("⭐ \(String(format: "%.1f", venue.rating))")
+                    .font(.body)
+                    .fontWeight(.bold)
+            }
+            
+            // Price level and open status
+            HStack {
+                Text(String(repeating: "$", count: venue.priceLevel))
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text(venue.isOpen ? "Open Now" : "Closed")
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.blue.opacity(0.1))
-                    .foregroundColor(.blue)
+                    .background(venue.isOpen ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
+                    .foregroundColor(venue.isOpen ? .green : .red)
                     .cornerRadius(4)
-                
-                Text(venue.description)
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .lineLimit(3)
-                    .padding(.top, 4)
             }
             
-            // Action Buttons
-            HStack(spacing: 16) {
+            // Address
+            HStack {
+                Image(systemName: "location.fill")
+                    .foregroundColor(.secondary)
+                
+                Text(venue.address)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            // Description
+            Text(venue.description)
+                .font(.body)
+                .foregroundColor(.primary)
+                .padding(.top, 8)
+            
+            Spacer()
+            
+            // Action buttons
+            HStack {
                 Button(action: {
                     // View menu action
                 }) {
                     Text("View Menu")
                         .font(.headline)
-                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.blue)
+                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
                 
@@ -156,18 +166,16 @@ struct VenuePreviewView: View {
                 }) {
                     Text("Buy Pass")
                         .font(.headline)
-                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.orange)
+                        .foregroundColor(.white)
                         .cornerRadius(8)
                 }
             }
         }
         .padding()
         .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
 
@@ -175,15 +183,8 @@ struct VenuePreviewView: View {
 
 struct VenuePreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        VenuePreviewView(venue: Venue(
-            id: "venue1",
-            name: "The Grand Ballroom",
-            description: "A luxurious venue for all your special events",
-            location: "123 Main Street, New York, NY",
-            imageURL: URL(string: "https://example.com/venue.jpg")
-        ))
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .previewLayout(.sizeThatFits)
+        VenuePreviewView(venue: Venue.preview)
+            .previewLayout(.sizeThatFits)
+            .padding()
     }
 } 

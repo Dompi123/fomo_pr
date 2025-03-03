@@ -2,7 +2,7 @@ import Foundation
 
 public protocol TokenizationService {
     func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String
-    func processPayment(amount: Decimal, tier: PricingTier) async throws -> FOMOPaymentResult
+    func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult
     func validatePaymentMethod() async throws -> Bool
     func fetchPricingTiers(for venueId: String) async throws -> [PricingTier]
 }
@@ -11,7 +11,7 @@ public enum Security {
     public final class LiveTokenizationService: TokenizationService {
         public static let shared = LiveTokenizationService()
         
-        private init() {}
+        public init() {}
         
         public func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String {
             // In a real implementation, this would make a request to a payment processor
@@ -20,13 +20,14 @@ public enum Security {
             return "tok_\(UUID().uuidString)"
         }
         
-        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> FOMOPaymentResult {
+        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult {
             // Simulate payment processing
             try await Task.sleep(nanoseconds: 1_000_000_000)
-            return FOMOPaymentResult(
+            return PaymentResult(
                 id: UUID().uuidString,
                 transactionId: "txn_\(UUID().uuidString)",
                 amount: amount,
+                timestamp: Date(),
                 status: .success
             )
         }
@@ -51,17 +52,18 @@ public enum Security {
     public final class MockTokenizationService: TokenizationService {
         public static let shared = MockTokenizationService()
         
-        private init() {}
+        public init() {}
         
         public func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String {
             return "tok_mock_\(UUID().uuidString)"
         }
         
-        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> FOMOPaymentResult {
-            return FOMOPaymentResult(
+        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult {
+            return PaymentResult(
                 id: "test_payment_id",
                 transactionId: "test_transaction_id",
                 amount: amount,
+                timestamp: Date(),
                 status: .success
             )
         }

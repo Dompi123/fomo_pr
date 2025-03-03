@@ -2,28 +2,10 @@
   "": {
     "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/master.swiftdeps"
   },
-  "/Users/dom.khr/fomopr/Models/Sources/Models/Card.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card.swiftdeps"
-  },
   "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift": {
     "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.d",
     "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.swift.o",
     "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models~partial.swiftmodule",
     "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Models/Sources/Models/ModelsExport.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport.swiftdeps"
-  },
-  "/Users/dom.khr/fomopr/Models/Sources/Models/PaymentResult.swift": {
-    "dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult.d",
-    "object": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult.swift.o",
-    "swiftmodule": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult~partial.swiftmodule",
-    "swift-dependencies": "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult.swiftdeps"
   }
 }

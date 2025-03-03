@@ -1,9 +1,5 @@
 import SwiftUI
 
-#if canImport(UIKit)
-import UIKit
-#endif
-
 public enum FOMOAnimations {
     public static let smooth = Animation.easeInOut(duration: 0.3)
     public static let quick = Animation.easeInOut(duration: 0.2)
@@ -34,16 +30,8 @@ struct SlideTransition: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .offset(x: isPresented ? 0 : getScreenWidth())
+            .offset(x: isPresented ? 0 : UIScreen.main.bounds.width)
             .animation(FOMOAnimations.spring, value: isPresented)
-    }
-    
-    private func getScreenWidth() -> CGFloat {
-        #if canImport(UIKit)
-        return UIScreen.main.bounds.width
-        #else
-        return 500 // Default value for macOS
-        #endif
     }
 }
 

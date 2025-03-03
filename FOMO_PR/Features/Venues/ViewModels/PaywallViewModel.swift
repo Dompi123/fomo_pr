@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Models
 // import FOMO_PR - Commenting out as it's causing issues
 
 // Define the PaywallError enum
@@ -207,16 +208,19 @@ extension PaywallViewModel {
     }
 }
 
-// Remove the problematic extension with stored properties
-// Extension to add features to PricingTier
-// extension PricingTier {
-//     // Store features separately since the FOMOTypes version doesn't have them
-//     var tierFeatures: [String] = []
-//     
-//     // Create a new initializer that includes features
-//     init(id: String, name: String, price: Double, description: String, features: [String]) {
-//         self.init(id: id, name: name, price: Decimal(price), description: description)
-//         self.tierFeatures = features
-//     }
-// } 
+// Fix the extension with stored properties error by moving the property to a struct or class
+struct TierFeaturesContainer {
+    var tierFeatures: [String] = []
+}
+
+// Remove the stored property from the extension
+extension PricingTier {
+    // Use computed properties in extensions instead of stored properties
+    var featuresContainer: TierFeaturesContainer {
+        let container = TierFeaturesContainer()
+        return container
+    }
+    
+    // Other computed properties or methods can stay here
+} 
 

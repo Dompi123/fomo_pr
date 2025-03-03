@@ -1,6 +1,0 @@
-framework module FOMO_PR {
-    umbrella header "FOMO_PR-Bridging-Header.h"
-    
-    export *
-    module * { export * }
-}

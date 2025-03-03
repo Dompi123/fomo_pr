@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 import OSLog
+import Core
 
 // Define the Profile model
 struct Profile: Identifiable {
@@ -41,89 +42,34 @@ class ProfileViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let logger = Logger(subsystem: "com.fomo", category: "ProfileViewModel")
     
-    init() {
-        logger.debug("ProfileViewModel initializing")
-        print("DEBUG: ProfileViewModel initializing")
-        
-        Task {
-            logger.debug("Starting initial profile fetch")
-            print("DEBUG: Starting initial profile fetch")
-            await fetchProfile()
-        }
+    // Regular initializer that requires async
+    init() async {
+        await fetchProfile()
+    }
+    
+    // Preview-specific initializer
+    init(preview: Bool) {
+        // This initializer is only for preview purposes
+        // No async operations are performed
+        print("Creating preview ProfileViewModel")
     }
     
     func fetchProfile() async {
-        logger.debug("fetchProfile called")
-        print("DEBUG: fetchProfile called")
         isLoading = true
         errorMessage = nil
         
         do {
             // Create a URL request directly
-            guard let url = URL(string: "https://api.fomopr.com/profile") else {
-                logger.error("Invalid URL for profile fetch")
-                print("ERROR: Invalid URL for profile fetch")
-                self.errorMessage = "Invalid URL"
-                self.isLoading = false
-                return
-            }
-            
-            logger.debug("Creating URL request to \(url.absoluteString)")
-            print("DEBUG: Creating URL request to \(url.absoluteString)")
-            
-            var request = URLRequest(url: url)
+            var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile")!)
             request.httpMethod = "GET"
             
-            logger.debug("Sending network request")
-            print("DEBUG: Sending network request")
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let profile = try JSONDecoder().decode(Profile.self, from: data)
             
-            do {
-                let (data, response) = try await URLSession.shared.data(for: request)
-                
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    logger.error("Invalid response type")
-                    print("ERROR: Invalid response type")
-                    self.errorMessage = "Invalid response"
-                    self.isLoading = false
-                    return
-                }
-                
-                logger.debug("Received response with status code: \(httpResponse.statusCode)")
-                print("DEBUG: Received response with status code: \(httpResponse.statusCode)")
-                
-                if httpResponse.statusCode == 200 {
-                    logger.debug("Decoding profile data")
-                    print("DEBUG: Decoding profile data")
-                    
-                    do {
-                        let profile = try JSONDecoder().decode(Profile.self, from: data)
-                        logger.debug("Profile decoded successfully: \(profile.id)")
-                        print("DEBUG: Profile decoded successfully: \(profile.id)")
-                        
-                        self.profile = profile
-                        self.isLoading = false
-                    } catch {
-                        logger.error("Failed to decode profile: \(error.localizedDescription)")
-                        print("ERROR: Failed to decode profile: \(error.localizedDescription)")
-                        self.errorMessage = "Failed to decode profile: \(error.localizedDescription)"
-                        self.isLoading = false
-                    }
-                } else {
-                    logger.error("Server returned error: \(httpResponse.statusCode)")
-                    print("ERROR: Server returned error: \(httpResponse.statusCode)")
-                    self.errorMessage = "Server error: \(httpResponse.statusCode)"
-                    self.isLoading = false
-                }
-            } catch {
-                logger.error("Network request failed: \(error.localizedDescription)")
-                print("ERROR: Network request failed: \(error.localizedDescription)")
-                self.errorMessage = "Network error: \(error.localizedDescription)"
-                self.isLoading = false
-            }
+            self.profile = profile
+            self.isLoading = false
         } catch {
-            logger.error("Unexpected error: \(error.localizedDescription)")
-            print("ERROR: Unexpected error: \(error.localizedDescription)")
-            self.errorMessage = "Unexpected error: \(error.localizedDescription)"
+            self.errorMessage = "Failed to fetch profile: \(error.localizedDescription)"
             self.isLoading = false
         }
     }
@@ -227,7 +173,7 @@ class ProfileViewModel: ObservableObject {
 // MARK: - Preview Helper
 extension ProfileViewModel {
     static var preview: ProfileViewModel {
-        let viewModel = ProfileViewModel()
+        let viewModel = ProfileViewModel(preview: true)
         viewModel.profile = Profile(
             id: "user123",
             name: "John Doe",

@@ -18,7 +18,7 @@ struct VenueDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Venue Image
-                if let imageURL = venue.imageURL {
+                if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
                     AsyncImage(url: imageURL) { phase in
                         if let image = phase.image {
                             image
@@ -324,8 +324,17 @@ struct VenueDetailView_Previews: PreviewProvider {
                 id: "venue1",
                 name: "The Grand Ballroom",
                 description: "A luxurious venue for all your special events",
-                location: "123 Main Street, New York, NY",
-                imageURL: URL(string: "https://example.com/venue.jpg")
+                address: "123 Main Street, New York, NY",
+                capacity: 500,
+                currentOccupancy: 250,
+                waitTime: 15,
+                imageURL: "https://example.com/venue.jpg",
+                latitude: 40.7128,
+                longitude: -74.0060,
+                openingHours: "Mon-Sun: 10AM-10PM",
+                tags: ["Luxury", "Events", "Ballroom"],
+                rating: 4.8,
+                isOpen: true
             ))
         }
     }

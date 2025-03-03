@@ -3,12 +3,10 @@ import SwiftUI
 import OSLog
 
 private let logger = Logger(subsystem: "com.fomo", category: "TokenizationService")
-public protocol TokenizationService {
-    func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String
-    func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult
-    func validatePaymentMethod() async throws -> Bool
-    func fetchPricingTiers(for venueId: String) async throws -> [PricingTier]
-}
+
+// The TokenizationService protocol is defined in FOMOTypes.swift
+// This file only contains the TokenizationError enum for use by the implementations
+
 public enum TokenizationError: LocalizedError {
     case invalidAmount
     case invalidCard

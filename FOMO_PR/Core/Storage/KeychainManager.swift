@@ -10,7 +10,6 @@ private let logger = Logger(subsystem: "com.fomo", category: "KeychainManager")
 #if DEBUG
 private func logDebug(_ message: String) {
     print("[KeychainManager Debug] \(message)")
-    logger.debug("\(message)")
 }
 #else
 private func logDebug(_ message: String) {}
@@ -68,7 +67,6 @@ public class KeychainManager {
     public init() {
         // Log that we're initializing
         logDebug("KeychainManager initializing")
-        print("[KeychainManager] Initializing")
         logger.debug("KeychainManager initialized")
         
         // Use the init log to ensure it's evaluated
@@ -89,9 +87,10 @@ public class KeychainManager {
     /// - Parameter completion: Called with success/failure of rotation
     public func rotateAPIKey() async throws -> Bool {
         logger.info("Starting key rotation")
+        print("DEBUG: Starting API key rotation")
         
         do {
-            let newKey = UUID().uuidString
+            let newKey = try await generateSecureKey()
             
             // Validate the new key with the server
             guard try await validateAPIKey(newKey) else {
@@ -101,6 +100,7 @@ public class KeychainManager {
             // Store the new key
             try await store(key: .apiKey, value: newKey)
             logger.info("Key rotation successful")
+            print("DEBUG: API key rotation completed successfully")
             return true
         } catch {
             logger.error("Key rotation failed: \(error.localizedDescription)")
@@ -110,13 +110,25 @@ public class KeychainManager {
     
     /// Generates a cryptographically secure key
     private func generateSecureKey() throws -> String {
-        var bytes = [UInt8](repeating: 0, count: 32)
-        let status = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        guard status == errSecSuccess else {
-            logger.fault("Failed to generate secure key")
-            throw KeychainError.keyGenerationFailed
+        logger.debug("Generating secure key")
+        print("DEBUG: Generating secure key")
+        
+        var keyData = Data(count: 32)
+        let result = keyData.withUnsafeMutableBytes { 
+            SecRandomCopyBytes(kSecRandomDefault, 32, $0.baseAddress!) 
         }
-        return Data(bytes).base64EncodedString()
+        
+        guard result == errSecSuccess else {
+            logger.error("Failed to generate secure key: \(result)")
+            print("ERROR: Failed to generate secure key: \(result)")
+            throw KeychainError.unexpectedStatus(result)
+        }
+        
+        let secureKey = keyData.base64EncodedString()
+        logger.debug("Secure key generated successfully")
+        print("DEBUG: Secure key generated successfully")
+        
+        return secureKey
     }
     
     /// Sets a value in the keychain
@@ -124,127 +136,128 @@ public class KeychainManager {
     ///   - value: The value to store
     ///   - key: The key to store it under
     public func store(key: KeychainKey, value: String) async throws {
-        logDebug("Attempting to store value for key: \(key.rawValue)")
-        print("[KeychainManager] Attempting to store value for key: \(key.rawValue)")
+        logger.debug("Storing value for key: \(key.rawValue)")
+        print("DEBUG: Storing value for key: \(key.rawValue)")
         
-        // Make a local copy of the key and value to avoid capturing self
-        let keyService = key.service
-        let keyRawValue = key.rawValue
-        let keyAccessibility = key.accessibility
-        let valueData = value.data(using: .utf8)
-        
-        guard let valueData = valueData else {
-            logDebug("Failed to encode value for key: \(key.rawValue)")
-            print("[KeychainManager] Failed to encode value for key: \(key.rawValue)")
-            throw KeychainError.encodingFailed
+        guard !value.isEmpty else {
+            logger.error("Cannot store empty value for key: \(key.rawValue)")
+            print("ERROR: Cannot store empty value for key: \(key.rawValue)")
+            throw KeychainError.emptyValue
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            queue.async {
-                logDebug("In queue for storing key: \(keyRawValue)")
-                print("[KeychainManager] In queue for storing key: \(keyRawValue)")
-                
-                // Create query
-                let query: [String: Any] = [
-                    kSecClass as String: kSecClassGenericPassword,
-                    kSecAttrService as String: keyService,
-                    kSecAttrAccount as String: keyRawValue,
-                    kSecValueData as String: valueData,
-                    kSecAttrAccessible as String: keyAccessibility
-                ]
-                
-                // Delete any existing key before saving
-                let deleteStatus = SecItemDelete(query as CFDictionary)
-                logDebug("Delete status for key \(keyRawValue): \(deleteStatus)")
-                print("[KeychainManager] Delete status for key \(keyRawValue): \(deleteStatus)")
-                
-                // Add the new key
-                let status = SecItemAdd(query as CFDictionary, nil)
-                logDebug("Add status for key \(keyRawValue): \(status)")
-                print("[KeychainManager] Add status for key \(keyRawValue): \(status)")
-                
-                if status != errSecSuccess {
-                    logDebug("Failed to save key \(keyRawValue) with status: \(status)")
-                    print("[KeychainManager] Failed to save key \(keyRawValue) with status: \(status)")
-                    continuation.resume(throwing: KeychainError.saveFailed(status))
-                } else {
-                    logDebug("Successfully saved key: \(keyRawValue)")
-                    print("[KeychainManager] Successfully saved key: \(keyRawValue)")
-                    continuation.resume(returning: ())
-                }
-            }
+        // Try to delete any existing value first
+        try? await deleteValue(for: key)
+        
+        let valueData = value.data(using: .utf8)!
+        
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key.rawValue,
+            kSecAttrService as String: key.service,
+            kSecValueData as String: valueData,
+            kSecAttrAccessible as String: key.accessibility
+        ]
+        
+        var status: OSStatus = 0
+        
+        queue.async {
+            status = SecItemAdd(query as CFDictionary, nil)
         }
+        
+        if status != errSecSuccess {
+            logger.error("Failed to store value: \(status)")
+            print("ERROR: Failed to store value: \(status)")
+            throw KeychainError.unexpectedStatus(status)
+        }
+        
+        logger.debug("Value stored successfully for key: \(key.rawValue)")
+        print("DEBUG: Value stored successfully for key: \(key.rawValue)")
     }
     
     /// Gets a value from the keychain
     /// - Parameter key: The key to retrieve
     /// - Returns: The stored value
     public func retrieveValue(for key: KeychainKey) async throws -> String? {
-        logDebug("Attempting to retrieve value for key: \(key.rawValue)")
-        print("[KeychainManager] Attempting to retrieve value for key: \(key.rawValue)")
+        logger.debug("Retrieving value for key: \(key.rawValue)")
+        print("DEBUG: Retrieving value for key: \(key.rawValue)")
         
-        // Make a local copy of the key to avoid capturing self
-        let keyService = key.service
-        let keyRawValue = key.rawValue
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key.rawValue,
+            kSecAttrService as String: key.service,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
         
-        return try await withCheckedThrowingContinuation { continuation in
-            queue.async {
-                logDebug("In queue for retrieving key: \(keyRawValue)")
-                print("[KeychainManager] In queue for retrieving key: \(keyRawValue)")
-                
-                let query: [String: Any] = [
-                    kSecClass as String: kSecClassGenericPassword,
-                    kSecAttrService as String: keyService,
-                    kSecAttrAccount as String: keyRawValue,
-                    kSecReturnData as String: true,
-                    kSecMatchLimit as String: kSecMatchLimitOne
-                ]
-                
-                var item: CFTypeRef?
-                let status = SecItemCopyMatching(query as CFDictionary, &item)
-                
-                logDebug("Retrieve status for key \(keyRawValue): \(status)")
-                print("[KeychainManager] Retrieve status for key \(keyRawValue): \(status)")
-                
-                guard status != errSecItemNotFound else {
-                    logDebug("Key not found: \(keyRawValue)")
-                    print("[KeychainManager] Key not found: \(keyRawValue)")
-                    continuation.resume(returning: nil)
-                    return
-                }
-                
-                guard status == errSecSuccess else {
-                    logDebug("Failed to read key \(keyRawValue) with status: \(status)")
-                    print("[KeychainManager] Failed to read key \(keyRawValue) with status: \(status)")
-                    continuation.resume(throwing: KeychainError.readFailed(status))
-                    return
-                }
-                
-                guard let data = item as? Data, let value = String(data: data, encoding: .utf8) else {
-                    logDebug("Failed to decode data for key: \(keyRawValue)")
-                    print("[KeychainManager] Failed to decode data for key: \(keyRawValue)")
-                    continuation.resume(throwing: KeychainError.decodingFailed)
-                    return
-                }
-                
-                logDebug("Successfully retrieved value for key: \(keyRawValue)")
-                print("[KeychainManager] Successfully retrieved value for key: \(keyRawValue)")
-                continuation.resume(returning: value)
-            }
+        var item: CFTypeRef?
+        var status: OSStatus = 0
+        
+        queue.async {
+            status = SecItemCopyMatching(query as CFDictionary, &item)
         }
+        
+        guard status != errSecItemNotFound else {
+            logger.debug("No value found for key: \(key.rawValue)")
+            print("DEBUG: No value found for key: \(key.rawValue)")
+            return nil
+        }
+        
+        guard status == errSecSuccess else {
+            logger.error("Failed to retrieve value: \(status)")
+            print("ERROR: Failed to retrieve value: \(status)")
+            throw KeychainError.unexpectedStatus(status)
+        }
+        
+        guard let data = item as? Data, let value = String(data: data, encoding: .utf8) else {
+            logger.error("Retrieved value has invalid format")
+            print("ERROR: Retrieved value has invalid format")
+            throw KeychainError.invalidItemFormat
+        }
+        
+        logger.debug("Value retrieved successfully for key: \(key.rawValue)")
+        print("DEBUG: Value retrieved successfully for key: \(key.rawValue)")
+        
+        return value
     }
     
     /// Deletes a value from the keychain
     /// - Parameter key: The key to delete
     public func deleteValue(for key: KeychainKey) async throws {
-        let query = key.baseQuery
-        let status = SecItemDelete(query as CFDictionary)
-        guard status == errSecSuccess || status == errSecItemNotFound else {
-            throw KeychainError.deleteFailed(status: status)
+        logger.debug("Deleting value for key: \(key.rawValue)")
+        print("DEBUG: Deleting value for key: \(key.rawValue)")
+        
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: key.rawValue,
+            kSecAttrService as String: key.service
+        ]
+        
+        var status: OSStatus = 0
+        
+        queue.async {
+            status = SecItemDelete(query as CFDictionary)
         }
+        
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            logger.error("Failed to delete value: \(status)")
+            print("ERROR: Failed to delete value: \(status)")
+            throw KeychainError.unexpectedStatus(status)
+        }
+        
+        logger.debug("Value deleted successfully for key: \(key.rawValue)")
+        print("DEBUG: Value deleted successfully for key: \(key.rawValue)")
     }
     
     public func updateAPIKey(_ newKey: String) async throws -> Bool {
+        logger.debug("Updating API key")
+        print("DEBUG: Updating API key")
+        
+        guard !newKey.isEmpty else {
+            logger.error("Cannot update with empty API key")
+            print("ERROR: Cannot update with empty API key")
+            throw KeychainError.emptyValue
+        }
+        
         do {
             // Validate the new key with the server
             guard try await validateAPIKey(newKey) else {
@@ -259,6 +272,11 @@ public class KeychainManager {
             throw KeychainError.updateFailed(error)
         }
     }
+    
+    deinit {
+        logger.debug("KeychainManager deinitializing")
+        print("DEBUG: KeychainManager deinitializing")
+    }
 }
 
 // MARK: - Error Types
@@ -272,6 +290,12 @@ public enum KeychainError: Error, LocalizedError, Sendable {
     case rotationFailed(Error)
     case keyGenerationFailed
     case updateFailed(Error)
+    case duplicateItem
+    case itemNotFound
+    case invalidItemFormat
+    case unexpectedStatus(OSStatus)
+    case invalidKey
+    case emptyValue
     
     public var errorDescription: String? {
         switch self {
@@ -291,6 +315,18 @@ public enum KeychainError: Error, LocalizedError, Sendable {
             return "Failed to generate secure key"
         case .updateFailed(let error):
             return "Failed to update API key: \(error.localizedDescription)"
+        case .duplicateItem:
+            return "Duplicate item found in keychain"
+        case .itemNotFound:
+            return "Item not found in keychain"
+        case .invalidItemFormat:
+            return "Invalid item format in keychain"
+        case .invalidKey:
+            return "Invalid key format in keychain"
+        case .emptyValue:
+            return "Empty value in keychain"
+        case .unexpectedStatus(let status):
+            return "Unexpected status from keychain operation: \(status)"
         }
     }
 }

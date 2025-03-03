@@ -18,11 +18,10 @@ struct MainContentView: View {
                     Label("Types Test", systemImage: "checkmark.circle")
                 }
             
-            // Second tab - Home
-            Text("Welcome to FOMO!")
-                .font(.largeTitle)
+            // Second tab - Temporarily removed until ModuleTestView is implemented
+            Text("Module Test Coming Soon")
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Module Test", systemImage: "gear")
                 }
         }
     }

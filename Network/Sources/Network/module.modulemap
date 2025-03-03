@@ -1,4 +1,0 @@
-module Network {
-    header "Network.h"
-    export *
-} 

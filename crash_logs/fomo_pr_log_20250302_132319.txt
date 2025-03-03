@@ -1,0 +1,101 @@
+=== Build and Run Log ===
+Started at: Sun Mar  2 13:23:22 AST 2025
+
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build -project FOMO_PR.xcodeproj -scheme FOMO_PR -destination "platform=iOS Simulator,name=iPhone 15" -configuration Debug
+
+User defaults from command line:
+    IDEPackageSupportUseBuiltinSCM = YES
+
+
+=== System Log Entries ===
+Timestamp               Ty Process[PID:TID]
+2025-03-02 13:14:19.987 E  launchd_sim[45340:a4df42] [UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] Unknown key for plist importer (key: _ResourceCoalition type: string)
+2025-03-02 13:14:19.987 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] internal event: WILL_SPAWN, code = 0
+2025-03-02 13:14:19.987 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] service state: spawn scheduled
+2025-03-02 13:14:19.987 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] service state: spawning
+2025-03-02 13:14:19.987 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] launching: launch job demand
+2025-03-02 13:14:19.989 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] xpcproxy_sim spawned with pid 91189
+2025-03-02 13:14:19.989 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] internal event: SPAWNED, code = 0
+2025-03-02 13:14:19.989 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service state: xpcproxy
+2025-03-02 13:14:19.989 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] internal event: SOURCE_ATTACH, code = 0
+2025-03-02 13:14:20.171 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service state: running
+2025-03-02 13:14:20.171 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] internal event: INIT, code = 0
+2025-03-02 13:14:20.171 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] job state = running
+2025-03-02 13:14:20.171 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] Successfully spawned FOMO_PR[91189] because launch job demand
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] exited with exit reason (namespace: 6 code: 0x1) - OS_REASON_DYLD | Library not loaded: @rpath/Models.framework/Models
+  Referenced from: <5D3E5D6A-9F73-3510-855B-23F29382E856> /Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/FOMO_PR
+  Reason: tried: '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/Models.framework/Models' (no such file), ran for 193ms
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service has crashed 1 times in a row (last was not dirty)
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service state: exited
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] internal event: EXITED, code = 0
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] job state = exited
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service state: not running
+2025-03-02 13:14:20.203 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] removing job: caller = runningboardd
+2025-03-02 13:14:20.203 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] internal event: PETRIFIED, code = 0
+2025-03-02 13:14:20.203 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy]:] job state = removed
+2025-03-02 13:14:20.469 E  launchd_sim[45340:a4e071] [UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] Unknown key for plist importer (key: _ResourceCoalition type: string)
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] internal event: WILL_SPAWN, code = 0
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] service state: spawn scheduled
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] service state: spawning
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] launching: launch job demand
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] xpcproxy_sim spawned with pid 91191
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] internal event: SPAWNED, code = 0
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service state: xpcproxy
+2025-03-02 13:14:20.469 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] internal event: SOURCE_ATTACH, code = 0
+2025-03-02 13:14:20.543 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service state: running
+2025-03-02 13:14:20.543 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] internal event: INIT, code = 0
+2025-03-02 13:14:20.543 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] job state = running
+2025-03-02 13:14:20.543 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] Successfully spawned FOMO_PR[91191] because launch job demand
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] exited with exit reason (namespace: 6 code: 0x1) - OS_REASON_DYLD | Library not loaded: @rpath/Models.framework/Models
+  Referenced from: <5D3E5D6A-9F73-3510-855B-23F29382E856> /Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/FOMO_PR
+  Reason: tried: '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/Models.framework/Models' (no such file), ran for 79ms
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service has crashed 1 times in a row (last was not dirty)
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service state: exited
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] internal event: EXITED, code = 0
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] job state = exited
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service state: not running
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] removing job: caller = runningboardd
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] internal event: PETRIFIED, code = 0
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy]:] job state = removed
+2025-03-02 13:14:21.814 E  launchd_sim[45340:a4df42] [UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] Unknown key for plist importer (key: _ResourceCoalition type: string)
+2025-03-02 13:14:21.814 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] internal event: WILL_SPAWN, code = 0
+2025-03-02 13:14:21.814 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] service state: spawn scheduled
+2025-03-02 13:14:21.814 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] service state: spawning
+2025-03-02 13:14:21.814 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] launching: launch job demand
+2025-03-02 13:14:21.816 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] xpcproxy_sim spawned with pid 91199
+2025-03-02 13:14:21.816 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] internal event: SPAWNED, code = 0
+2025-03-02 13:14:21.816 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service state: xpcproxy
+2025-03-02 13:14:21.816 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] internal event: SOURCE_ATTACH, code = 0
+2025-03-02 13:14:21.912 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service state: running
+2025-03-02 13:14:21.912 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] internal event: INIT, code = 0
+2025-03-02 13:14:21.912 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] job state = running
+2025-03-02 13:14:21.912 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] Successfully spawned FOMO_PR[91199] because launch job demand
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] exited with exit reason (namespace: 6 code: 0x1) - OS_REASON_DYLD | Library not loaded: @rpath/Models.framework/Models
+  Referenced from: <5D3E5D6A-9F73-3510-855B-23F29382E856> /Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/FOMO_PR
+  Reason: tried: '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Containers/Bundle/Application/33D46D64-F4EF-4808-95DC-AE3188E83046/FOMO_PR.app/Frameworks/Models.framework/Models' (no such file), '/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/System/Library/Frameworks/Models.framework/Models' (no such file), ran for 98ms
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service has crashed 1 times in a row (last was not dirty)
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service state: exited
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] internal event: EXITED, code = 0
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] job state = exited
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service state: not running
+2025-03-02 13:14:22.010 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] removing job: caller = runningboardd
+2025-03-02 13:14:22.010 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] internal event: PETRIFIED, code = 0
+2025-03-02 13:14:22.010 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy]:] job state = removed
+
+=== Crash Report Summary ===
+Timestamp               Ty Process[PID:TID]
+2025-03-02 12:34:23.393 Df assetsd[79893:a39135] [com.apple.photos.backend:LibraryServices] LSM-1-0x10530c390: Starting operation <PLLibraryServicesOperation: 0x105309da0>{name = 'Detect and enqueue outstanding transaction crash recovery operations'} with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.398 Df assetsd[79893:a39135] [com.apple.photos.backend:LibraryServices] LSM-1-0x10530c390: Completed operation <PLLibraryServicesOperation: 0x105309da0>{name = 'Detect and enqueue outstanding transaction crash recovery operations'} in 0.004762 seconds with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.399 Df assetsd[79893:a39135] [com.apple.photos.backend:LibraryServices] LSM-1-0x10530c390: Starting operation <PLLibraryServicesOperation: 0x105404c70>{name = 'Recovery from Duplicate Merge crash recovery'} with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.400 Df assetsd[79893:a39135] [com.apple.photos.backend:LibraryServices] LSM-1-0x10530c390: Completed operation <PLLibraryServicesOperation: 0x105404c70>{name = 'Recovery from Duplicate Merge crash recovery'} in 0.000296 seconds with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.576 Df assetsd[79893:a39132] [com.apple.photos.backend:LibraryServices] LSM-3-0x105336370: Starting operation <PLLibraryServicesOperation: 0x105339a40>{name = 'Detect and enqueue outstanding transaction crash recovery operations'} with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.580 Df assetsd[79893:a39132] [com.apple.photos.backend:LibraryServices] LSM-3-0x105336370: Completed operation <PLLibraryServicesOperation: 0x105339a40>{name = 'Detect and enqueue outstanding transaction crash recovery operations'} in 0.003634 seconds with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.580 Df assetsd[79893:a39132] [com.apple.photos.backend:LibraryServices] LSM-3-0x105336370: Starting operation <PLLibraryServicesOperation: 0x105338f00>{name = 'Recovery from Duplicate Merge crash recovery'} with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.580 Df assetsd[79893:a39132] [com.apple.photos.backend:LibraryServices] LSM-3-0x105336370: Completed operation <PLLibraryServicesOperation: 0x105338f00>{name = 'Recovery from Duplicate Merge crash recovery'} in 0.000168 seconds with QoS QOS_CLASS_UTILITY
+2025-03-02 12:34:23.586 Df assetsd[79893:a3913c] [com.apple.photos.backend:AssetImport] [recoverFromCrashIfNeededWithImageWriter:] checking for crash recovery files
+2025-03-02 12:34:23.587 Df assetsd[79893:a39159] [com.apple.photos.backend:Backend] [AssetCreationRecovery] Skipping crash recovery with library /Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Library/Photos/Libraries/Syndication.photoslibrary
+2025-03-02 12:34:23.615 Df assetsd[79893:a39135] [com.apple.photos.backend:Backend] [AssetCreationRecovery] Attempting crash recovery with library /Users/dom.khr/Library/Developer/CoreSimulator/Devices/58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4/data/Media
+2025-03-02 13:14:20.180 Df launchd_sim[45340:a4df42] [user/501/UIKitApplication:com.fomoapp.fomopr[23f5][rb-legacy] [91189]:] service has crashed 1 times in a row (last was not dirty)
+2025-03-02 13:14:20.549 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[51cf][rb-legacy] [91191]:] service has crashed 1 times in a row (last was not dirty)
+2025-03-02 13:14:21.913 Df launchd_sim[45340:a4e071] [user/501/UIKitApplication:com.fomoapp.fomopr[1eee][rb-legacy] [91199]:] service has crashed 1 times in a row (last was not dirty)

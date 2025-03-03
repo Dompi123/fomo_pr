@@ -5,7 +5,7 @@ import SwiftUI
 // that are causing issues in the Xcode build
 
 // MARK: - Card Type
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public struct Card: Codable, Identifiable {
     public let id: String
     public let last4: String
@@ -61,7 +61,7 @@ public struct Card: Codable, Identifiable {
 #endif
 
 // MARK: - APIClient Type
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public actor APIClient {
     public static let shared = APIClient()
     
@@ -127,7 +127,7 @@ public actor APIClient {
 #endif
 
 // MARK: - PaymentResult Type
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public struct PaymentResult: Equatable, Codable {
     public let id: String
     public let transactionId: String
@@ -219,7 +219,7 @@ public enum PaymentStatus: Equatable, Codable {
 #endif
 
 // MARK: - PricingTier Type
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public struct PricingTier: Identifiable, Equatable, Codable {
     public let id: String
     public let name: String
@@ -247,7 +247,7 @@ public struct PricingTier: Identifiable, Equatable, Codable {
 #endif
 
 // MARK: - TokenizationService Protocol
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public protocol TokenizationService {
     func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String
     func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult
@@ -257,7 +257,7 @@ public protocol TokenizationService {
 #endif
 
 // MARK: - Security Namespace
-#if !SWIFT_PACKAGE
+#if !SWIFT_PACKAGE && !XCODE_HELPER
 public enum Security {
     public final class LiveTokenizationService: TokenizationService {
         public static let shared = LiveTokenizationService()

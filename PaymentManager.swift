@@ -3,9 +3,7 @@ import SwiftUI
 
 // MARK: - PaymentManager
 // This file provides a single implementation of PaymentManager that uses our Security types
-// COMMENTING OUT ALL TYPES TO AVOID CONFLICTS WITH FOMOTypes.swift
 
-#if false // Disabling all type definitions to avoid conflicts
 public class PaymentManager {
     public static let shared = PaymentManager()
     
@@ -61,10 +59,9 @@ public class PaymentManager {
         }
     }
 }
-#endif
 
 // MARK: - Helper Function
 // This function can be called to verify that the PaymentManager is available
 public func verifyPaymentManager() {
-    print("PaymentManager is available!")
+    print("PaymentManager is available: \(PaymentManager.self)")
 }

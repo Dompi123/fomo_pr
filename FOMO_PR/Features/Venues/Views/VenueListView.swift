@@ -1,6 +1,10 @@
 import SwiftUI
 import Foundation
 
+// Add import for core models
+import Models
+import Core
+
 // MARK: - View Models
 
 // Comment out or remove duplicate definitions
@@ -35,6 +39,25 @@ extension Venue {
     }
 }
 
+enum FOMOTheme {
+    enum Colors {
+        static let primary = Color.blue
+        static let secondary = Color.gray
+        static let background = Color.white
+        static let text = Color.black
+        static let accent = Color.orange
+    }
+    
+    enum TextStyles {
+        static let h1 = TextStyle(size: 24, weight: .bold)
+        static let h2 = TextStyle(size: 20, weight: .bold)
+        static let body = TextStyle(size: 16, weight: .regular)
+        static let bodyBold = TextStyle(size: 16, weight: .bold)
+        static let caption = TextStyle(size: 12, weight: .regular)
+        static let button = TextStyle(size: 16, weight: .semibold)
+    }
+}
+
 struct TextStyle {
     let size: CGFloat
     let weight: Font.Weight
@@ -46,6 +69,37 @@ extension Text {
     }
 }
 */
+
+// Uncomment the Venue struct
+// struct Venue: Identifiable {
+//     let id: String
+//     let name: String
+//     let description: String
+//     let address: String
+//     let imageURL: String
+//     let rating: Double
+//     let priceLevel: Int
+//     let category: String
+//     let isOpen: Bool
+//     let distance: Double?
+// }
+
+// Add extensions for missing properties in the core Venue model
+extension Venue {
+    var priceLevel: Int {
+        // In a real app, this would come from the backend
+        return 3
+    }
+    
+    var category: String {
+        return tags.first ?? "Venue"
+    }
+    
+    var distance: Double {
+        // In a real app, this would be calculated based on user's location
+        return 0.5  // Default distance in miles
+    }
+}
 
 class VenueListViewModel: ObservableObject {
     @Published var venues: [Venue] = []
@@ -70,22 +124,49 @@ class VenueListViewModel: ObservableObject {
                     id: "venue1",
                     name: "The Grand Ballroom",
                     description: "A luxurious venue for all your special events",
-                    location: "123 Main Street, New York, NY",
-                    imageURL: URL(string: "https://example.com/venue1.jpg")
+                    address: "123 Main Street, New York, NY",
+                    capacity: 500,
+                    currentOccupancy: 250,
+                    waitTime: 15,
+                    imageURL: "https://example.com/venue1.jpg",
+                    latitude: 40.7128,
+                    longitude: -74.0060,
+                    openingHours: "Mon-Sun: 10AM-10PM",
+                    tags: ["Luxury", "Events", "Ballroom"],
+                    rating: 4.8,
+                    isOpen: true
                 ),
                 Venue(
                     id: "venue2",
                     name: "Skyline Lounge",
                     description: "Rooftop bar with amazing city views",
-                    location: "456 Park Avenue, New York, NY",
-                    imageURL: URL(string: "https://example.com/venue2.jpg")
+                    address: "456 Park Avenue, New York, NY",
+                    capacity: 300,
+                    currentOccupancy: 150,
+                    waitTime: 30,
+                    imageURL: "https://example.com/venue2.jpg",
+                    latitude: 40.7580,
+                    longitude: -73.9855,
+                    openingHours: "Mon-Sun: 4PM-2AM",
+                    tags: ["Rooftop", "Bar", "Views"],
+                    rating: 4.5,
+                    isOpen: true
                 ),
                 Venue(
                     id: "venue3",
                     name: "The Underground",
                     description: "Hip underground club with live music",
-                    location: "789 Broadway, New York, NY",
-                    imageURL: URL(string: "https://example.com/venue3.jpg")
+                    address: "789 Broadway, New York, NY",
+                    capacity: 200,
+                    currentOccupancy: 100,
+                    waitTime: 45,
+                    imageURL: "https://example.com/venue3.jpg",
+                    latitude: 40.7484,
+                    longitude: -73.9857,
+                    openingHours: "Mon-Sun: 11AM-2AM",
+                    tags: ["Hip", "Music", "Club"],
+                    rating: 4.2,
+                    isOpen: true
                 )
             ]
             self.isLoading = false
@@ -100,7 +181,7 @@ class VenueListViewModel: ObservableObject {
             filtered = filtered.filter { venue in
                 venue.name.localizedCaseInsensitiveContains(searchText) ||
                 venue.description.localizedCaseInsensitiveContains(searchText) ||
-                venue.location.localizedCaseInsensitiveContains(searchText)
+                venue.address.localizedCaseInsensitiveContains(searchText)
             }
         }
         
@@ -132,31 +213,34 @@ struct VenueListItemView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(venue.name)
                     .font(.headline)
+                    .lineLimit(1)
                 
-                // Use a default category if not available
-                Text("Venue")
+                Text(venue.address)
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .lineLimit(1)
                 
                 HStack {
-                    Text("⭐ 4.5")
+                    Text("⭐ \(String(format: "%.1f", venue.rating))")
                     Text("•")
-                    Text("$$$")
+                    Text(String(repeating: "$", count: venue.priceLevel))
                     Text("•")
-                    Text("0.5 mi")
+                    Text("Distance: \(venue.distance, specifier: "%.1f") miles")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
                 .font(.caption)
                 .foregroundColor(.secondary)
                 
-                Text("Open Now")
+                Text(venue.isOpen ? "Open Now" : "Closed")
                     .font(.caption)
-                    .foregroundColor(.green)
+                    .foregroundColor(venue.isOpen ? .green : .red)
             }
             
             Spacer()
             
             Image(systemName: "chevron.right")
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.secondary)
         }
         .padding(.vertical, 8)
     }
@@ -259,10 +343,10 @@ struct VenueListView: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.filteredVenues(searchText: searchText)) { venue in
-                    VenueCard(venue: venue)
+                        VenueCard(venue: venue)
                         .onTapGesture {
                             selectedVenue = venue
-                        }
+                    }
                 }
             }
             .padding()
@@ -276,7 +360,7 @@ struct VenueCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let imageURL = venue.imageURL {
+            if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
                 AsyncImage(url: imageURL) { phase in
                     if let image = phase.image {
                         image
@@ -312,15 +396,22 @@ struct VenueCard: View {
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text(venue.location)
+            Text(venue.address)
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .lineLimit(1)
             
             HStack {
-                Text("Distance: 0.5 mi")
+                Text("⭐ \(String(format: "%.1f", venue.rating))")
+                Text("•")
+                Text(String(repeating: "$", count: venue.priceLevel))
+                Text("•")
+                Text("Distance: \(venue.distance, specifier: "%.1f") miles")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+            .font(.caption)
+            .foregroundColor(.secondary)
             
             Text(venue.description)
                 .font(.caption)
@@ -401,7 +492,7 @@ struct FilterView: View {
 
 struct VenueListView_Previews: PreviewProvider {
     static var previews: some View {
-        VenueListView()
+            VenueListView()
     }
 }
 

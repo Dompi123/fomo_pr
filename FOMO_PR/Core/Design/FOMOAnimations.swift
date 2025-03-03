@@ -84,24 +84,24 @@ public enum FOMOAnimations {
                 y: 0))
         }
     }
-}
-
-// MARK: - View Extensions
-public extension View {
-    func shake(with amount: CGFloat) -> some View {
-        modifier(FOMOAnimations.ShakeEffect(amount: amount, animatableData: amount))
-    }
     
-    func slideTransition() -> some View {
-        transition(FOMOAnimations.Transitions.slide)
-    }
-    
-    func fadeTransition() -> some View {
-        transition(FOMOAnimations.Transitions.fade)
-    }
-    
-    func scaleTransition() -> some View {
-        transition(FOMOAnimations.Transitions.scale)
+    // MARK: - View Extensions
+    public extension View {
+        func shake(with amount: CGFloat) -> some View {
+            modifier(ShakeEffect(amount: amount, animatableData: amount))
+        }
+        
+        func slideTransition() -> some View {
+            transition(Transitions.slide)
+        }
+        
+        func fadeTransition() -> some View {
+            transition(Transitions.fade)
+        }
+        
+        func scaleTransition() -> some View {
+            transition(Transitions.scale)
+        }
     }
 }
 

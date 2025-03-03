@@ -1,60 +1,6 @@
 import Foundation
 import SwiftUI
-
-// Define necessary types
-class BaseViewModel {
-    @Published var isLoading = false
-    @Published var error: Error?
-    
-    func setLoading(_ loading: Bool) {
-        isLoading = loading
-    }
-    
-    func handleError(_ error: Error) {
-        self.error = error
-    }
-}
-
-struct Venue: Identifiable {
-    let id: String
-    let name: String
-    let description: String
-    let location: String
-    let imageURL: URL?
-    
-    static var preview: Venue {
-        Venue(id: "venue-123", name: "Sample Venue", description: "A sample venue", location: "123 Main St", imageURL: nil)
-    }
-}
-
-struct Drink: Identifiable {
-    let id: String
-    let name: String
-    let description: String
-    let price: Decimal
-    let imageURL: URL?
-    
-    static var preview: Drink {
-        Drink(id: "drink-123", name: "Sample Drink", description: "A refreshing beverage", price: 5.99, imageURL: nil)
-    }
-}
-
-class APIClient {
-    static let shared = APIClient()
-    
-    enum Endpoint {
-        case getDrinks(venueId: String)
-    }
-    
-    func request<T>(_ endpoint: Endpoint) async throws -> T {
-        // This is a stub implementation
-        if T.self == [Drink].self {
-            return [Drink.preview] as! T
-        }
-        
-        throw NSError(domain: "APIClient", code: 0, userInfo: [NSLocalizedDescriptionKey: "Not implemented"])
-    }
-}
+import Core
 
 final class VenueMenuViewModel: BaseViewModel {
     @Published private(set) var drinks: [Drink] = []

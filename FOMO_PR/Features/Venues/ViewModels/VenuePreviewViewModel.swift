@@ -1,24 +1,33 @@
 import Foundation
 import SwiftUI
 // import FOMO_PR - Commenting out as it's causing issues
+import Models
+import Core
 
-// MARK: - Base View Model
-
+// Define the BaseViewModel class
+// Remove this local definition since we're using the core BaseViewModel
+/*
 class BaseViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
+    @Published var isLoading = false
     @Published var error: Error?
     
-    func simulateNetworkDelay() async {
-        do {
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-        } catch {
-            // Ignore cancellation errors
+    func setLoading(_ loading: Bool) {
+        DispatchQueue.main.async {
+            self.isLoading = loading
+        }
+    }
+    
+    func setError(_ error: Error?) {
+        DispatchQueue.main.async {
+            self.error = error
         }
     }
 }
+*/
 
-// MARK: - Models
-
+// Define the Venue struct
+// Remove this local definition since we're using the core Venue model
+/*
 struct Venue: Identifiable {
     let id: String
     let name: String
@@ -26,24 +35,19 @@ struct Venue: Identifiable {
     let location: String
     let imageURL: URL?
 }
+*/
 
+// Add extension for location property since it's not in the core Venue model
 extension Venue {
-    static var preview: Venue {
-        Venue(
-            id: "venue-123",
-            name: "The Grand Ballroom",
-            description: "A luxurious venue for all your special events",
-            location: "123 Main Street, New York, NY",
-            imageURL: URL(string: "https://example.com/venue.jpg")
-        )
+    var location: String {
+        return address
     }
 }
 
-// MARK: - View Model
-
+// Define the VenuePreviewViewModel class
 class VenuePreviewViewModel: ObservableObject {
     @Published var venue: Venue?
-    @Published var isLoading: Bool = false
+    @Published var isLoading = false
     @Published var error: Error?
     
     private let venueId: String
@@ -53,49 +57,63 @@ class VenuePreviewViewModel: ObservableObject {
         loadVenueDetails()
     }
     
-    func loadVenueDetails() {
-        isLoading = true
-        error = nil
-        
-        Task {
-            do {
-                await simulateNetworkDelay()
-                
-                // In a real app, this would fetch venue details from an API
-                // For now, we'll use mock data
-                let venue = getMockVenueDetails(id: venueId)
-                
-                await MainActor.run {
-                    self.venue = venue
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.error = error
-                    self.isLoading = false
-                }
-            }
+    func setLoading(_ loading: Bool) {
+        DispatchQueue.main.async {
+            self.isLoading = loading
         }
     }
     
-    private func simulateNetworkDelay() async {
-        do {
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-        } catch {
-            // Ignore cancellation errors
+    func setError(_ error: Error?) {
+        DispatchQueue.main.async {
+            self.error = error
+        }
+    }
+    
+    func loadVenueDetails() {
+        setLoading(true)
+        setError(nil)
+        
+        Task {
+            do {
+                // Simulate network delay
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                
+                let venue: Venue = try await getMockVenueDetails(id: venueId)
+                
+                DispatchQueue.main.async {
+                    self.venue = venue
+                    self.setLoading(false)
+                }
+            } catch {
+                setError(error)
+                setLoading(false)
+            }
         }
     }
 }
 
-// MARK: - Mock Data
-
+// Remove the APIClient class and replace with simple functions to get mock data
 func getMockVenueDetails(id: String) -> Venue {
-    Venue(
+    if id == "venue-123" {
+        return Venue.preview
+    }
+    
+    // Return a default venue
+    return Venue(
         id: id,
-        name: "The Grand Ballroom",
-        description: "A luxurious venue for all your special events",
-        location: "123 Main Street, New York, NY",
-        imageURL: URL(string: "https://example.com/venue.jpg")
+        name: "Sample Venue",
+        description: "A sample venue description",
+        address: "123 Main St, New York, NY",
+        capacity: 200,
+        currentOccupancy: 100,
+        waitTime: 15,
+        imageURL: "https://example.com/venue.jpg",
+        latitude: 40.7128,
+        longitude: -74.0060,
+        openingHours: "Mon-Sun: 10AM-10PM",
+        tags: ["Sample", "Venue"],
+        rating: 4.2,
+        isOpen: true
     )
 }
 
@@ -112,16 +130,24 @@ func processMockPayment(amount: Decimal) -> Bool {
 }
 
 // MARK: - Preview Helper
-
 extension VenuePreviewViewModel {
-    static func preview() -> VenuePreviewViewModel {
-        let viewModel = VenuePreviewViewModel(venueId: "venue-123")
+    static var preview: VenuePreviewViewModel {
+        let viewModel = VenuePreviewViewModel(venueId: "1")
         viewModel.venue = Venue(
-            id: "venue-123",
-            name: "The Grand Ballroom",
-            description: "A luxurious venue for all your special events",
-            location: "123 Main Street, New York, NY",
-            imageURL: URL(string: "https://example.com/venue.jpg")
+            id: "1",
+            name: "The Rooftop",
+            description: "A beautiful rooftop bar with amazing views",
+            address: "123 Main St, New York, NY",
+            capacity: 150,
+            currentOccupancy: 75,
+            waitTime: 20,
+            imageURL: "https://example.com/image.jpg",
+            latitude: 40.7128,
+            longitude: -74.0060,
+            openingHours: "5PM - 2AM",
+            tags: ["Rooftop", "Cocktails", "Views"],
+            rating: 4.5,
+            isOpen: true
         )
         return viewModel
     }

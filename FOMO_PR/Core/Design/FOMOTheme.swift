@@ -13,10 +13,6 @@ public enum FOMOTheme {
         public static let warning = Color("Warning", bundle: .main)
         public static let text = Color("Text", bundle: .module)
         public static let textSecondary = Color("TextSecondary", bundle: .module)
-        
-        // Additional colors used in venue views
-        public static let textPrimary = Color.black
-        public static let textTertiary = Color.gray.opacity(0.7)
     }
     
     // MARK: - Typography
@@ -32,15 +28,6 @@ public enum FOMOTheme {
         public static let footnote = Font.custom("Poppins-Regular", size: 13)
         public static let caption1 = Font.system(size: 12, weight: .medium)
         public static let caption2 = Font.custom("Poppins-Regular", size: 11)
-        
-        // Additional typography styles used in venue views
-        public static let h1 = TextStyle(size: 24, weight: .bold)
-        public static let h2 = TextStyle(size: 20, weight: .bold)
-        public static let bodyBold = TextStyle(size: 16, weight: .bold)
-        public static let caption = TextStyle(size: 12, weight: .regular)
-        public static let button = TextStyle(size: 16, weight: .semibold)
-        public static let titleMedium = TextStyle(size: 18, weight: .semibold)
-        public static let titleSmall = TextStyle(size: 16, weight: .semibold)
     }
     
     // MARK: - Spacing
@@ -79,17 +66,6 @@ public enum FOMOTheme {
     }
 }
 
-// MARK: - TextStyle
-public struct TextStyle {
-    public let size: CGFloat
-    public let weight: Font.Weight
-    
-    public init(size: CGFloat, weight: Font.Weight) {
-        self.size = size
-        self.weight = weight
-    }
-}
-
 // MARK: - View Extensions
 public extension View {
     func fomoBackground(_ color: Color = FOMOTheme.Colors.background) -> some View {
@@ -106,13 +82,6 @@ public extension View {
     
     func fomoCornerRadius(_ radius: CGFloat = FOMOTheme.Radius.medium) -> some View {
         self.cornerRadius(radius)
-    }
-}
-
-// Add extension for Text to support TextStyle
-public extension Text {
-    func fomoTextStyle(_ style: TextStyle) -> Text {
-        self.font(.system(size: style.size, weight: style.weight))
     }
 }
 

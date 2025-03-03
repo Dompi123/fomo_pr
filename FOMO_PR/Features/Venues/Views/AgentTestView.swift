@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct AgentTestView: View {
     var body: some View {

@@ -1,22 +1,56 @@
-@_exported import Foundation
-@_exported import SwiftUI
+import Foundation
 
-// Re-export Design types
-public typealias FOMOTheme = Design.FOMOTheme
-public typealias FOMOAnimations = Design.FOMOAnimations
+public struct CoreVersion {
+    public static let version = "1.0.0"
+    
+    public static func getVersionInfo() -> String {
+        return "Core Framework Version \(version)"
+    }
+}
 
-// Re-export Models
-public typealias BaseViewModel = ViewModels.BaseViewModel
+public protocol CoreService {
+    var serviceIdentifier: String { get }
+    func initialize()
+}
 
-// Re-export Network types
-public typealias APIClient = Network.APIClient
-public typealias APIEndpoint = Network.APIEndpoint
-public typealias APIResponse = Network.APIResponse
-public typealias APIMeta = Network.APIMeta
-public typealias APIError = Network.APIError
-public typealias EndpointProtocol = Network.EndpointProtocol
-public typealias HTTPMethod = Network.HTTPMethod
-public typealias NetworkError = Network.NetworkError
+public class NetworkService: CoreService {
+    public let serviceIdentifier = "com.fomopr.network"
+    
+    public init() {}
+    
+    public func initialize() {
+        print("NetworkService initialized")
+    }
+    
+    public func request(url: URL, method: String = "GET", headers: [String: String]? = nil) async throws -> Data {
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        
+        if let headers = headers {
+            for (key, value) in headers {
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+        }
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        return data
+    }
+}
 
-// Re-export Security types
-public typealias TokenizationService = Security.TokenizationService 
+public class StorageService: CoreService {
+    public let serviceIdentifier = "com.fomopr.storage"
+    
+    public init() {}
+    
+    public func initialize() {
+        print("StorageService initialized")
+    }
+    
+    public func saveData(_ data: Data, forKey key: String) {
+        UserDefaults.standard.set(data, forKey: key)
+    }
+    
+    public func loadData(forKey key: String) -> Data? {
+        return UserDefaults.standard.data(forKey: key)
+    }
+}

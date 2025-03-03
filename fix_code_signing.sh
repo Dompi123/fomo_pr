@@ -1,43 +1,172 @@
 #!/bin/bash
 
-# Script to fix code signing issues for running on a real device
+echo "===== FIXING CODE SIGNING AND REBUILDING APP ====="
 
-echo "Fixing code signing issues for FOMO_PR..."
+# Define paths and identifiers
+DEVICE_ID="00008140-001A08691AD0801C"
+BUNDLE_ID="com.fomoapp.fomopr"
+PROJECT_PATH="/Users/dom.khr/fomopr/FOMO_PR.xcodeproj"
 
-# Path to the project.pbxproj file
-PROJECT_FILE="FOMO_PR.xcodeproj/project.pbxproj"
+echo "Device ID: $DEVICE_ID"
+echo "Bundle ID: $BUNDLE_ID"
+echo "Project Path: $PROJECT_PATH"
 
-# Backup the original file
-cp "$PROJECT_FILE" "${PROJECT_FILE}.codesign.backup"
+# First, update the project settings to fix code signing issues
+echo "Updating project settings to enable code signing for all targets..."
 
-# Update the code signing settings
-# 1. Set CODE_SIGN_STYLE to Manual
-# 2. Set DEVELOPMENT_TEAM to your team ID
-# 3. Set PROVISIONING_PROFILE_SPECIFIER to a valid profile
+# Create a temporary Ruby script to modify the Xcode project
+cat > update_project_settings.rb << 'EOL'
+#!/usr/bin/env ruby
+require 'xcodeproj'
 
-# Replace "Apple Development" with "iPhone Developer" for device builds
-sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "iPhone Developer";/g' "$PROJECT_FILE"
+project_path = ARGV[0]
+project = Xcodeproj::Project.open(project_path)
 
-# Set CODE_SIGN_STYLE to Manual
-sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' "$PROJECT_FILE"
-
-# Add a placeholder for DEVELOPMENT_TEAM - you'll need to replace this with your actual team ID
-# This is just a placeholder - you'll need to open Xcode and set your team manually
-echo "NOTE: You will need to open Xcode and set your development team manually in the project settings."
-
-# Fix UISceneDelegateClassName in Info.plist
-INFO_PLIST="FOMO_PR/Info.plist"
-if [ -f "$INFO_PLIST" ]; then
-    # Backup the original file
-    cp "$INFO_PLIST" "${INFO_PLIST}.backup"
+# Find the Core target
+core_target = project.targets.find { |t| t.name == 'Core' }
+if core_target
+  core_target.build_configurations.each do |config|
+    # Enable code signing for Core target
+    config.build_settings['CODE_SIGNING_ALLOWED'] = 'YES'
+    config.build_settings['CODE_SIGNING_REQUIRED'] = 'YES'
+    config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
     
-    # Check if UISceneDelegateClassName exists and fix it if needed
-    if grep -q "UISceneDelegateClassName" "$INFO_PLIST"; then
-        echo "Fixing UISceneDelegateClassName in Info.plist..."
-        # Remove the UISceneDelegateClassName entry since we're using SwiftUI App lifecycle
-        sed -i '' '/<key>UISceneDelegateClassName<\/key>/,/<\/string>/d' "$INFO_PLIST"
+    # Remove the "Don't Code Sign" setting
+    config.build_settings.delete('CODE_SIGN_IDENTITY[sdk=iphoneos*]')
+    
+    # Set proper bundle ID
+    config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.fomoapp.fomopr.Core'
+  end
+  puts "Updated Core target settings"
+end
+
+# Find the Models target
+models_target = project.targets.find { |t| t.name == 'Models' }
+if models_target
+  models_target.build_configurations.each do |config|
+    # Enable code signing for Models target
+    config.build_settings['CODE_SIGNING_ALLOWED'] = 'YES'
+    config.build_settings['CODE_SIGNING_REQUIRED'] = 'YES'
+    config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
+    
+    # Remove the "Don't Code Sign" setting
+    config.build_settings.delete('CODE_SIGN_IDENTITY[sdk=iphoneos*]')
+    
+    # Set proper bundle ID
+    config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.fomoapp.fomopr.Models'
+  end
+  puts "Updated Models target settings"
+end
+
+# Find the main app target
+main_target = project.targets.find { |t| t.name == 'FOMO_PR' }
+if main_target
+  main_target.build_configurations.each do |config|
+    # Ensure code signing is enabled
+    config.build_settings['CODE_SIGNING_ALLOWED'] = 'YES'
+    config.build_settings['CODE_SIGNING_REQUIRED'] = 'YES'
+    config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Development'
+    
+    # Set proper bundle ID
+    config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.fomoapp.fomopr'
+  end
+  puts "Updated FOMO_PR target settings"
+end
+
+# Save the project
+project.save
+puts "Project settings updated successfully"
+EOL
+
+# Make the script executable
+chmod +x update_project_settings.rb
+
+# Check if Ruby is installed
+if ! command -v ruby &> /dev/null; then
+    echo "Ruby is required but not installed. Please install Ruby and try again."
+    exit 1
+fi
+
+# Check if xcodeproj gem is installed
+if ! gem list -i xcodeproj &> /dev/null; then
+    echo "Installing xcodeproj gem..."
+    gem install xcodeproj
+fi
+
+# Run the script to update project settings
+echo "Applying project setting changes..."
+ruby update_project_settings.rb "$PROJECT_PATH"
+
+# Clean build artifacts
+echo "Cleaning previous builds..."
+xcodebuild clean -project "$PROJECT_PATH" -scheme FOMO_PR -configuration Debug
+
+# Build with code signing enabled for all targets
+echo "Building app with proper code signing..."
+xcodebuild -project "$PROJECT_PATH" -scheme FOMO_PR -configuration Debug \
+  CODE_SIGN_IDENTITY="Apple Development" \
+  CODE_SIGNING_REQUIRED=YES \
+  CODE_SIGNING_ALLOWED=YES \
+  -destination "id=$DEVICE_ID" build
+
+# Find the app
+echo "Locating built app..."
+APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "FOMO_PR.app" -path "*/Build/Products/Debug-iphoneos*" | head -n 1)
+
+if [ -z "$APP_PATH" ]; then
+    echo "ERROR: Could not find built app"
+    exit 1
+fi
+echo "Found app at: $APP_PATH"
+
+# Fix frameworks bundle IDs if needed
+echo "Checking and fixing frameworks bundle IDs..."
+if [ -d "$APP_PATH/Frameworks" ]; then
+    echo "Frameworks directory found"
+    
+    # Fix Models framework
+    if [ -d "$APP_PATH/Frameworks/Models.framework" ]; then
+        echo "Checking Models.framework..."
+        MODELS_BUNDLE_ID=$(plutil -p "$APP_PATH/Frameworks/Models.framework/Info.plist" | grep CFBundleIdentifier | awk -F'"' '{print $4}')
+        if [ -z "$MODELS_BUNDLE_ID" ]; then
+            echo "Adding bundle ID to Models.framework..."
+            /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string $BUNDLE_ID.Models" "$APP_PATH/Frameworks/Models.framework/Info.plist" 2>/dev/null || /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID.Models" "$APP_PATH/Frameworks/Models.framework/Info.plist"
+        else
+            echo "Models.framework bundle ID: $MODELS_BUNDLE_ID"
+        fi
+    fi
+    
+    # Fix Core framework
+    if [ -d "$APP_PATH/Frameworks/Core.framework" ]; then
+        echo "Checking Core.framework..."
+        CORE_BUNDLE_ID=$(plutil -p "$APP_PATH/Frameworks/Core.framework/Info.plist" | grep CFBundleIdentifier | awk -F'"' '{print $4}')
+        if [ -z "$CORE_BUNDLE_ID" ]; then
+            echo "Adding bundle ID to Core.framework..."
+            /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string $BUNDLE_ID.Core" "$APP_PATH/Frameworks/Core.framework/Info.plist" 2>/dev/null || /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID.Core" "$APP_PATH/Frameworks/Core.framework/Info.plist"
+        else
+            echo "Core.framework bundle ID: $CORE_BUNDLE_ID"
+        fi
     fi
 fi
 
-echo "Code signing fixes applied. Please open the project in Xcode and set your development team manually."
-echo "Then try building and running on your device again." 
+# Re-sign everything with proper identity
+echo "Re-signing frameworks and app..."
+if [ -d "$APP_PATH/Frameworks/Models.framework" ]; then
+    echo "Re-signing Models.framework..."
+    codesign -f -s "Apple Development" --preserve-metadata=identifier,entitlements "$APP_PATH/Frameworks/Models.framework"
+fi
+
+if [ -d "$APP_PATH/Frameworks/Core.framework" ]; then
+    echo "Re-signing Core.framework..."
+    codesign -f -s "Apple Development" --preserve-metadata=identifier,entitlements "$APP_PATH/Frameworks/Core.framework"
+fi
+
+echo "Re-signing main app..."
+codesign -f -s "Apple Development" --preserve-metadata=identifier,entitlements "$APP_PATH"
+
+# Install the app with frameworks
+echo "Installing app with frameworks..."
+xcrun ios-deploy --id "$DEVICE_ID" --bundle "$APP_PATH" --no-wifi
+
+echo "===== INSTALLATION PROCESS COMPLETED ====="
+echo "If the app still crashes, please try running it directly from Xcode with the device connected." 

@@ -51,39 +51,7 @@
       "inputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/BaseViewModel.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/CheckoutView.swift"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOAnimations.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOTheme.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/LiveTokenizationService.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/MockTokenizationService.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/SecurityNamespace.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/TokenizationService.swift"
         },
         {
           "kind" : "file",
@@ -106,15 +74,7 @@
       "moduleName" : "Core",
       "moduleOutputPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules/Core.swiftmodule",
       "objects" : [
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService.swift.o"
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.swift.o"
       ],
       "otherArguments" : [
         "-target",
@@ -163,39 +123,7 @@
       "outputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/BaseViewModel.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/CheckoutView.swift.o"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/Core.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOAnimations.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/FOMOTheme.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/LiveTokenizationService.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/MockTokenizationService.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/SecurityNamespace.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/TokenizationService.swift.o"
         },
         {
           "kind" : "file",
@@ -204,15 +132,7 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
-        "/Users/dom.khr/fomopr/Core/Sources/Core/BaseViewModel.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/CheckoutView.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOAnimations.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOTheme.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/LiveTokenizationService.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/MockTokenizationService.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/SecurityNamespace.swift",
-        "/Users/dom.khr/fomopr/Core/Sources/Core/TokenizationService.swift"
+        "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift"
       ],
       "tempsPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build",
       "wholeModuleOptimization" : false
@@ -232,11 +152,27 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/AppIntegration.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/FOMOTheme.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/View+FOMOStyle.swift"
         },
         {
           "kind" : "file",
@@ -244,31 +180,127 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Colors.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Design.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOAnimations.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/APIClientHelper.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Typography.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/DirectImports.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Extensions/String+Localized.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOApp.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/FOMOTheme.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOImports.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/AppModels.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOTypes.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Drink.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Models.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/NetworkError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Pass.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/PricingTier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/StringExtensions.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/Network.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentResult.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentServiceProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/APIEndpoint.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/LiveTokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/MockTokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/KeychainManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Utilities/ErrorHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/ViewModels/BaseViewModel.swift"
         },
         {
           "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/Models/DrinkEndpoints.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/ViewModels/CheckoutViewModel.swift"
         },
         {
           "kind" : "file",
@@ -280,7 +312,19 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/ViewModels/PassesViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Views/PassPurchaseView.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/Models/ProfileEndpoints.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/ViewModels/ProfileViewModel.swift"
         },
         {
           "kind" : "file",
@@ -292,27 +336,43 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/ProfileViewModel.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/PaywallViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FileStructureTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueListViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/ModuleDefinition.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueMenuViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/ModuleTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenuePreviewViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/TypesTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/AgentTestView.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/TypesTestEntry.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueDetailView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueListView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueMenuView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenuePreviewView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Preview Content/PreviewVenues.swift"
         },
         {
           "kind" : "file",
@@ -349,27 +409,62 @@
       "objects" : [
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockBackend.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkListView.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Core.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/View+FOMOStyle.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Colors.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Design.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOAnimations.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Typography.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/String+Localized.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppModels.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Drink.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Models.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/NetworkError.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Pass.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PricingTier.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/StringExtensions.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Network.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentManager.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentResult.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentServiceProtocol.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentState.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIEndpoint.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/LiveTokenizationService.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockTokenizationService.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/KeychainManager.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ErrorHandler.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/CheckoutViewModel.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/OrderEndpoints.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassEndpoints.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassesViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassPurchaseView.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueEndpoints.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewTests.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaywallViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueListViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueMenuViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewModel.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AgentTestView.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueDetailView.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueListView.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueMenuView.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewView.swift.o",
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PreviewVenues.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/resource_bundle_accessor.swift.o"
       ],
       "otherArguments" : [
@@ -427,15 +522,19 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppIntegration.swift.o"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AnalyticsEvent.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Core.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o"
         },
         {
           "kind" : "file",
@@ -443,27 +542,135 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIClientHelper.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/View+FOMOStyle.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DirectImports.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Animations.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOApp.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Colors.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOImports.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Design.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTypes.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOAnimations.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Typography.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/String+Localized.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FOMOTheme.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AppModels.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Drink.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Models.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/NetworkError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Pass.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PricingTier.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/StringExtensions.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/Network.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentResult.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentServiceProtocol.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaymentState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/APIEndpoint.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/LiveTokenizationService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/MockTokenizationService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TokenizationService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/KeychainManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ErrorHandler.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/BaseViewModel.swift.o"
         },
         {
           "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DrinkEndpoints.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/CheckoutViewModel.swift.o"
         },
         {
           "kind" : "file",
@@ -475,7 +682,19 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassesViewModel.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PassPurchaseView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileEndpoints.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swift.o"
         },
         {
           "kind" : "file",
@@ -487,27 +706,43 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ProfileViewModel.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PaywallViewModel.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/FileStructureTest.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueListViewModel.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleDefinition.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueMenuViewModel.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/ModuleTest.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewViewModel.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTest.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/AgentTestView.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/TypesTestEntry.swift.o"
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueDetailView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueListView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenueMenuView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/VenuePreviewView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/PreviewVenues.swift.o"
         },
         {
           "kind" : "file",
@@ -522,27 +757,62 @@
       "sources" : [
         "/Users/dom.khr/fomopr/FOMO_PR/App/Core/Network/MockBackend.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/App/Features/Drinks/DrinkListView.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/AppIntegration.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/BaseViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Core.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/BaseViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/FOMOTheme.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/View+FOMOStyle.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Animations.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Colors.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Design.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOAnimations.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/APIClientHelper.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/DirectImports.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/FOMOApp.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/FOMOImports.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/FOMOTypes.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Typography.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Extensions/String+Localized.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/FOMOTheme.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/AppModels.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/BaseViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Drink.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Models.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/NetworkError.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Pass.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/PricingTier.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/StringExtensions.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/Network.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/TokenizationService.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentManager.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentResult.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentServiceProtocol.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentState.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/APIEndpoint.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/LiveTokenizationService.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/MockTokenizationService.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/TokenizationService.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/TokenizationService.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/KeychainManager.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/Utilities/ErrorHandler.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Core/ViewModels/BaseViewModel.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/Models/DrinkEndpoints.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/ViewModels/CheckoutViewModel.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Orders/Models/OrderEndpoints.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Models/PassEndpoints.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/ViewModels/PassesViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Views/PassPurchaseView.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/Models/ProfileEndpoints.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/ViewModels/ProfileViewModel.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Models/VenueEndpoints.swift",
         "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Tests/VenuePreviewViewTests.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/ProfileViewModel.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/FileStructureTest.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/ModuleDefinition.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/ModuleTest.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/TypesTest.swift",
-        "/Users/dom.khr/fomopr/FOMO_PR/TypesTestEntry.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/PaywallViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueListViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueMenuViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenuePreviewViewModel.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/AgentTestView.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueDetailView.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueListView.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueMenuView.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenuePreviewView.swift",
+        "/Users/dom.khr/fomopr/FOMO_PR/Preview Content/PreviewVenues.swift",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DerivedSources/resource_bundle_accessor.swift"
       ],
       "tempsPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build",
@@ -555,19 +825,7 @@
       "inputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/Card.swift"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/ModelsExport.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/PaymentResult.swift"
         },
         {
           "kind" : "file",
@@ -582,10 +840,7 @@
       "moduleName" : "Models",
       "moduleOutputPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules/Models.swiftmodule",
       "objects" : [
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport.swift.o",
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult.swift.o"
+        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.swift.o"
       ],
       "otherArguments" : [
         "-target",
@@ -634,19 +889,7 @@
       "outputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Card.swift.o"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/Models.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/ModelsExport.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/PaymentResult.swift.o"
         },
         {
           "kind" : "file",
@@ -655,10 +898,7 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
-        "/Users/dom.khr/fomopr/Models/Sources/Models/Card.swift",
-        "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift",
-        "/Users/dom.khr/fomopr/Models/Sources/Models/ModelsExport.swift",
-        "/Users/dom.khr/fomopr/Models/Sources/Models/PaymentResult.swift"
+        "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift"
       ],
       "tempsPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build",
       "wholeModuleOptimization" : false
@@ -668,10 +908,6 @@
       "fileList" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/sources",
       "importPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules",
       "inputs" : [
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Network/Sources/Network/APIClient.swift"
-        },
         {
           "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/Network/Sources/Network/Network.swift"
@@ -693,7 +929,6 @@
       "moduleName" : "Network",
       "moduleOutputPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules/Network.swiftmodule",
       "objects" : [
-        "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient.swift.o",
         "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network.swift.o"
       ],
       "otherArguments" : [
@@ -743,10 +978,6 @@
       "outputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/APIClient.swift.o"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build/Network.swift.o"
         },
         {
@@ -756,7 +987,6 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
-        "/Users/dom.khr/fomopr/Network/Sources/Network/APIClient.swift",
         "/Users/dom.khr/fomopr/Network/Sources/Network/Network.swift"
       ],
       "tempsPath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Network.build",
@@ -773,15 +1003,7 @@
       "Core",
       "-incremental",
       "-c",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/BaseViewModel.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/CheckoutView.swift",
       "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOAnimations.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOTheme.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/LiveTokenizationService.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/MockTokenizationService.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/SecurityNamespace.swift",
-      "/Users/dom.khr/fomopr/Core/Sources/Core/TokenizationService.swift",
       "-I",
       "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules",
       "-target",
@@ -836,27 +1058,62 @@
       "-c",
       "/Users/dom.khr/fomopr/FOMO_PR/App/Core/Network/MockBackend.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/App/Features/Drinks/DrinkListView.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/AppIntegration.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/BaseViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Core.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/BaseViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/FOMOTheme.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/View+FOMOStyle.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Animations.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Colors.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Design.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOAnimations.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/APIClientHelper.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/DirectImports.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/FOMOApp.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/FOMOImports.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/FOMOTypes.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Typography.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Extensions/String+Localized.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/FOMOTheme.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/AppModels.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/BaseViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Drink.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Models.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/NetworkError.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Pass.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/PricingTier.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/StringExtensions.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/Network.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/TokenizationService.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentManager.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentResult.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentServiceProtocol.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentState.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/APIEndpoint.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/LiveTokenizationService.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/MockTokenizationService.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/TokenizationService.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/TokenizationService.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/KeychainManager.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/Utilities/ErrorHandler.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Core/ViewModels/BaseViewModel.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/Models/DrinkEndpoints.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/ViewModels/CheckoutViewModel.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Orders/Models/OrderEndpoints.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Models/PassEndpoints.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/ViewModels/PassesViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Views/PassPurchaseView.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/Models/ProfileEndpoints.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/ViewModels/ProfileViewModel.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Models/VenueEndpoints.swift",
       "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Tests/VenuePreviewViewTests.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/ProfileViewModel.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/FileStructureTest.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/ModuleDefinition.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/ModuleTest.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/TypesTest.swift",
-      "/Users/dom.khr/fomopr/FOMO_PR/TypesTestEntry.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/PaywallViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueListViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueMenuViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenuePreviewViewModel.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/AgentTestView.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueDetailView.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueListView.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueMenuView.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenuePreviewView.swift",
+      "/Users/dom.khr/fomopr/FOMO_PR/Preview Content/PreviewVenues.swift",
       "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/FOMO_PR.build/DerivedSources/resource_bundle_accessor.swift",
       "-I",
       "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules",
@@ -910,10 +1167,7 @@
       "Models",
       "-incremental",
       "-c",
-      "/Users/dom.khr/fomopr/Models/Sources/Models/Card.swift",
       "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift",
-      "/Users/dom.khr/fomopr/Models/Sources/Models/ModelsExport.swift",
-      "/Users/dom.khr/fomopr/Models/Sources/Models/PaymentResult.swift",
       "-I",
       "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules",
       "-target",
@@ -966,7 +1220,6 @@
       "Network",
       "-incremental",
       "-c",
-      "/Users/dom.khr/fomopr/Network/Sources/Network/APIClient.swift",
       "/Users/dom.khr/fomopr/Network/Sources/Network/Network.swift",
       "-I",
       "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Modules",
@@ -1048,39 +1301,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/BaseViewModel.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/CheckoutView.swift"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/Core.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOAnimations.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/FOMOTheme.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/LiveTokenizationService.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/MockTokenizationService.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/SecurityNamespace.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Core/Sources/Core/TokenizationService.swift"
         }
       ],
       "outputFilePath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Core.build/sources"
@@ -1102,11 +1323,27 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/AppIntegration.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Analytics/AnalyticsEvent.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/FOMOTheme.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Core/View+FOMOStyle.swift"
         },
         {
           "kind" : "file",
@@ -1114,31 +1351,127 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Colors.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Design.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOAnimations.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/FOMOTheme.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/APIClientHelper.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Design/Typography.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/DirectImports.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Extensions/String+Localized.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOApp.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/FOMOTheme.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOImports.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/AppModels.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FOMOTypes.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/BaseViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Drink.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Models.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/NetworkError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/Pass.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/PricingTier.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Models/StringExtensions.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/Network.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Network/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentResult.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentServiceProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/PaymentState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/APIEndpoint.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/LiveTokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/MockTokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/Tokenization/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Payment/TokenizationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Storage/KeychainManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/Utilities/ErrorHandler.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Core/ViewModels/BaseViewModel.swift"
         },
         {
           "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/Models/DrinkEndpoints.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Drinks/ViewModels/CheckoutViewModel.swift"
         },
         {
           "kind" : "file",
@@ -1150,7 +1483,19 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/ViewModels/PassesViewModel.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Passes/Views/PassPurchaseView.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/Models/ProfileEndpoints.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Profile/ViewModels/ProfileViewModel.swift"
         },
         {
           "kind" : "file",
@@ -1162,27 +1507,43 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/ProfileViewModel.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/PaywallViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/FileStructureTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueListViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/ModuleDefinition.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenueMenuViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/ModuleTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/ViewModels/VenuePreviewViewModel.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/TypesTest.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/AgentTestView.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/FOMO_PR/TypesTestEntry.swift"
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueDetailView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueListView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenueMenuView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Features/Venues/Views/VenuePreviewView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dom.khr/fomopr/FOMO_PR/Preview Content/PreviewVenues.swift"
         },
         {
           "kind" : "file",
@@ -1200,19 +1561,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/Card.swift"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/Models.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/ModelsExport.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Models/Sources/Models/PaymentResult.swift"
         }
       ],
       "outputFilePath" : "/Users/dom.khr/fomopr/.build/arm64-apple-macosx/debug/Models.build/sources"
@@ -1223,10 +1572,6 @@
         {
           "kind" : "virtual",
           "name" : "<sources-file-list>"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dom.khr/fomopr/Network/Sources/Network/APIClient.swift"
         },
         {
           "kind" : "file",

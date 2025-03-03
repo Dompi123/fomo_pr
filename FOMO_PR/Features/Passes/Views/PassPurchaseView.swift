@@ -1,95 +1,150 @@
 import SwiftUI
-import Foundation
+import Models
+import Core
 
-// MARK: - Models
-
-// Comment out or remove duplicate definitions
-/*
-struct Venue: Identifiable {
-    let id: String
-    let name: String
-    let description: String
-    let address: String
-    let imageURL: String
-    let rating: Double
-    let priceLevel: Int
-    let category: String
-    let isOpen: Bool
-    let distance: Double?
+struct PassPurchaseView: View {
+    let venue: Venue
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: PassesViewModel = PassesViewModel()
+    @State private var isProcessing = false
+    @State private var error: Error?
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                // Venue Info
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(venue.name)
+                        .font(.title)
+                        .bold()
+                    
+                    Text(venue.description)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal)
+                
+                // Pass Options
+                ScrollView {
+                    VStack(spacing: 16) {
+                        PassOptionCard(
+                            title: "Standard Pass",
+                            price: 25.0,
+                            description: "Basic venue access",
+                            isSelected: true
+                        )
+                        
+                        PassOptionCard(
+                            title: "VIP Pass",
+                            price: 50.0,
+                            description: "Priority entry and exclusive benefits",
+                            isSelected: false
+                        )
+                        
+                        PassOptionCard(
+                            title: "Premium Pass",
+                            price: 75.0,
+                            description: "All VIP benefits plus complimentary drinks",
+                            isSelected: false
+                        )
+                    }
+                    .padding()
+                }
+                
+                // Purchase Button
+                Button(action: {
+                    Task {
+                        await purchasePass()
+                    }
+                }) {
+                    if isProcessing {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                    } else {
+                        Text("Purchase Pass")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                }
+                .disabled(isProcessing)
+                .padding()
+            }
+            .navigationTitle("Purchase Pass")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+            .alert("Error", isPresented: .constant(error != nil)) {
+                Button("OK") {
+                    error = nil
+                }
+            } message: {
+                if let error = error {
+                    Text(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func purchasePass() async {
+        isProcessing = true
+        defer { isProcessing = false }
+        
+        do {
+            // In a real app, this would make an API call
+            try await Task.sleep(nanoseconds: 2_000_000_000) // Simulate network request
+            dismiss()
+        } catch {
+            self.error = error
+        }
+    }
 }
 
-extension Venue {
-    static var preview: Venue {
-        Venue(
-            id: "venue1",
-            name: "The Rooftop Bar",
-            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
-            address: "123 Main St, New York, NY 10001",
-            imageURL: "https://example.com/venue1.jpg",
-            rating: 4.7,
-            priceLevel: 3,
-            category: "Bar",
-            isOpen: true,
-            distance: 0.5
+struct PassOptionCard: View {
+    let title: String
+    let price: Double
+    let description: String
+    let isSelected: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(title)
+                    .font(.headline)
+                Spacer()
+                Text("$\(price, specifier: "%.2f")")
+                    .font(.title3)
+                    .bold()
+            }
+            
+            Text(description)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(.systemBackground))
+                .shadow(radius: 2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
         )
     }
 }
 
-class PassesViewModel: ObservableObject {
-    @Published var passes: [Pass] = []
-    @Published var isLoading: Bool = false
-    @Published var error: Error?
-    
-    func loadPasses() {
-        // Implementation
-    }
-    
-    func purchasePass(for venue: Venue) {
-        // Implementation
-    }
-}
-*/
-
-// MARK: - Views
-
-struct PassPurchaseView: View {
-    @StateObject private var viewModel: PassesViewModel = PassesViewModel()
-    
-    let venue: Venue
-    
-    var body: some View {
-        VStack {
-            Text("Purchase Pass for \(venue.name)")
-                .font(.title)
-                .padding()
-            
-            Text("Select a pass type:")
-                .font(.headline)
-                .padding()
-            
-            // Pass options would go here
-            
-            Button("Purchase Standard Pass") {
-                viewModel.purchasePass(for: venue)
-            }
-            .padding()
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
-            
-            Spacer()
-        }
-        .padding()
-        .navigationTitle("Purchase Pass")
-    }
-}
-
-// MARK: - Preview
-
+#if DEBUG
 struct PassPurchaseView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            PassPurchaseView(venue: Venue.preview)
-        }
+        PassPurchaseView(venue: .preview)
     }
-} 
+}
+#endif 
