@@ -1,6 +1,8 @@
 import SwiftUI
 import OSLog
 
+private let logger = Logger(subsystem: "com.fomo.pr", category: "ContentView")
+
 struct ContentView: View {
     @EnvironmentObject private var navigationCoordinator: PreviewNavigationCoordinator
     @State private var selectedTab = 0
@@ -8,24 +10,28 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             TabView(selection: $selectedTab) {
+                // First tab - Venues
                 VenueListView()
                     .tabItem {
                         Label("Venues", systemImage: "building.2")
                     }
                     .tag(0)
                 
+                // Second tab - Passes
                 PassesView()
                     .tabItem {
-                        Label("My Passes", systemImage: "ticket")
+                        Label("Passes", systemImage: "ticket")
                     }
                     .tag(1)
                 
+                // Third tab - Profile
                 ProfileView()
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
                     .tag(2)
             }
+            .navigationTitle(tabTitle)
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $navigationCoordinator.presentedSheet) { sheet in
                 switch sheet {
@@ -38,6 +44,22 @@ struct ContentView: View {
                 }
             }
         }
+        .onAppear {
+            logger.debug("ContentView appeared")
+        }
+    }
+    
+    private var tabTitle: String {
+        switch selectedTab {
+        case 0:
+            return "Venues"
+        case 1:
+            return "Passes"
+        case 2:
+            return "Profile"
+        default:
+            return ""
+        }
     }
 }
 
@@ -46,6 +68,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .environmentObject(PreviewNavigationCoordinator.shared)
+            .preferredColorScheme(.dark)
     }
 }
-#endif
+#endif 

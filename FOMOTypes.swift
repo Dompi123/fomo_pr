@@ -1,64 +1,170 @@
 import Foundation
 import SwiftUI
+import Combine
+import CoreLocation
 
 // This file provides complete type definitions for key types
 // that are causing issues in the Xcode build
 
-// MARK: - Card Type
-#if !SWIFT_PACKAGE && !XCODE_HELPER
-public struct Card: Codable, Identifiable {
-    public let id: String
-    public let last4: String
-    public let brand: CardBrand
-    public let expiryMonth: Int
-    public let expiryYear: Int
-    public let isDefault: Bool
+// MARK: - BaseViewModel
+public class BaseViewModel: ObservableObject {
+    @Published public var isLoading: Bool = false
+    @Published public var error: Error?
     
-    public init(id: String, last4: String, brand: CardBrand, expiryMonth: Int, expiryYear: Int, isDefault: Bool = false) {
-        self.id = id
-        self.last4 = last4
-        self.brand = brand
-        self.expiryMonth = expiryMonth
-        self.expiryYear = expiryYear
-        self.isDefault = isDefault
-    }
+    public init() {}
     
-    public enum CardBrand: String, Codable {
-        case visa
-        case mastercard
-        case amex
-        case discover
-        case unknown
-        
-        public var displayName: String {
-            switch self {
-            case .visa: return "Visa"
-            case .mastercard: return "Mastercard"
-            case .amex: return "American Express"
-            case .discover: return "Discover"
-            case .unknown: return "Card"
-            }
+    public func setLoading(_ loading: Bool) {
+        DispatchQueue.main.async {
+            self.isLoading = loading
         }
     }
     
-    public var displayName: String {
-        return "\(brand.displayName) •••• \(last4)"
+    public func setError(_ error: Error?) {
+        DispatchQueue.main.async {
+            self.error = error
+        }
     }
+}
+
+// MARK: - FOMOTheme
+public enum FOMOTheme {
+    public static let primaryColor = Color(red: 0.2, green: 0.5, blue: 0.9)
+    public static let secondaryColor = Color(red: 0.9, green: 0.3, blue: 0.3)
+    public static let backgroundColor = Color(red: 0.95, green: 0.95, blue: 0.97)
+    public static let textColor = Color.black
+    public static let lightTextColor = Color.gray
     
-    public var expiryDisplay: String {
-        return String(format: "%02d/%d", expiryMonth, expiryYear % 100)
-    }
+    public static let cornerRadius: CGFloat = 12
+    public static let padding: CGFloat = 16
+    public static let smallPadding: CGFloat = 8
+    public static let largePadding: CGFloat = 24
     
-    public static let preview = Card(
-        id: "card_123456",
-        last4: "4242",
-        brand: .visa,
-        expiryMonth: 12,
-        expiryYear: 2025,
-        isDefault: true
-    )
+    public static let titleFont = Font.system(size: 24, weight: .bold)
+    public static let subtitleFont = Font.system(size: 18, weight: .semibold)
+    public static let bodyFont = Font.system(size: 16, weight: .regular)
+    public static let smallFont = Font.system(size: 14, weight: .regular)
+}
+
+// MARK: - FOMOAnimations
+#if !SWIFT_PACKAGE && !XCODE_HELPER
+public enum FOMOAnimations {
+    public static let standard = Animation.easeInOut(duration: 0.3)
+    public static let slow = Animation.easeInOut(duration: 0.5)
+    public static let springy = Animation.spring(response: 0.3, dampingFraction: 0.6)
 }
 #endif
+
+// MARK: - Card
+public struct Card: Identifiable, Codable {
+    public let id: String
+    public let lastFour: String
+    public let expiryMonth: Int
+    public let expiryYear: Int
+    public let cardholderName: String
+    public let brand: String
+    
+    public init(
+        id: String,
+        lastFour: String,
+        expiryMonth: Int,
+        expiryYear: Int,
+        cardholderName: String,
+        brand: String
+    ) {
+        self.id = id
+        self.lastFour = lastFour
+        self.expiryMonth = expiryMonth
+        self.expiryYear = expiryYear
+        self.cardholderName = cardholderName
+        self.brand = brand
+    }
+    
+    #if DEBUG
+    public static var mockCard: Card {
+        Card(
+            id: "card-123",
+            lastFour: "4242",
+            expiryMonth: 12,
+            expiryYear: 2025,
+            cardholderName: "John Doe",
+            brand: "Visa"
+        )
+    }
+    #endif
+}
+
+// MARK: - User
+public struct User: Identifiable, Codable {
+    public let id: String
+    public let email: String
+    public let firstName: String
+    public let lastName: String
+    public let profileImageURL: URL?
+    public let phone: String?
+    
+    public init(
+        id: String,
+        email: String,
+        firstName: String,
+        lastName: String,
+        profileImageURL: URL? = nil,
+        phone: String? = nil
+    ) {
+        self.id = id
+        self.email = email
+        self.firstName = firstName
+        self.lastName = lastName
+        self.profileImageURL = profileImageURL
+        self.phone = phone
+    }
+    
+    #if DEBUG
+    public static var mockUser: User {
+        User(
+            id: "user-123",
+            email: "john.doe@example.com",
+            firstName: "John",
+            lastName: "Doe",
+            profileImageURL: URL(string: "https://example.com/profile.jpg"),
+            phone: "+1234567890"
+        )
+    }
+    #endif
+}
+
+// MARK: - Notification
+public struct Notification: Identifiable, Codable {
+    public let id: String
+    public let title: String
+    public let body: String
+    public let isRead: Bool
+    public let createdAt: Date
+    
+    public init(
+        id: String,
+        title: String,
+        body: String,
+        isRead: Bool = false,
+        createdAt: Date = Date()
+    ) {
+        self.id = id
+        self.title = title
+        self.body = body
+        self.isRead = isRead
+        self.createdAt = createdAt
+    }
+    
+    #if DEBUG
+    public static var mockNotification: Notification {
+        Notification(
+            id: "notification-123",
+            title: "New Message",
+            body: "You have received a new message from John",
+            isRead: false
+        )
+    }
+    #endif
+}
 
 // MARK: - APIClient Type
 #if !SWIFT_PACKAGE && !XCODE_HELPER
@@ -126,98 +232,6 @@ public actor APIClient {
 }
 #endif
 
-// MARK: - PaymentResult Type
-#if !SWIFT_PACKAGE && !XCODE_HELPER
-public struct PaymentResult: Equatable, Codable {
-    public let id: String
-    public let transactionId: String
-    public let amount: Decimal
-    public let timestamp: Date
-    public let status: PaymentStatus
-    
-    public init(id: String = UUID().uuidString,
-                transactionId: String,
-                amount: Decimal,
-                timestamp: Date = Date(),
-                status: PaymentStatus) {
-        self.id = id
-        self.transactionId = transactionId
-        self.amount = amount
-        self.timestamp = timestamp
-        self.status = status
-    }
-    
-    public static func == (lhs: PaymentResult, rhs: PaymentResult) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    public static let preview = PaymentResult(
-        id: "payment_123456",
-        transactionId: "txn_123456",
-        amount: 19.99,
-        timestamp: Date(),
-        status: .success
-    )
-}
-
-public enum PaymentStatus: Equatable, Codable {
-    case success
-    case failure(String)
-    case pending
-    
-    // Custom coding keys for encoding/decoding
-    private enum CodingKeys: String, CodingKey {
-        case status
-        case errorMessage
-    }
-    
-    // Custom encoder
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        switch self {
-        case .success:
-            try container.encode("success", forKey: .status)
-        case .failure(let message):
-            try container.encode("failure", forKey: .status)
-            try container.encode(message, forKey: .errorMessage)
-        case .pending:
-            try container.encode("pending", forKey: .status)
-        }
-    }
-    
-    // Custom decoder
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let status = try container.decode(String.self, forKey: .status)
-        
-        switch status {
-        case "success":
-            self = .success
-        case "failure":
-            let message = try container.decodeIfPresent(String.self, forKey: .errorMessage) ?? "Unknown error"
-            self = .failure(message)
-        case "pending":
-            self = .pending
-        default:
-            self = .failure("Unknown status: \(status)")
-        }
-    }
-    
-    public static func == (lhs: PaymentStatus, rhs: PaymentStatus) -> Bool {
-        switch (lhs, rhs) {
-        case (.success, .success),
-             (.pending, .pending):
-            return true
-        case (.failure(let lhsError), .failure(let rhsError)):
-            return lhsError == rhsError
-        default:
-            return false
-        }
-    }
-}
-#endif
-
 // MARK: - PricingTier Type
 #if !SWIFT_PACKAGE && !XCODE_HELPER
 public struct PricingTier: Identifiable, Equatable, Codable {
@@ -250,7 +264,6 @@ public struct PricingTier: Identifiable, Equatable, Codable {
 #if !SWIFT_PACKAGE && !XCODE_HELPER
 public protocol TokenizationService {
     func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String
-    func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult
     func validatePaymentMethod() async throws -> Bool
     func fetchPricingTiers(for venueId: String) async throws -> [PricingTier]
 }
@@ -269,18 +282,6 @@ public enum Security {
             // For now, we'll just return a mock token
             try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate network request
             return "tok_\(UUID().uuidString)"
-        }
-        
-        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult {
-            // Simulate payment processing
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            return PaymentResult(
-                id: UUID().uuidString,
-                transactionId: "txn_\(UUID().uuidString)",
-                amount: amount,
-                timestamp: Date(),
-                status: .success
-            )
         }
         
         public func validatePaymentMethod() async throws -> Bool {
@@ -306,16 +307,6 @@ public enum Security {
         
         public func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String {
             return "tok_mock_\(UUID().uuidString)"
-        }
-        
-        public func processPayment(amount: Decimal, tier: PricingTier) async throws -> PaymentResult {
-            return PaymentResult(
-                id: "test_payment_id",
-                transactionId: "test_transaction_id",
-                amount: amount,
-                timestamp: Date(),
-                status: .success
-            )
         }
         
         public func validatePaymentMethod() async throws -> Bool {

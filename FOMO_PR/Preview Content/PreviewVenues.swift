@@ -1,13 +1,13 @@
 import Foundation
 import SwiftUI
-import Models
+// import Models - Commenting out as it's causing ambiguity issues
 
 // Define the Drink type that was missing
 struct Drink: Identifiable, Codable {
     let id: String
     let name: String
     let description: String
-    let price: Double
+    let price: Decimal
     let imageURLString: String?
     
     // Remove the computed property and use a method instead
@@ -20,7 +20,7 @@ struct Drink: Identifiable, Codable {
         self.id = id
         self.name = name
         self.description = description
-        self.price = price
+        self.price = Decimal(price)
         self.imageURLString = imageURL?.absoluteString
     }
 }

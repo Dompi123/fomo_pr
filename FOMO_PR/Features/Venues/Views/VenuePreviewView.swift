@@ -1,9 +1,9 @@
 import SwiftUI
 import Foundation
+// import Models // Commenting out Models import to use local implementations instead
 
 // Add import for core models
-import Models
-import Core
+// import Core // Commenting out Core import to use local implementations instead
 
 // MARK: - Models
 
@@ -70,6 +70,8 @@ func getMockVenueDetails(id: String) -> Venue {
 }
 */
 
+// MARK: - VenuePreviewViewModel
+
 // MARK: - Views
 
 struct VenuePreviewView: View {
@@ -79,7 +81,7 @@ struct VenuePreviewView: View {
     
     init(venue: Venue) {
         self.venue = venue
-        _viewModel = StateObject(wrappedValue: VenuePreviewViewModel(venueId: venue.id))
+        _viewModel = StateObject(wrappedValue: VenuePreviewViewModel(venue: venue))
     }
     
     var body: some View {
@@ -101,31 +103,31 @@ struct VenuePreviewView: View {
             
             // Venue category and rating
             HStack {
-                Text(venue.category)
+                Text(venue.isPremium ? "Premium Venue" : "Standard Venue")
                     .font(.body)
                     .foregroundColor(.secondary)
                 
                 Spacer()
                 
-                Text("⭐ \(String(format: "%.1f", venue.rating))")
+                Text(venue.isPremium ? "⭐⭐⭐⭐⭐" : "⭐⭐⭐⭐")
                     .font(.body)
                     .fontWeight(.bold)
             }
             
             // Price level and open status
             HStack {
-                Text(String(repeating: "$", count: venue.priceLevel))
+                Text(venue.isPremium ? "$$$" : "$$")
                     .font(.body)
                     .foregroundColor(.secondary)
                 
                 Spacer()
                 
-                Text(venue.isOpen ? "Open Now" : "Closed")
+                Text("Open Now")
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(venue.isOpen ? Color.green.opacity(0.2) : Color.red.opacity(0.2))
-                    .foregroundColor(venue.isOpen ? .green : .red)
+                    .background(Color.green.opacity(0.2))
+                    .foregroundColor(.green)
                     .cornerRadius(4)
             }
             
@@ -183,8 +185,20 @@ struct VenuePreviewView: View {
 
 struct VenuePreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        VenuePreviewView(venue: Venue.preview)
+        // Create a mock venue for preview
+        let mockVenue = Venue(
+            id: "venue_123",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, San Francisco, CA 94105",
+            imageURL: URL(string: "https://example.com/venue.jpg"),
+            latitude: 37.7749,
+            longitude: -122.4194,
+            isPremium: true
+        )
+        
+        VenuePreviewView(venue: mockVenue)
             .previewLayout(.sizeThatFits)
             .padding()
     }
-} 
+}

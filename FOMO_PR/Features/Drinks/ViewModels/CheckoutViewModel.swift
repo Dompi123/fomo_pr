@@ -1,63 +1,35 @@
 import Foundation
 import SwiftUI
 
-// Define DrinkItem and DrinkOrder for this file only
-struct DrinkItem: Identifiable {
-    let id: String
-    let name: String
-    let price: Double
-    let quantity: Int
-}
-
-struct DrinkOrder {
-    let items: [DrinkItem]
-    
-    var totalPrice: Double {
-        items.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
-    }
-}
-
+// Use the DrinkItem and DrinkOrder from FOMOApp.swift
 class CheckoutViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: Error?
-    @Published var order: DrinkOrder
-    @Published var paymentCompleted = false
+    @Published var order: DrinkOrder?
+    @Published var items: [DrinkItem] = []
     
-    init(order: DrinkOrder) {
-        self.order = order
+    var totalPrice: Double {
+        items.reduce(0) { $0 + (Double(truncating: $1.price as NSNumber) * Double($1.quantity)) }
     }
     
     func processPayment() {
         isLoading = true
-        error = nil
         
-        Task {
-            do {
-                // Simulate network delay
-                try await Task.sleep(nanoseconds: 2_000_000_000)
-                
-                // Mock successful payment
-                await MainActor.run {
-                    self.paymentCompleted = true
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.error = error
-                    self.isLoading = false
-                }
-            }
+        // Simulate payment processing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.isLoading = false
+            // Simulate success
+            NotificationCenter.default.post(name: NSNotification.Name("PaymentCompleted"), object: nil)
         }
     }
-}
-
-// MARK: - Preview Helper
-extension CheckoutViewModel {
+    
+    // For previews
     static func preview() -> CheckoutViewModel {
-        let order = DrinkOrder(items: [
-            DrinkItem(id: "1", name: "Mojito", price: 12.99, quantity: 2),
-            DrinkItem(id: "2", name: "Margarita", price: 10.99, quantity: 1)
-        ])
-        return CheckoutViewModel(order: order)
+        let viewModel = CheckoutViewModel()
+        viewModel.items = [
+            DrinkItem(name: "Mojito", price: 12.99, quantity: 2),
+            DrinkItem(name: "Margarita", price: 10.99, quantity: 1)
+        ]
+        return viewModel
     }
 } 

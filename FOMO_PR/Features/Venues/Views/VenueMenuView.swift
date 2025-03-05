@@ -1,7 +1,6 @@
 import SwiftUI
 import Foundation
-import Core
-import Models
+// import Models // Commenting out Models import to use local implementations instead
 
 // Local Drink model to avoid conflicts with other Drink models
 struct MenuDrinkItem: Identifiable {
@@ -249,7 +248,6 @@ struct VenueMenuView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
     }
     
     private var categorySelector: some View {
@@ -261,7 +259,7 @@ struct VenueMenuView: View {
                     Text("All")
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
-                        .background(viewModel.selectedCategory == nil ? Color.accentColor : Color.gray.opacity(0.2))
+                        .background(viewModel.selectedCategory == nil ? Color.blue : Color.gray.opacity(0.2))
                         .foregroundColor(viewModel.selectedCategory == nil ? .white : .primary)
                         .cornerRadius(20)
                 }
@@ -273,172 +271,153 @@ struct VenueMenuView: View {
                         Text(category)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(viewModel.selectedCategory == category ? Color.accentColor : Color.gray.opacity(0.2))
+                            .background(viewModel.selectedCategory == category ? Color.blue : Color.gray.opacity(0.2))
                             .foregroundColor(viewModel.selectedCategory == category ? .white : .primary)
                             .cornerRadius(20)
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
-        .background(Color(.systemBackground))
+        .background(Color.white)
+        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 5)
     }
     
     private var drinksList: some View {
-        List {
-            ForEach(viewModel.filteredDrinks) { drink in
-                drinkRow(drink)
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(viewModel.filteredDrinks) { drink in
+                    DrinkItemView(
+                        drink: drink,
+                        quantity: viewModel.selectedDrinks[drink.id] ?? 0,
+                        onIncrement: {
+                            viewModel.incrementDrink(drink)
+                        },
+                        onDecrement: {
+                            viewModel.decrementDrink(drink)
+                        }
+                    )
+                    .padding(.horizontal)
+                    
+                    Divider()
+                        .padding(.horizontal)
+                }
             }
+            .padding(.vertical)
         }
-        .listStyle(PlainListStyle())
     }
     
-    private func drinkRow(_ drink: MenuDrinkItem) -> some View {
-        HStack(spacing: 16) {
-            // Drink image
-            if let imageURL = drink.imageURL {
-                AsyncImage(url: URL(string: imageURL)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    Color.gray.opacity(0.3)
+    private var checkoutButton: some View {
+        VStack(spacing: 0) {
+            Divider()
+            
+            Button(action: {
+                showingCheckout = true
+            }) {
+                HStack {
+                    Text("\(viewModel.totalItems) items")
+                        .font(.headline)
+                    
+                    Spacer()
+                    
+                    Text("$\(String(format: "%.2f", viewModel.totalPrice))")
+                        .font(.headline)
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
                 }
-                .frame(width: 80, height: 80)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
                 .cornerRadius(8)
-            } else {
-                Image(systemName: "wineglass")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding()
+                .padding()
+            }
+            .disabled(viewModel.totalItems == 0)
+            .opacity(viewModel.totalItems == 0 ? 0.5 : 1)
+        }
+        .background(Color.white)
+    }
+    
+    private var checkoutView: some View {
+        Text("Checkout View")
+            .font(.title)
+            .padding()
+    }
+}
+
+// MARK: - Supporting Views
+
+struct DrinkItemView: View {
+    let drink: MenuDrinkItem
+    let quantity: Int
+    let onIncrement: () -> Void
+    let onDecrement: () -> Void
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Drink image
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.2))
                     .frame(width: 80, height: 80)
-                    .background(Color.gray.opacity(0.3))
-                    .cornerRadius(8)
+                
+                Text(drink.name.prefix(1))
+                    .font(.title)
+                    .foregroundColor(.gray)
             }
             
-            // Drink info
+            // Drink details
             VStack(alignment: .leading, spacing: 4) {
                 Text(drink.name)
                     .font(.headline)
                 
                 Text(drink.description)
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(2)
                 
                 Text("$\(String(format: "%.2f", drink.price))")
                     .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .fontWeight(.bold)
                     .padding(.top, 4)
             }
             
             Spacer()
             
-            // Selection controls
-            if drink.isAvailable {
-                HStack {
-                    Button(action: {
-                        viewModel.decrementDrink(drink)
-                    }) {
-                        Image(systemName: "minus.circle.fill")
-                            .foregroundColor(.accentColor)
-                            .font(.title2)
+            // Quantity controls
+            VStack {
+                if quantity > 0 {
+                    HStack {
+                        Button(action: onDecrement) {
+                            Image(systemName: "minus.circle.fill")
+                                .foregroundColor(.blue)
+                        }
+                        
+                        Text("\(quantity)")
+                            .font(.headline)
+                            .frame(minWidth: 30)
+                        
+                        Button(action: onIncrement) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(.blue)
+                        }
                     }
-                    .disabled(viewModel.selectedDrinks[drink.id] == nil)
-                    
-                    Text("\(viewModel.selectedDrinks[drink.id] ?? 0)")
-                        .font(.headline)
-                        .frame(minWidth: 30)
-                    
-                    Button(action: {
-                        viewModel.incrementDrink(drink)
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundColor(.accentColor)
-                            .font(.title2)
+                } else {
+                    Button(action: onIncrement) {
+                        Text("Add")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(16)
                     }
                 }
-            } else {
-                Text("Unavailable")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(4)
             }
         }
         .padding(.vertical, 8)
-    }
-    
-    private var checkoutButton: some View {
-        Button(action: {
-            showingCheckout = true
-        }) {
-            HStack {
-                Text("Checkout")
-                    .font(.headline)
-                
-                Spacer()
-                
-                Text("\(viewModel.totalItems) items • $\(String(format: "%.2f", viewModel.totalPrice))")
-                    .font(.subheadline)
-            }
-            .padding()
-            .background(Color.accentColor)
-            .foregroundColor(.white)
-            .cornerRadius(12)
-            .padding()
-        }
-        .disabled(viewModel.totalItems == 0)
-        .opacity(viewModel.totalItems == 0 ? 0.5 : 1)
-    }
-    
-    private var checkoutView: some View {
-        NavigationView {
-            VStack {
-                List {
-                    ForEach(viewModel.drinks.filter { viewModel.selectedDrinks[$0.id] != nil }) { drink in
-                        HStack {
-                            Text(drink.name)
-                            Spacer()
-                            Text("x\(viewModel.selectedDrinks[drink.id] ?? 0)")
-                                .foregroundColor(.secondary)
-                            Text("$\(String(format: "%.2f", drink.price * Double(viewModel.selectedDrinks[drink.id] ?? 0)))")
-                                .fontWeight(.semibold)
-                        }
-                    }
-                    
-                    Section {
-                        HStack {
-                            Text("Total")
-                                .fontWeight(.bold)
-                            Spacer()
-                            Text("$\(String(format: "%.2f", viewModel.totalPrice))")
-                                .fontWeight(.bold)
-                        }
-                    }
-                }
-                
-                Button(action: {
-                    // Process order
-                    showingCheckout = false
-                }) {
-                    Text("Place Order")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                        .padding()
-                }
-            }
-            .navigationTitle("Your Order")
-            .navigationBarItems(trailing: Button("Cancel") {
-                showingCheckout = false
-            })
-        }
     }
 }
 
@@ -446,23 +425,20 @@ struct VenueMenuView: View {
 
 struct VenueMenuView_Previews: PreviewProvider {
     static var previews: some View {
+        // Create a mock venue for preview
+        let mockVenue = Venue(
+            id: "venue_123",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, San Francisco, CA 94105",
+            imageURL: URL(string: "https://example.com/venue.jpg"),
+            latitude: 37.7749,
+            longitude: -122.4194,
+            isPremium: true
+        )
+        
         NavigationView {
-            VenueMenuView(venue: Venue(
-                id: "venue1",
-                name: "The Grand Ballroom",
-                description: "A luxurious venue for all your special events",
-                address: "123 Main Street, New York, NY",
-                capacity: 500,
-                currentOccupancy: 250,
-                waitTime: 15,
-                imageURL: "https://example.com/venue.jpg",
-                latitude: 40.7128,
-                longitude: -74.0060,
-                openingHours: "Mon-Sun: 10AM-10PM",
-                tags: ["Luxury", "Events", "Ballroom"],
-                rating: 4.8,
-                isOpen: true
-            ))
+            VenueMenuView(venue: mockVenue)
         }
     }
 } 

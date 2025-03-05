@@ -15,16 +15,14 @@
 		2A8613983161369888E0979D /* VenuePreviewViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCBF45255230CBCE3D7CEAA /* VenuePreviewViewTests.swift */; };
 		2BB7D4D9E66955FD3D05FDA6 /* DrinkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3975A06F59F8C48E6082F408 /* DrinkListView.swift */; };
 		4A441319974D1525059A373A /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE39FD10E53D9ABC7CFE3BE /* StringExtensions.swift */; };
-		4DC403680B04785A1CA45BEC /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1625D9BEE3E02DC62B636FF /* Models.framework */; };
 		5D4C896E8556B0EF2F42CB84 /* PreviewVenues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224E55841F5F06AFB940F9AE /* PreviewVenues.swift */; };
 		5D831EB1BC6AC24ADBA9A454 /* CheckoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CFB3478074C5AD7E5AA7BF /* CheckoutViewModel.swift */; };
 		60F93D30CCF26B869506D7D6 /* VenuePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B99CAF601708F5F83B538F /* VenuePreviewView.swift */; };
 		645E9DCFE0FB1D6785FE50A7 /* String+Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A100C9125E350E3205BB09 /* String+Localized.swift */; };
 		69EFC4FC5356145824AB5E6E /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CA90BF898D68A175F80E35 /* PaywallViewModel.swift */; };
-		6E1F8DC2DE7BA1EE13ABCBC4 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* Core.framework */; };
+		6E1F8DC2DE7BA1EE13ABCBC4 /* FOMO_PR/Frameworks/Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */; };
 		71FF3263CF74D510F8CCE629 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C211B0B957DEA05E18280D16 /* NetworkError.swift */; };
 		75E79BE22E2DE537F72C4BE8 /* OrderEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6288A5976DB4DC4A7B8366E /* OrderEndpoints.swift */; };
-		7BDC007E7733E9B9BE5C27BB /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1625D9BEE3E02DC62B636FF /* Models.framework */; };
 		7D9DAF357BD9D5971B1AA409 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB59232B7DBB23BCEEF0738D /* ProfileViewModel.swift */; };
 		861D8B39FA009E0FBCBB41D5 /* VenueEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769DBB74361515820063D742 /* VenueEndpoints.swift */; };
 		8A9CFC7BE89863A421B40EA1 /* PaymentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591F7407A69BEB6BC69028BC /* PaymentResult.swift */; };
@@ -40,10 +38,8 @@
 		9792DA212D739D2A00511100 /* FOMOTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9792DA182D739D2A00511100 /* FOMOTypes.swift */; };
 		9792DA222D739D2A00511100 /* ModuleDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9792DA192D739D2A00511100 /* ModuleDefinition.swift */; };
 		9792DA232D739D2A00511100 /* TypesTestEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9792DA1B2D739D2A00511100 /* TypesTestEntry.swift */; };
-		9792DA242D74392C00511100 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* Core.framework */; };
-		9792DA252D74392C00511100 /* Core.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* Core.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9792DA272D74392F00511100 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1625D9BEE3E02DC62B636FF /* Models.framework */; };
-		9792DA282D74392F00511100 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1625D9BEE3E02DC62B636FF /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9792DA242D74392C00511100 /* FOMO_PR/Frameworks/Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */; };
+		9792DA252D74392C00511100 /* FOMO_PR/Frameworks/Core.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9792DA292D74393500511100 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 715A8C76085DB76A96E3FA49 /* Network.framework */; };
 		9792DA2B2D74393600511100 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95C0DEC4834EBBF78F664E8B /* Security.framework */; };
 		A3A5BC374442BAF74DBFB9F8 /* VenueMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03CD3BC102E7CE5E98D1E94 /* VenueMenuView.swift */; };
@@ -108,8 +104,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9792DA282D74392F00511100 /* Models.framework in Embed Frameworks */,
-				9792DA252D74392C00511100 /* Core.framework in Embed Frameworks */,
+				9792DA252D74392C00511100 /* FOMO_PR/Frameworks/Core.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,12 +150,12 @@
 		BB2D6E18675DEA12F886C277 /* AgentTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentTestView.swift; sourceTree = "<group>"; };
 		BB59232B7DBB23BCEEF0738D /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		C03CD3BC102E7CE5E98D1E94 /* VenueMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VenueMenuView.swift; sourceTree = "<group>"; };
-		C1625D9BEE3E02DC62B636FF /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1625D9BEE3E02DC62B636FF /* FOMO_PR/Frameworks/Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FOMO_PR/Frameworks/Models.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C211B0B957DEA05E18280D16 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		CB5AD7A8B50E2944199254AE /* FOMO_PRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FOMO_PRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE1EB463250A0D79BDB4EE9E /* FOMO_PR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FOMO_PR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFD391E3955D05A495DE2531 /* VenueListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VenueListView.swift; sourceTree = "<group>"; };
-		D300D6DC64E80435D366421C /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FOMO_PR/Frameworks/Core.framework; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7A100C9125E350E3205BB09 /* String+Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Localized.swift"; sourceTree = "<group>"; };
 		F05289CC51782B5BE997F8D0 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		F37DFD52F67599F69E3E09C0 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
@@ -171,7 +166,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DC403680B04785A1CA45BEC /* Models.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,8 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7BDC007E7733E9B9BE5C27BB /* Models.framework in Frameworks */,
-				6E1F8DC2DE7BA1EE13ABCBC4 /* Core.framework in Frameworks */,
+				6E1F8DC2DE7BA1EE13ABCBC4 /* FOMO_PR/Frameworks/Core.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,8 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9792DA272D74392F00511100 /* Models.framework in Frameworks */,
-				9792DA242D74392C00511100 /* Core.framework in Frameworks */,
+				9792DA242D74392C00511100 /* FOMO_PR/Frameworks/Core.framework in Frameworks */,
 				9792DA2B2D74393600511100 /* Security.framework in Frameworks */,
 				9792DA292D74393500511100 /* Network.framework in Frameworks */,
 			);
@@ -419,10 +411,10 @@
 		C0F6AA5992990C7C9E9AD83F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D300D6DC64E80435D366421C /* Core.framework */,
+				D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */,
 				CE1EB463250A0D79BDB4EE9E /* FOMO_PR.app */,
 				CB5AD7A8B50E2944199254AE /* FOMO_PRTests.xctest */,
-				C1625D9BEE3E02DC62B636FF /* Models.framework */,
+				C1625D9BEE3E02DC62B636FF /* FOMO_PR/Frameworks/Models.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -567,7 +559,7 @@
 			);
 			name = Models;
 			productName = Models;
-			productReference = C1625D9BEE3E02DC62B636FF /* Models.framework */;
+			productReference = C1625D9BEE3E02DC62B636FF /* FOMO_PR/Frameworks/Models.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		F83AF1AC66F69858B05FC2A2 /* Core */ = {
@@ -584,7 +576,7 @@
 			);
 			name = Core;
 			productName = Core;
-			productReference = D300D6DC64E80435D366421C /* Core.framework */;
+			productReference = D300D6DC64E80435D366421C /* FOMO_PR/Frameworks/Core.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		FBBE9F0192EFE6F46B9386BC /* FOMO_PR */ = {
@@ -766,9 +758,11 @@
 					"@executable_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fomoapp.fomopr.Models";
 				PRODUCT_MODULE_NAME = Models;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -780,6 +774,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -807,9 +802,10 @@
 				PRODUCT_MODULE_NAME = FOMO_PR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "FOMO_PR/FOMO_PR-Bridging-Header.h";
 				SWIFT_VERSION = 5.9;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -833,9 +829,12 @@
 					"@executable_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fomoapp.fomopr.Models";
 				PRODUCT_MODULE_NAME = Models;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -862,9 +861,11 @@
 					"@executable_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fomoapp.fomopr.Core";
 				PRODUCT_MODULE_NAME = Core;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -928,6 +929,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -954,9 +956,11 @@
 					"@executable_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.fomoapp.fomopr.Core";
 				PRODUCT_MODULE_NAME = Core;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -977,6 +981,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.fomoapp.fomopr;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FOMO_PR.app/FOMO_PR";
@@ -997,6 +1002,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.fomoapp.fomopr;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.9;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FOMO_PR.app/FOMO_PR";
@@ -1008,6 +1014,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -1035,9 +1042,10 @@
 				PRODUCT_MODULE_NAME = FOMO_PR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "FOMO_PR/FOMO_PR-Bridging-Header.h";
 				SWIFT_VERSION = 5.9;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1091,6 +1099,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;

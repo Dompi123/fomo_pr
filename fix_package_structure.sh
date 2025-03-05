@@ -82,7 +82,7 @@ EOF
 # Network module
 cat > Network/Sources/Network/Network.swift << 'EOF'
 import Foundation
-import Models
+// import Models // Commenting out Models import to use local implementations instead
 
 public enum NetworkError: Error {
     case invalidURL
@@ -143,7 +143,7 @@ EOF
 # Core module
 cat > Core/Sources/Core/Core.swift << 'EOF'
 import Foundation
-import Models
+// import Models // Commenting out Models import to use local implementations instead
 import Network
 
 public enum Security {

@@ -1,8 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
-import OSLog
-import Core
+// import FOMO_PR - Commenting out as it's causing issues
 
 // Define the Profile model
 struct Profile: Identifiable {
@@ -40,18 +39,11 @@ class ProfileViewModel: ObservableObject {
     
     // Using URLSession directly instead of APIClient
     private var cancellables = Set<AnyCancellable>()
-    private let logger = Logger(subsystem: "com.fomo", category: "ProfileViewModel")
     
-    // Regular initializer that requires async
-    init() async {
-        await fetchProfile()
-    }
-    
-    // Preview-specific initializer
-    init(preview: Bool) {
-        // This initializer is only for preview purposes
-        // No async operations are performed
-        print("Creating preview ProfileViewModel")
+    init() {
+        Task {
+            await fetchProfile()
+        }
     }
     
     func fetchProfile() async {
@@ -103,7 +95,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     func updateProfileImage(url: URL) {
-        guard let profile = profile else { return }
+        guard profile != nil else { return }
         
         Task {
             isLoading = true
@@ -111,7 +103,7 @@ class ProfileViewModel: ObservableObject {
             
             do {
                 // Create a URL request directly
-                var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile/image")!)
+                var request = URLRequest(url: URL(string: "https://api.fomopr.com/profile")!)
                 request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 
@@ -132,7 +124,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     func updatePreferences(preferences: [String: Bool]) {
-        guard var profile = profile else { return }
+        guard let profile = profile else { return }
         
         Task {
             isLoading = true
@@ -173,7 +165,7 @@ class ProfileViewModel: ObservableObject {
 // MARK: - Preview Helper
 extension ProfileViewModel {
     static var preview: ProfileViewModel {
-        let viewModel = ProfileViewModel(preview: true)
+        let viewModel = ProfileViewModel()
         viewModel.profile = Profile(
             id: "user123",
             name: "John Doe",

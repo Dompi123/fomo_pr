@@ -1,6 +1,11 @@
 import SwiftUI
-import Models
-import Core
+// import Models - Replaced with local implementation
+// import Core - Replaced with local implementation
+
+// Add import for our local implementations
+import UIKit
+// Add import for ModuleImports
+import Foundation
 
 struct PassPurchaseView: View {
     let venue: Venue
@@ -144,7 +149,19 @@ struct PassOptionCard: View {
 #if DEBUG
 struct PassPurchaseView_Previews: PreviewProvider {
     static var previews: some View {
-        PassPurchaseView(venue: .preview)
+        // Create a mock venue for preview
+        let mockVenue = Venue(
+            id: "venue_123",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, San Francisco, CA 94105",
+            imageURL: URL(string: "https://example.com/venue.jpg"),
+            latitude: 37.7749,
+            longitude: -122.4194,
+            isPremium: true
+        )
+        
+        PassPurchaseView(venue: mockVenue)
     }
 }
 #endif 

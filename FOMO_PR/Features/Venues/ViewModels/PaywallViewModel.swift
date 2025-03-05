@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import Models
+// import Models // Commenting out Models import to use local implementations instead
 // import FOMO_PR - Commenting out as it's causing issues
 
 // Define the PaywallError enum
@@ -102,7 +102,8 @@ class EnhancedPricingTier {
 // MARK: - View Model
 
 class PaywallViewModel: ObservableObject {
-    let venue: String
+    // Use the Venue type directly
+    let venue: Venue
     
     @Published var selectedTier: EnhancedPricingTier?
     @Published var isLoading: Bool = false
@@ -110,7 +111,7 @@ class PaywallViewModel: ObservableObject {
     @Published var tiers: [EnhancedPricingTier] = []
     @Published var purchaseCompleted: Bool = false
     
-    init(venue: String) {
+    init(venue: Venue) {
         self.venue = venue
         loadTiers()
     }
@@ -157,7 +158,7 @@ class PaywallViewModel: ObservableObject {
     
     func purchasePass() {
         guard let selectedTier = selectedTier else {
-            error = NSError(domain: "PaywallViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "No tier selected"])
+            error = PaywallError.noSelectedTier
             return
         }
         
@@ -172,10 +173,13 @@ class PaywallViewModel: ObservableObject {
             // Simulate a 90% success rate
             let randomNumber = Int.random(in: 1...10)
             if randomNumber == 1 {
-                self.error = NSError(domain: "PaywallViewModel", code: 2, userInfo: [NSLocalizedDescriptionKey: "Payment failed. Please try again."])
+                self.error = PaywallError.paymentFailed("Payment failed. Please try again.")
                 self.isLoading = false
                 return
             }
+            
+            // Use the selectedTier to log or process the purchase
+            print("Processing purchase for tier: \(selectedTier.name) at price: \(selectedTier.price)")
             
             self.purchaseCompleted = true
             self.isLoading = false
@@ -187,7 +191,18 @@ class PaywallViewModel: ObservableObject {
 
 extension PaywallViewModel {
     static func preview() -> PaywallViewModel {
-        let viewModel = PaywallViewModel(venue: "venue-123")
+        let previewVenue = Venue(
+            id: "venue1",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, New York, NY 10001",
+            imageURL: nil,
+            latitude: 40.7128,
+            longitude: -74.0060,
+            isPremium: true
+        )
+        
+        let viewModel = PaywallViewModel(venue: previewVenue)
         viewModel.tiers = [
             EnhancedPricingTier(
                 id: "basic",
@@ -222,5 +237,44 @@ extension PricingTier {
     }
     
     // Other computed properties or methods can stay here
-} 
+}
+
+#if DEBUG
+struct PaywallViewModel_Previews: PreviewProvider {
+    static var previews: some View {
+        let previewVenue = Venue(
+            id: "venue1",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, New York, NY 10001",
+            imageURL: nil,
+            latitude: 40.7128,
+            longitude: -74.0060,
+            isPremium: true
+        )
+        
+        let viewModel = PaywallViewModel(venue: previewVenue)
+        viewModel.tiers = [
+            EnhancedPricingTier(
+                id: "basic",
+                name: "Basic Pass",
+                price: 19.99,
+                description: "Access to the venue for one day",
+                features: ["Entry to main areas", "Access to basic amenities"]
+            ),
+            EnhancedPricingTier(
+                id: "premium",
+                name: "Premium Pass",
+                price: 49.99,
+                description: "Full access to the venue for one day",
+                features: ["Entry to all areas", "Complimentary drink", "Priority entry", "Access to VIP lounge"]
+            )
+        ]
+        
+        // Return a View that uses the viewModel
+        return PaywallView(venue: previewVenue)
+            .environmentObject(viewModel)
+    }
+}
+#endif 
 

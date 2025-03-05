@@ -20,135 +20,41 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.lifestyle</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-			</array>
+	<key>MinimumOSVersion</key>
+	<string>16.0</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
+		<key>LSUIElement</key>
+	<false/>
 </dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to your location to show nearby venues.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to save and upload images.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
+		<key>LSUIElement</key>
+	<false/>
 </dict>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchScreen</key>
 	<dict/>
-</dict>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
-</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to the camera to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to your photo library to save and upload images.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show nearby venues.</string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UILaunchScreen</key>
-	<dict/>
-</dict>
-	<key>UILaunchScreen</key>
-	<dict/>
+	<key>LSUIElement</key>
+	<false/>
 </dict>
 </plist>

@@ -1,8 +1,8 @@
 import SwiftUI
 import Foundation
 import OSLog
-import Models
-import Core
+// import Models // Commenting out Models import to use local implementations instead
+// import Core // Commenting out Core import to use local implementations instead
 
 struct VenueDetailView: View {
     let venue: Venue
@@ -18,7 +18,7 @@ struct VenueDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Venue Image
-                if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
+                if let imageURL = venue.imageURL {
                     AsyncImage(url: imageURL) { phase in
                         if let image = phase.image {
                             image
@@ -50,9 +50,9 @@ struct VenueDetailView: View {
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    Text(venue.location)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+                    Text(venue.address)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
                     
                     Text(venue.description)
                         .font(.body)
@@ -258,23 +258,21 @@ struct EventRow: View {
                 .font(.headline)
             
             HStack {
-                Image(systemName: "calendar")
-                    .foregroundColor(.secondary)
                 Text(date)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                Spacer()
-                
-                Image(systemName: "clock")
+                Text("•")
                     .foregroundColor(.secondary)
+                
                 Text(time)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }
@@ -293,50 +291,36 @@ struct ReviewRow: View {
                 
                 Spacer()
                 
-                HStack(spacing: 2) {
-                    ForEach(1...5, id: \.self) { index in
-                        Image(systemName: index <= Int(rating) ? "star.fill" : "star")
-                            .foregroundColor(.yellow)
-                            .font(.caption)
-                    }
-                }
-                
-                Text(date)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text("\(rating, specifier: "%.1f") ⭐")
+                    .font(.subheadline)
             }
             
             Text(comment)
-                .font(.subheadline)
+                .font(.body)
+                .padding(.vertical, 4)
+            
+            Text(date)
+                .font(.caption)
                 .foregroundColor(.secondary)
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }
 
-#if DEBUG
+// Preview provider
 struct VenueDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            VenueDetailView(venue: Venue(
-                id: "venue1",
-                name: "The Grand Ballroom",
-                description: "A luxurious venue for all your special events",
-                address: "123 Main Street, New York, NY",
-                capacity: 500,
-                currentOccupancy: 250,
-                waitTime: 15,
-                imageURL: "https://example.com/venue.jpg",
-                latitude: 40.7128,
-                longitude: -74.0060,
-                openingHours: "Mon-Sun: 10AM-10PM",
-                tags: ["Luxury", "Events", "Ballroom"],
-                rating: 4.8,
-                isOpen: true
-            ))
-        }
+        VenueDetailView(venue: Venue(
+            id: "venue1",
+            name: "The Grand Ballroom",
+            description: "A luxurious ballroom for elegant events",
+            address: "123 Main Street, New York, NY",
+            imageURL: URL(string: "https://example.com/venue1.jpg"),
+            latitude: 40.7128,
+            longitude: -74.0060,
+            isPremium: true
+        ))
     }
-}
-#endif 
+} 

@@ -1,11 +1,29 @@
 import SwiftUI
 import Foundation
+import CoreLocation
+import OSLog
 
-// Add import for core models
-import Models
-import Core
+// Commenting out Models import to use local implementations instead
+// import Models
+// Remove direct import of Core
+// import Core
+
+// Add import for our local implementations
+import UIKit
 
 // MARK: - View Models
+
+// Add the missing VenueFilters struct
+struct VenueFilters {
+    var priceLevel: Int? = nil
+    var category: String? = nil
+    var isOpenNow: Bool = false
+    var maxDistance: Double = 5.0
+    var minRating: Double = 0.0
+}
+
+// Remove the duplicate Venue struct definition and use the one from FOMOTypes.swift
+// The Venue struct is already defined in FOMOTypes.swift
 
 // Comment out or remove duplicate definitions
 /*
@@ -84,27 +102,14 @@ extension Text {
 //     let distance: Double?
 // }
 
-// Add extensions for missing properties in the core Venue model
-extension Venue {
-    var priceLevel: Int {
-        // In a real app, this would come from the backend
-        return 3
-    }
-    
-    var category: String {
-        return tags.first ?? "Venue"
-    }
-    
-    var distance: Double {
-        // In a real app, this would be calculated based on user's location
-        return 0.5  // Default distance in miles
-    }
-}
+// Remove all duplicate extensions for Venue
+
+private let logger = Logger(subsystem: "com.fomo.pr", category: "VenueListView")
 
 class VenueListViewModel: ObservableObject {
     @Published var venues: [Venue] = []
     @Published var isLoading = false
-    @Published var error: Error?
+    @Published var errorMessage: String?
     @Published var filters = VenueFilters()
     
     init() {
@@ -113,62 +118,13 @@ class VenueListViewModel: ObservableObject {
     
     func loadVenues() {
         isLoading = true
-        error = nil
+        errorMessage = nil
         
         // Simulate network delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: DispatchWorkItem {
             // In a real app, this would fetch venues from an API
             // For now, we'll use mock data
-            self.venues = [
-                Venue(
-                    id: "venue1",
-                    name: "The Grand Ballroom",
-                    description: "A luxurious venue for all your special events",
-                    address: "123 Main Street, New York, NY",
-                    capacity: 500,
-                    currentOccupancy: 250,
-                    waitTime: 15,
-                    imageURL: "https://example.com/venue1.jpg",
-                    latitude: 40.7128,
-                    longitude: -74.0060,
-                    openingHours: "Mon-Sun: 10AM-10PM",
-                    tags: ["Luxury", "Events", "Ballroom"],
-                    rating: 4.8,
-                    isOpen: true
-                ),
-                Venue(
-                    id: "venue2",
-                    name: "Skyline Lounge",
-                    description: "Rooftop bar with amazing city views",
-                    address: "456 Park Avenue, New York, NY",
-                    capacity: 300,
-                    currentOccupancy: 150,
-                    waitTime: 30,
-                    imageURL: "https://example.com/venue2.jpg",
-                    latitude: 40.7580,
-                    longitude: -73.9855,
-                    openingHours: "Mon-Sun: 4PM-2AM",
-                    tags: ["Rooftop", "Bar", "Views"],
-                    rating: 4.5,
-                    isOpen: true
-                ),
-                Venue(
-                    id: "venue3",
-                    name: "The Underground",
-                    description: "Hip underground club with live music",
-                    address: "789 Broadway, New York, NY",
-                    capacity: 200,
-                    currentOccupancy: 100,
-                    waitTime: 45,
-                    imageURL: "https://example.com/venue3.jpg",
-                    latitude: 40.7484,
-                    longitude: -73.9857,
-                    openingHours: "Mon-Sun: 11AM-2AM",
-                    tags: ["Hip", "Music", "Club"],
-                    rating: 4.2,
-                    isOpen: true
-                )
-            ]
+            self.venues = self.loadMockVenues()
             self.isLoading = false
         })
     }
@@ -189,6 +145,66 @@ class VenueListViewModel: ObservableObject {
         // ...
         
         return filtered
+    }
+    
+    func fetchVenues() async {
+        await MainActor.run {
+            isLoading = true
+            errorMessage = nil
+        }
+        
+        do {
+            // Simulate network delay
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+            
+            // In a real app, this would be a network call
+            // For now, use mock data
+            await MainActor.run {
+                self.venues = self.loadMockVenues()
+                self.isLoading = false
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Failed to load venues: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
+    
+    // Helper function to create mock venues
+    private func loadMockVenues() -> [Venue] {
+        return [
+            Venue(
+                id: "venue1",
+                name: "The Grand Ballroom",
+                description: "A luxurious ballroom for elegant events",
+                address: "123 Main Street, New York, NY",
+                imageURL: URL(string: "https://example.com/venue1.jpg"),
+                latitude: 40.7128,
+                longitude: -74.0060,
+                isPremium: true
+            ),
+            Venue(
+                id: "venue2",
+                name: "Skyline Lounge",
+                description: "Rooftop lounge with panoramic city views",
+                address: "456 Park Avenue, New York, NY",
+                imageURL: URL(string: "https://example.com/venue2.jpg"),
+                latitude: 40.7580,
+                longitude: -73.9855,
+                isPremium: true
+            ),
+            Venue(
+                id: "venue3",
+                name: "The Basement Club",
+                description: "Underground club with live music",
+                address: "789 Broadway, New York, NY",
+                imageURL: URL(string: "https://example.com/venue3.jpg"),
+                latitude: 40.7484,
+                longitude: -73.9857,
+                isPremium: false
+            )
+        ]
     }
 }
 
@@ -221,20 +237,19 @@ struct VenueListItemView: View {
                     .lineLimit(1)
                 
                 HStack {
-                    Text("⭐ \(String(format: "%.1f", venue.rating))")
+                    Text(venue.isPremium ? "⭐⭐⭐⭐⭐" : "⭐⭐⭐⭐")
                     Text("•")
-                    Text(String(repeating: "$", count: venue.priceLevel))
+                    Text(venue.isPremium ? "$$$" : "$$")
                     Text("•")
-                    Text("Distance: \(venue.distance, specifier: "%.1f") miles")
+                    Text(venue.isPremium ? "Premium" : "Standard")
                         .font(.caption)
-                        .foregroundColor(.secondary)
                 }
                 .font(.caption)
                 .foregroundColor(.secondary)
                 
-                Text(venue.isOpen ? "Open Now" : "Closed")
+                Text("Open Now")
                     .font(.caption)
-                    .foregroundColor(venue.isOpen ? .green : .red)
+                    .foregroundColor(.green)
             }
             
             Spacer()
@@ -247,111 +262,145 @@ struct VenueListItemView: View {
 }
 
 struct VenueListView: View {
+    @EnvironmentObject private var navigationCoordinator: PreviewNavigationCoordinator
     @StateObject private var viewModel = VenueListViewModel()
     @State private var searchText = ""
     @State private var showingFilters = false
     @State private var selectedVenue: Venue?
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                if viewModel.isLoading {
-                    ProgressView("Loading venues...")
-                } else if let error = viewModel.error {
-                    VStack {
-                        Text("Error loading venues")
-                            .font(.headline)
-                        Text(error.localizedDescription)
-                            .font(.subheadline)
-                            .foregroundColor(.red)
-                        Button("Retry") {
-                            viewModel.loadVenues()
-                        }
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                    }
-                    .padding()
-                } else {
-                    VStack {
-                        searchBar
-                        
-                        if viewModel.filteredVenues(searchText: searchText).isEmpty {
-                            VStack {
-                                Text("No venues found")
-                                    .font(.headline)
-                                Text("Try adjusting your search or filters")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        List {
+            ForEach(filteredVenues) { venue in
+                VenueRowView(venue: venue)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        logger.debug("Tapped venue: \(venue.name)")
+                        if venue.isPremium {
+                            navigationCoordinator.navigate(to: .drinkMenu(venue: venue))
                         } else {
-                            venueList
+                            navigationCoordinator.navigate(to: .paywall(venue: venue))
                         }
                     }
-                }
-            }
-            .navigationTitle("Venues")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showingFilters.toggle()
-                    }) {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
-                            .imageScale(.large)
-                    }
-                }
-            }
-            .sheet(isPresented: $showingFilters) {
-                FilterView(viewModel: viewModel)
-            }
-            .sheet(item: $selectedVenue) { venue in
-                NavigationView {
-                    VenueDetailView(venue: venue)
-                        .navigationTitle(venue.name)
-                        .navigationBarItems(trailing: Button("Done") {
-                            selectedVenue = nil
-                        })
-                }
             }
         }
-    }
-    
-    private var searchBar: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.secondary)
-            
-            TextField("Search venues", text: $searchText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            if !searchText.isEmpty {
+        .searchable(text: $searchText, prompt: "Search venues")
+        .listStyle(PlainListStyle())
+        .padding(.top, -35)
+        .safeAreaInset(edge: .top) {
+            Color.clear.frame(height: 0)
+        }
+        .refreshable {
+            Task {
+                await viewModel.fetchVenues()
+            }
+        }
+        .onAppear {
+            logger.debug("VenueListView appeared")
+            Task {
+                await viewModel.fetchVenues()
+            }
+        }
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    searchText = ""
+                    showingFilters.toggle()
                 }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
+                    Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+                        .imageScale(.large)
+                        .labelStyle(.titleAndIcon)
                 }
             }
         }
-        .padding(.horizontal)
+        .sheet(isPresented: $showingFilters) {
+            FilterView(viewModel: viewModel)
+        }
+        .sheet(item: $selectedVenue) { venue in
+            NavigationView {
+                VenueDetailView(venue: venue)
+                    .navigationTitle(venue.name)
+                    .navigationBarItems(trailing: Button("Done") {
+                        selectedVenue = nil
+                    })
+            }
+        }
     }
     
-    private var venueList: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
-                ForEach(viewModel.filteredVenues(searchText: searchText)) { venue in
-                        VenueCard(venue: venue)
-                        .onTapGesture {
-                            selectedVenue = venue
+    private var filteredVenues: [Venue] {
+        if searchText.isEmpty {
+            return viewModel.venues
+        } else {
+            return viewModel.venues.filter { venue in
+                venue.name.localizedCaseInsensitiveContains(searchText) ||
+                venue.description.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+}
+
+struct VenueRowView: View {
+    let venue: Venue
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            // Venue image
+            if let imageURL = venue.imageURL {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 80, height: 80)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 80, height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    case .failure:
+                        Image(systemName: "photo")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                            .frame(width: 80, height: 80)
+                    @unknown default:
+                        EmptyView()
                     }
                 }
+                .frame(width: 80, height: 80)
+            } else {
+                Image(systemName: "building.2")
+                    .font(.system(size: 40))
+                    .foregroundColor(.gray)
+                    .frame(width: 80, height: 80)
             }
-            .padding()
+            
+            // Venue details
+            VStack(alignment: .leading, spacing: 4) {
+                Text(venue.name)
+                    .font(.headline)
+                
+                Text(venue.description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+                
+                Text(venue.address)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                // Premium badge if applicable
+                if venue.isPremium {
+                    HStack {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                        Text("Premium")
+                            .font(.caption)
+                            .foregroundColor(.yellow)
+                    }
+                    .padding(.top, 2)
+                }
+            }
         }
-        .background(Color(.systemGroupedBackground))
+        .padding(.vertical, 8)
     }
 }
 
@@ -360,7 +409,7 @@ struct VenueCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
+            if let imageURL = venue.imageURL {
                 AsyncImage(url: imageURL) { phase in
                     if let image = phase.image {
                         image
@@ -402,13 +451,12 @@ struct VenueCard: View {
                 .lineLimit(1)
             
             HStack {
-                Text("⭐ \(String(format: "%.1f", venue.rating))")
+                Text(venue.isPremium ? "⭐⭐⭐⭐⭐" : "⭐⭐⭐⭐")
                 Text("•")
-                Text(String(repeating: "$", count: venue.priceLevel))
+                Text(venue.isPremium ? "$$$" : "$$")
                 Text("•")
-                Text("Distance: \(venue.distance, specifier: "%.1f") miles")
+                Text(venue.isPremium ? "Premium" : "Standard")
                     .font(.caption)
-                    .foregroundColor(.secondary)
             }
             .font(.caption)
             .foregroundColor(.secondary)
@@ -425,7 +473,6 @@ struct VenueCard: View {
     }
 }
 
-
 struct VenuePassView: View {
     let venue: Venue
     
@@ -433,12 +480,6 @@ struct VenuePassView: View {
         Text("Pass purchase view for \(venue.name)")
             .navigationTitle("Buy Pass")
     }
-}
-
-struct VenueFilters {
-    var maxDistance: Double = 5.0
-    var priceRange: ClosedRange<Double> = 0...500
-    var categories: Set<String> = []
 }
 
 struct FilterView: View {
@@ -490,9 +531,13 @@ struct FilterView: View {
 
 // MARK: - Preview
 
+#if DEBUG
 struct VenueListView_Previews: PreviewProvider {
     static var previews: some View {
-            VenueListView()
+        VenueListView()
+            .environmentObject(PreviewNavigationCoordinator.shared)
+            .preferredColorScheme(.dark)
     }
 }
+#endif
 
