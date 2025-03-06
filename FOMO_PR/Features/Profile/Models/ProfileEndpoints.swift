@@ -1,5 +1,6 @@
 import Foundation
-import FOMO_PR
+// Remove the FOMO_PR import as it's causing ambiguity
+// import FOMO_PR
 
 // Define the missing types
 struct ProfileData: Codable {

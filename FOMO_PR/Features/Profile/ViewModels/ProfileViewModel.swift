@@ -1,7 +1,8 @@
 import Foundation
 import SwiftUI
 import Combine
-import FOMO_PR
+// Remove the FOMO_PR import as it's causing ambiguity
+// import FOMO_PR
 // import FOMOTypes - Commenting out as it's causing issues
 
 // Use the User type from FOMO_PR instead of defining Profile locally

@@ -2,7 +2,8 @@ import SwiftUI
 import UIKit
 import OSLog
 import Foundation
-import FOMO_PR
+// Using PaymentTypes types from local file instead of as a module
+// import FOMO_PR - Commented out as this file is part of the module
 
 // MARK: - Debug Logging
 private let logger = Logger(subsystem: "com.fomo.pr", category: "AppInit")
@@ -575,4 +576,7 @@ struct DrinkCartView: View {
     }
 }
 */
+#endif
+
+// Add the missing #endif for PREVIEW_MODE
 #endif 

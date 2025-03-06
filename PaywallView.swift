@@ -1,7 +1,26 @@
 import SwiftUI
 import OSLog
+import FOMO_PR  // Import for FOMOTheme
+import FOMOThemeExtensions
 
 private let logger = Logger(subsystem: "com.fomo.pr", category: "PaywallView")
+
+// MARK: - Additional Paywall-specific View Extensions
+extension View {
+    func paywallHeadingStyle() -> some View {
+        self.fomoHeadlineStyle()
+            .padding(.horizontal, FOMOTheme.Spacing.medium)
+    }
+    
+    func paywallButtonStyle(isEnabled: Bool = true) -> some View {
+        self.frame(maxWidth: .infinity)
+            .padding()
+            .background(isEnabled ? FOMOTheme.Colors.primary : FOMOTheme.Colors.textSecondary)
+            .foregroundColor(FOMOTheme.Colors.text)
+            .cornerRadius(FOMOTheme.Radius.medium)
+            .padding(.horizontal, FOMOTheme.Spacing.medium)
+    }
+}
 
 struct PaywallView: View {
     @EnvironmentObject private var navigationCoordinator: PreviewNavigationCoordinator
@@ -14,7 +33,7 @@ struct PaywallView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: FOMOTheme.Spacing.large) {
                     // Header with venue image
                     headerView
                     
@@ -27,7 +46,7 @@ struct PaywallView: View {
                     // Terms and conditions
                     termsView
                 }
-                .padding(.bottom, 32)
+                .padding(.bottom, FOMOTheme.Spacing.xxxLarge)
             }
             .navigationTitle("Premium Access")
             .navigationBarTitleDisplayMode(.inline)
@@ -53,14 +72,14 @@ struct PaywallView: View {
     }
     
     private var headerView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: FOMOTheme.Spacing.medium) {
             // Venue image
             if let imageURL = viewModel.venue.imageURL {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:
                         Rectangle()
-                            .fill(Color.gray.opacity(0.3))
+                            .fill(FOMOTheme.Colors.surface)
                             .frame(height: 200)
                             .overlay(ProgressView())
                     case .success(let image):
@@ -71,12 +90,12 @@ struct PaywallView: View {
                             .clipped()
                     case .failure:
                         Rectangle()
-                            .fill(Color.gray.opacity(0.3))
+                            .fill(FOMOTheme.Colors.surface)
                             .frame(height: 200)
                             .overlay(
                                 Image(systemName: "photo")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.gray)
+                                    .font(FOMOTheme.Typography.largeTitle)
+                                    .foregroundColor(FOMOTheme.Colors.textSecondary)
                             )
                     @unknown default:
                         EmptyView()
@@ -84,41 +103,39 @@ struct PaywallView: View {
                 }
             } else {
                 Rectangle()
-                    .fill(Color.gray.opacity(0.3))
+                    .fill(FOMOTheme.Colors.surface)
                     .frame(height: 200)
                     .overlay(
                         Image(systemName: "building.2")
-                            .font(.largeTitle)
-                            .foregroundColor(.gray)
+                            .font(FOMOTheme.Typography.largeTitle)
+                            .foregroundColor(FOMOTheme.Colors.textSecondary)
                     )
             }
             
             // Venue info
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: FOMOTheme.Spacing.small) {
                 Text(viewModel.venue.name)
-                    .font(.title2)
+                    .fomoTitle2Style()
                     .fontWeight(.bold)
                 
                 Text(viewModel.venue.description)
-                    .font(.body)
-                    .foregroundColor(.secondary)
+                    .fomoBodyStyle()
                     .fixedSize(horizontal: false, vertical: true)
                 
                 Text("Unlock premium features at this venue")
-                    .font(.headline)
-                    .padding(.top, 4)
+                    .fomoHeadlineStyle()
+                    .padding(.top, FOMOTheme.Spacing.xxSmall)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, FOMOTheme.Spacing.medium)
         }
     }
     
     private var subscriptionOptionsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
             Text("Choose Your Pass")
-                .font(.headline)
-                .padding(.horizontal)
+                .paywallHeadingStyle()
             
-            VStack(spacing: 16) {
+            VStack(spacing: FOMOTheme.Spacing.medium) {
                 ForEach(viewModel.subscriptionOptions) { option in
                     SubscriptionOptionCard(
                         option: option,
@@ -129,39 +146,38 @@ struct PaywallView: View {
                     )
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, FOMOTheme.Spacing.medium)
         }
     }
     
     private var benefitsView: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
             Text("Premium Benefits")
-                .font(.headline)
-                .padding(.horizontal)
+                .paywallHeadingStyle()
             
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: FOMOTheme.Spacing.small) {
                 ForEach(viewModel.benefits, id: \.self) { benefit in
-                    HStack(alignment: .top, spacing: 12) {
+                    HStack(alignment: .top, spacing: FOMOTheme.Spacing.small) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(FOMOTheme.Colors.success)
                             .font(.system(size: 20))
                         
                         Text(benefit)
-                            .font(.body)
+                            .fomoBodyStyle()
                     }
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, FOMOTheme.Spacing.medium)
         }
     }
     
     private var termsView: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: FOMOTheme.Spacing.large) {
             Text("By continuing, you agree to our Terms of Service and Privacy Policy")
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .fomoCaptionStyle()
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                .padding(.horizontal, FOMOTheme.Spacing.medium)
             
             Button(action: {
                 Task {
@@ -171,42 +187,34 @@ struct PaywallView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
-                        .tint(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                        .tint(FOMOTheme.Colors.text)
+                        .paywallButtonStyle()
                 } else {
                     Text("Purchase \(viewModel.selectedOption?.name ?? "Pass")")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(viewModel.selectedOption != nil ? Color.blue : Color.gray)
-                        .cornerRadius(12)
+                        .fomoHeadlineStyle()
+                        .foregroundColor(FOMOTheme.Colors.text)
+                        .paywallButtonStyle(isEnabled: viewModel.selectedOption != nil)
                 }
             }
             .disabled(viewModel.selectedOption == nil || viewModel.isLoading)
-            .padding(.horizontal)
         }
     }
     
     private var purchaseSuccessView: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: FOMOTheme.Spacing.large) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 80))
-                .foregroundColor(.green)
+                .foregroundColor(FOMOTheme.Colors.success)
                 .padding()
             
             Text("Purchase Successful!")
-                .font(.title)
+                .fomoTitle1Style()
                 .fontWeight(.bold)
             
             Text("You now have premium access to \(viewModel.venue.name)")
-                .font(.body)
+                .fomoBodyStyle()
                 .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-                .padding(.horizontal)
+                .padding(.horizontal, FOMOTheme.Spacing.medium)
             
             Button(action: {
                 viewModel.showingSuccessView = false
@@ -214,15 +222,10 @@ struct PaywallView: View {
                 // In a real app, this would navigate to the venue's premium content
             }) {
                 Text("Continue")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .cornerRadius(12)
+                    .fomoHeadlineStyle()
+                    .paywallButtonStyle()
             }
-            .padding(.horizontal)
-            .padding(.top, 24)
+            .padding(.top, FOMOTheme.Spacing.large)
         }
         .padding()
     }
@@ -235,42 +238,30 @@ struct SubscriptionOptionCard: View {
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: FOMOTheme.Spacing.small) {
                 Text(option.name)
-                    .font(.headline)
+                    .fomoHeadlineStyle()
                 
                 Text(option.description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .fomoSubheadlineStyle()
                 
                 Text(option.price.formatted(.currency(code: "USD")))
-                    .font(.title3)
+                    .fomoTextStyle(FOMOTheme.Typography.title3)
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
             }
             
             Spacer()
             
-            ZStack {
-                Circle()
-                    .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 2)
-                    .frame(width: 24, height: 24)
-                
-                if isSelected {
-                    Circle()
-                        .fill(Color.blue)
-                        .frame(width: 16, height: 16)
-                }
-            }
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .font(.system(size: 24))
+                .foregroundColor(isSelected ? FOMOTheme.Colors.primary : FOMOTheme.Colors.textSecondary)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.secondarySystemBackground))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
-                )
+        .padding(FOMOTheme.Spacing.medium)
+        .background(isSelected ? FOMOTheme.Colors.primary.opacity(0.1) : FOMOTheme.Colors.surface)
+        .fomoCornerRadius()
+        .overlay(
+            RoundedRectangle(cornerRadius: FOMOTheme.Radius.medium)
+                .stroke(isSelected ? FOMOTheme.Colors.primary : FOMOTheme.Colors.textSecondary.opacity(0.3), lineWidth: 1)
         )
         .onTapGesture {
             onSelect()
@@ -360,9 +351,18 @@ class PaywallViewModel: ObservableObject {
 #if DEBUG
 struct PaywallView_Previews: PreviewProvider {
     static var previews: some View {
-        PaywallView(venue: Venue.mockVenue)
+        let venue = Venue(
+            id: "venue1",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, New York, NY 10001",
+            imageURL: nil,
+            rating: 4.7,
+            isPremium: true
+        )
+        
+        return PaywallView(venue: venue)
             .environmentObject(PreviewNavigationCoordinator.shared)
-            .preferredColorScheme(.dark)
     }
 }
 #endif 

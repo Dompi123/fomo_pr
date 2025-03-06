@@ -1,8 +1,35 @@
 import SwiftUI
 import Foundation
 import OSLog
+import FOMO_PR  // Import for FOMOTheme
 // import Models // Commenting out Models import to use local implementations instead
 // import Core // Commenting out Core import to use local implementations instead
+
+// Import the theme extensions
+import FOMOThemeExtensions
+
+// MARK: - VenueDetail-specific Extensions
+extension View {
+    func venueTabButtonStyle(isSelected: Bool) -> some View {
+        self.font(FOMOTheme.Typography.headline)
+            .padding(.vertical, FOMOTheme.Spacing.small)
+            .frame(maxWidth: .infinity)
+            .foregroundColor(isSelected ? FOMOTheme.Colors.primary : FOMOTheme.Colors.textSecondary)
+            .overlay(
+                Rectangle()
+                    .frame(height: 2)
+                    .foregroundColor(isSelected ? FOMOTheme.Colors.primary : .clear)
+                    .offset(y: 12),
+                alignment: .bottom
+            )
+    }
+    
+    func venueInfoRowStyle() -> some View {
+        self.padding(FOMOTheme.Spacing.small)
+            .background(FOMOTheme.Colors.surface.opacity(0.1))
+            .cornerRadius(FOMOTheme.Radius.small)
+    }
+}
 
 struct VenueDetailView: View {
     let venue: Venue
@@ -33,16 +60,16 @@ struct VenueDetailView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
                 // Venue Image
-                if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
+                if let imageURL = venue.imageURL {
                     AsyncImage(url: imageURL) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                     } placeholder: {
                         Rectangle()
-                            .fill(Color.gray.opacity(0.2))
+                            .fill(FOMOTheme.Colors.surface)
                             .overlay(
                                 ProgressView()
                             )
@@ -51,41 +78,39 @@ struct VenueDetailView: View {
                     .clipped()
                 } else {
                     Rectangle()
-                        .fill(Color.gray.opacity(0.2))
+                        .fill(FOMOTheme.Colors.surface)
                         .frame(height: 240)
                         .overlay(
                             Image(systemName: "photo")
-                                .font(.largeTitle)
-                                .foregroundColor(.gray)
+                                .font(FOMOTheme.Typography.largeTitle)
+                                .foregroundColor(FOMOTheme.Colors.textSecondary)
                         )
                 }
                 
                 // Venue Info
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: FOMOTheme.Spacing.small) {
                     Text(venue.name)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .venueTitleStyle()
                     
                     if venue.isPremium {
                         HStack {
                             Image(systemName: "star.fill")
-                                .foregroundColor(.yellow)
+                                .foregroundColor(FOMOTheme.Colors.warning)
                             Text("Premium Venue")
-                                .font(.subheadline)
-                                .foregroundColor(.yellow)
+                                .venueSubtitleStyle()
+                                .foregroundColor(FOMOTheme.Colors.warning)
                         }
                     }
                     
-                    Text(venue.location)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                    Text(venue.address)
+                        .venueSubtitleStyle()
                     
                     Text(venue.description)
-                        .font(.body)
-                        .padding(.top, 4)
+                        .venueBodyStyle()
+                        .padding(.top, FOMOTheme.Spacing.xxSmall)
                     
                     // Action Buttons
-                    HStack(spacing: 20) {
+                    HStack(spacing: FOMOTheme.Spacing.medium) {
                         Button(action: {
                             if isDrinkMenuEnabled {
                                 navigationCoordinator.navigateToDrinkMenu(venue: venue)
@@ -97,14 +122,10 @@ struct VenueDetailView: View {
                                 Image(systemName: "wineglass")
                                     .font(.system(size: 24))
                                 Text("View Menu")
-                                    .font(.caption)
+                                    .venueCaptionStyle()
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
+                            .venueActionButtonStyle(isEnabled: isDrinkMenuEnabled)
                         }
-                        .background(isDrinkMenuEnabled ? Color.blue : Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                         .disabled(!isDrinkMenuEnabled)
                         
                         Button(action: {
@@ -118,34 +139,25 @@ struct VenueDetailView: View {
                                 Image(systemName: "ticket")
                                     .font(.system(size: 24))
                                 Text("Buy Pass")
-                                    .font(.caption)
+                                    .venueCaptionStyle()
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
+                            .venueActionButtonStyle(isEnabled: isPaywallEnabled)
                         }
-                        .background(isPaywallEnabled ? Color.blue : Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                         .disabled(!isPaywallEnabled)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, FOMOTheme.Spacing.small)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, FOMOTheme.Spacing.medium)
                 
                 // Tags
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
+                    HStack(spacing: FOMOTheme.Spacing.small) {
                         ForEach(["Popular", "Trending", "Live Music"], id: \.self) { tag in
                             Text(tag)
-                                .font(.caption)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
-                                .cornerRadius(16)
+                                .venueTagStyle()
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, FOMOTheme.Spacing.medium)
                 }
                 
                 // Tabs
@@ -163,7 +175,7 @@ struct VenueDetailView: View {
                             selectedTab = 2
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, FOMOTheme.Spacing.medium)
                     
                     // Tab Content
                     VStack {
@@ -178,7 +190,7 @@ struct VenueDetailView: View {
                             EmptyView()
                         }
                     }
-                    .padding()
+                    .padding(FOMOTheme.Spacing.medium)
                 }
             }
         }
@@ -190,16 +202,16 @@ struct VenueDetailView: View {
                 .environmentObject(navigationCoordinator)
             #else
             Text("Paywall feature is disabled in this build")
-                .padding()
+                .padding(FOMOTheme.Spacing.medium)
             #endif
         }
         .sheet(isPresented: $showingDrinkMenu) {
             #if ENABLE_DRINK_MENU
-            DrinkListView(venue: venue)
+            DrinkListView()
                 .environmentObject(navigationCoordinator)
             #else
             Text("Drink menu is disabled in this build")
-                .padding()
+                .padding(FOMOTheme.Spacing.medium)
             #endif
         }
         .overlay {
@@ -207,7 +219,7 @@ struct VenueDetailView: View {
                 ProgressView()
                     .scaleEffect(1.5)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.black.opacity(0.2))
+                    .background(FOMOTheme.Colors.secondary.opacity(0.2))
             }
         }
         .alert("Error", isPresented: Binding(
@@ -219,19 +231,19 @@ struct VenueDetailView: View {
     }
     
     private var detailsTab: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
             InfoRow(label: "Hours", value: "5:00 PM - 2:00 AM")
             InfoRow(label: "Phone", value: "(555) 123-4567")
             InfoRow(label: "Website", value: "www.example.com")
             InfoRow(label: "Capacity", value: "250 people")
-            InfoRow(label: "Wait Time", value: "15 minutes", valueColor: .green)
+            InfoRow(label: "Wait Time", value: "15 minutes", valueColor: FOMOTheme.Colors.success)
         }
     }
     
     private var eventsTab: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
             Text("Upcoming Events")
-                .font(.headline)
+                .fomoHeadlineStyle()
             
             ForEach(1...3, id: \.self) { index in
                 EventRow(
@@ -244,9 +256,9 @@ struct VenueDetailView: View {
     }
     
     private var reviewsTab: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.medium) {
             Text("Reviews")
-                .font(.headline)
+                .fomoHeadlineStyle()
             
             ForEach(1...3, id: \.self) { index in
                 ReviewRow(
@@ -268,17 +280,7 @@ struct TabButton: View {
     var body: some View {
         Button(action: action) {
             Text(text)
-                .font(.headline)
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity)
-                .foregroundColor(isSelected ? .blue : .gray)
-                .overlay(
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundColor(isSelected ? .blue : .clear)
-                        .offset(y: 12),
-                    alignment: .bottom
-                )
+                .venueTabButtonStyle(isSelected: isSelected)
         }
     }
 }
@@ -286,18 +288,18 @@ struct TabButton: View {
 struct InfoRow: View {
     let label: String
     let value: String
-    var valueColor: Color = .primary
+    var valueColor: Color = FOMOTheme.Colors.text
     
     var body: some View {
         HStack {
             Text(label)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .fomoCaptionStyle()
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
             
             Spacer()
             
             Text(value)
-                .font(.body)
+                .fomoBodyStyle()
                 .fontWeight(.medium)
                 .foregroundColor(valueColor)
         }
@@ -310,27 +312,25 @@ struct EventRow: View {
     let time: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.xxSmall) {
             Text(title)
-                .font(.headline)
+                .fomoHeadlineStyle()
             
             HStack {
                 Text(date)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .fomoSubheadlineStyle()
                 
                 Text("•")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(FOMOTheme.Colors.textSecondary)
                 
                 Text(time)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .fomoSubheadlineStyle()
             }
         }
-        .padding()
+        .padding(FOMOTheme.Spacing.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(8)
+        .background(FOMOTheme.Colors.surface)
+        .fomoCornerRadius()
     }
 }
 
@@ -341,28 +341,29 @@ struct ReviewRow: View {
     let date: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.xxSmall) {
             HStack {
                 Text(author)
-                    .font(.headline)
+                    .fomoHeadlineStyle()
                 
                 Spacer()
                 
                 Text("\(rating, specifier: "%.1f") ⭐")
-                    .font(.subheadline)
+                    .fomoSubheadlineStyle()
+                    .foregroundColor(FOMOTheme.Colors.warning)
             }
             
             Text(comment)
-                .font(.body)
-                .padding(.vertical, 4)
+                .fomoBodyStyle()
+                .padding(.vertical, FOMOTheme.Spacing.xxSmall)
             
             Text(date)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .fomoCaptionStyle()
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
         }
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(8)
+        .padding(FOMOTheme.Spacing.medium)
+        .background(FOMOTheme.Colors.surface)
+        .fomoCornerRadius()
     }
 }
 
@@ -373,14 +374,16 @@ struct VenueDetailView_Previews: PreviewProvider {
             id: "123",
             name: "Sample Venue",
             description: "This is a beautiful venue with great atmosphere and amazing food. Perfect for a night out with friends or a romantic date.",
-            location: "123 Main St, City",
+            address: "123 Main St, City",
             imageURL: nil,
+            latitude: 37.7749,
+            longitude: -122.4194,
             isPremium: true
         )
         
         return NavigationView {
             VenueDetailView(venue: previewVenue)
-                .environmentObject(PreviewNavigationCoordinator())
+                .environmentObject(PreviewNavigationCoordinator.shared)
         }
     }
 }

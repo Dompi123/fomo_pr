@@ -23,8 +23,8 @@ echo "  ✓ Preview Mode enabled: $PREVIEW_MODE"
 echo "----------------------------------------"
 
 # Define simulator
-SIMULATOR_NAME="Journey iPhone"
-SIMULATOR_ID="iPhone 15"
+SIMULATOR_NAME="iPhone 16"
+SIMULATOR_ID="CC00CCA5-1AD0-44BE-9820-D0F2DC2B93D5"
 
 # Clean build directory
 xcodebuild clean -project FOMO_PR.xcodeproj -scheme FOMO_PR -destination "platform=iOS Simulator,name=$SIMULATOR_NAME"
@@ -193,7 +193,7 @@ if [ $? -eq 0 ]; then
   
   # Launch the app
   echo "Launching app..."
-  xcrun simctl launch "$SIMULATOR_NAME" "com.journey.fomo-pr"
+  xcrun simctl launch "$SIMULATOR_NAME" "com.fomoapp.fomopr"
   
   echo "✅ App is now available on the simulator with all preview features enabled!"
 else

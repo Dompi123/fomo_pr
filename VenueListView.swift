@@ -1,5 +1,9 @@
 import SwiftUI
 import CoreLocation
+import FOMO_PR  // Import for FOMOTheme
+
+// Import the theme extensions
+import FOMOThemeExtensions
 
 struct VenueListView: View {
     @EnvironmentObject private var navigationCoordinator: PreviewNavigationCoordinator
@@ -48,28 +52,25 @@ struct VenueRowView: View {
     let venue: Venue
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: FOMOTheme.Spacing.small) {
             Text(venue.name)
-                .font(.headline)
+                .venueNameStyle()
             
             Text(venue.description)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .lineLimit(2)
+                .venueDescriptionStyle()
             
             HStack {
                 Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
+                    .venueRatingStyle()
                 Text(String(format: "%.1f", venue.rating))
                 
                 Spacer()
                 
                 Text(venue.address)
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                    .venueAddressStyle()
             }
         }
-        .padding(.vertical, 8)
+        .venueListItemStyle()
     }
 }
 

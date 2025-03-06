@@ -1,0 +1,82 @@
+# SwiftLint configuration file
+disabled_rules:
+  - trailing_whitespace
+  - multiple_closures_with_trailing_closure
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - implicit_return
+  - unneeded_parentheses_in_closure_argument
+
+excluded:
+  - Pods
+  - scripts
+
+# Custom Rules for Design System Enforcement
+custom_rules:
+  direct_font_usage:
+    name: "Direct Font Usage"
+    regex: '\.font\((?!FOMOTheme\.)(?!\$)(?!\.constant\()(?!_)(?!self\.)'
+    message: "Use FOMOTheme.Typography for font styling"
+    severity: warning
+    
+  direct_color_usage:
+    name: "Direct Color Usage"
+    regex: '\.foregroundColor\((?!FOMOTheme\.)(?!\$)(?!\.constant\()(?!self\.)'
+    message: "Use FOMOTheme.Colors for color styling"
+    severity: warning
+    
+  direct_padding_usage:
+    name: "Direct Padding Usage"
+    regex: '\.padding\((?!FOMOTheme\.)(?!\$)(?!\.constant\()(?!self\.)'
+    message: "Use FOMOTheme.Spacing for padding values"
+    severity: warning
+    
+  direct_corner_radius_usage:
+    name: "Direct Corner Radius Usage"
+    regex: '\.cornerRadius\((?!FOMOTheme\.)(?!\$)(?!\.constant\()(?!self\.)'
+    message: "Use FOMOTheme.Radius for corner radius values"
+    severity: warning
+    
+  direct_shadow_usage:
+    name: "Direct Shadow Usage"
+    regex: '\.shadow\((?!color: FOMOTheme\.)(?!\$)(?!\.constant\()(?!self\.)'
+    message: "Use FOMOTheme.Shadow for shadow values"
+    severity: warning
+
+# Basic SwiftLint configuration
+line_length:
+  warning: 120
+  error: 150
+  
+file_length:
+  warning: 400
+  error: 600
+  
+type_body_length:
+  warning: 300
+  error: 400
+  
+function_body_length:
+  warning: 50
+  error: 100
+  
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+
+identifier_name:
+  min_length: 2
+  excluded:
+    - id
+    - x
+    - y
+    - dx
+    - dy
+    - i
+    - j
+    - to
+    - at
+
+reporter: "xcode" 

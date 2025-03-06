@@ -25,8 +25,8 @@ echo "  ✓ Preview Mode enabled"
 echo "----------------------------------------"
 
 # Define Journey iPhone simulator
-SIMULATOR_NAME="Journey iPhone"
-SIMULATOR_ID="58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4"
+SIMULATOR_NAME="iPhone 16"
+SIMULATOR_ID="CC00CCA5-1AD0-44BE-9820-D0F2DC2B93D5"
 
 # Clean the build directory
 echo "🧹 Cleaning build directory..."
