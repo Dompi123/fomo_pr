@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // This is a simple view that can be used to verify that all the types are available
 // Add this to your Xcode project and try to build it
@@ -50,16 +51,15 @@ struct TypesTestView: View {
             // Using a throwing function to make the catch block reachable
             let userData = try JSONSerialization.data(withJSONObject: [
                 "id": "test-id",
-                "username": "testuser",
-                "email": "test@example.com",
-                "createdAt": Date().description,
-                "updatedAt": Date().description
+                "name": "testuser",
+                "email": "test@example.com"
             ], options: [])
             
-            let user = try JSONDecoder().decode(Models.User.self, from: userData)
-            results.append("✅ Models.User type is available: \(user.username)")
+            // Add explicit type annotation to resolve ambiguity
+            let user: Models.User = try JSONDecoder().decode(Models.User.self, from: userData)
+            results.append("✅ User type is available: \(user.name)")
         } catch {
-            results.append("❌ Models.User type is not available: \(error)")
+            results.append("❌ User type is not available: \(error)")
         }
         
         // Test Card
@@ -103,4 +103,4 @@ struct TypesTestView: View {
 
 #Preview {
     TypesTestView()
-} 
+}

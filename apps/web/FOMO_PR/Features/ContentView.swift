@@ -1,6 +1,8 @@
 import SwiftUI
 import OSLog
 
+private let logger = Logger(subsystem: "com.fomo.pr", category: "ContentView")
+
 struct ContentView: View {
     @EnvironmentObject private var navigationCoordinator: PreviewNavigationCoordinator
     @State private var selectedTab = 0
@@ -28,16 +30,21 @@ struct ContentView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $navigationCoordinator.presentedSheet) { sheet in
+                logger.debug("Presenting sheet: \(sheet.id)")
                 switch sheet {
                 case .drinkMenu:
                     DrinkMenuView()
+                        .environmentObject(navigationCoordinator)
                 case .checkout(let order):
                     CheckoutView(order: order)
+                        .environmentObject(navigationCoordinator)
                 case .paywall(let venue):
-                    PaywallView(venue: venue)
+                    PassPurchaseView(venue: venue)
+                        .environmentObject(navigationCoordinator)
                 }
             }
         }
+        .environmentObject(navigationCoordinator)
     }
 }
 

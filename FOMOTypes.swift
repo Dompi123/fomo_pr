@@ -232,93 +232,12 @@ public actor APIClient {
 }
 #endif
 
-// MARK: - PricingTier Type
-#if !SWIFT_PACKAGE && !XCODE_HELPER
-public struct PricingTier: Identifiable, Equatable, Codable {
-    public let id: String
-    public let name: String
-    public let price: Decimal
-    public let description: String
-    
-    public init(id: String, name: String, price: Decimal, description: String) {
-        self.id = id
-        self.name = name
-        self.price = price
-        self.description = description
-    }
-    
-    public static func == (lhs: PricingTier, rhs: PricingTier) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    public static let preview = PricingTier(
-        id: "tier_standard",
-        name: "Standard",
-        price: 19.99,
-        description: "Standard access"
-    )
-}
-#endif
+// MARK: - Import Payment Types
+// These types are now defined in PaymentManager.swift
+// PricingTier, TokenizationService, and Security are imported from there
 
-// MARK: - TokenizationService Protocol
+// MARK: - Payment Types
 #if !SWIFT_PACKAGE && !XCODE_HELPER
-public protocol TokenizationService {
-    func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String
-    func validatePaymentMethod() async throws -> Bool
-    func fetchPricingTiers(for venueId: String) async throws -> [PricingTier]
-}
-#endif
-
-// MARK: - Security Namespace
-#if !SWIFT_PACKAGE && !XCODE_HELPER
-public enum Security {
-    public final class LiveTokenizationService: TokenizationService {
-        public static let shared = LiveTokenizationService()
-        
-        public init() {}
-        
-        public func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String {
-            // In a real implementation, this would make a request to a payment processor
-            // For now, we'll just return a mock token
-            try await Task.sleep(nanoseconds: 1_000_000_000) // Simulate network request
-            return "tok_\(UUID().uuidString)"
-        }
-        
-        public func validatePaymentMethod() async throws -> Bool {
-            // Simulate validation
-            try await Task.sleep(nanoseconds: 500_000_000)
-            return true
-        }
-        
-        public func fetchPricingTiers(for venueId: String) async throws -> [PricingTier] {
-            // Simulate fetching pricing tiers
-            try await Task.sleep(nanoseconds: 500_000_000)
-            return [
-                PricingTier(id: "tier_standard", name: "Standard", price: 19.99, description: "Standard access"),
-                PricingTier(id: "tier_premium", name: "Premium", price: 39.99, description: "Premium access")
-            ]
-        }
-    }
-    
-    public final class MockTokenizationService: TokenizationService {
-        public static let shared = MockTokenizationService()
-        
-        public init() {}
-        
-        public func tokenize(cardNumber: String, expiry: String, cvc: String) async throws -> String {
-            return "tok_mock_\(UUID().uuidString)"
-        }
-        
-        public func validatePaymentMethod() async throws -> Bool {
-            return true
-        }
-        
-        public func fetchPricingTiers(for venueId: String) async throws -> [PricingTier] {
-            return [
-                PricingTier(id: "mock_tier_1", name: "Mock Tier 1", price: 9.99, description: "Mock tier 1"),
-                PricingTier(id: "mock_tier_2", name: "Mock Tier 2", price: 19.99, description: "Mock tier 2")
-            ]
-        }
-    }
-}
+// PaymentResult and PaymentStatus are now defined in PaymentManager.swift
+// Import FOMO_PR to access these types
 #endif 

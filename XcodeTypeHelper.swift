@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import FOMO_PR  // Add import for FOMO_PR module
 
 // This file helps Xcode recognize all the types in the project
 // It doesn't actually do anything, but it helps with the module recognition
@@ -12,12 +13,12 @@ import SwiftUI
 public struct Card: Identifiable {
     public let id: String
     public let last4: String
-    public let brand: CardBrand
+    public let brand: FOMO_PR.CardBrand
     public let expiryMonth: Int
     public let expiryYear: Int
     public let isDefault: Bool
     
-    public init(id: String, last4: String, brand: CardBrand, expiryMonth: Int, expiryYear: Int, isDefault: Bool = false) {
+    public init(id: String, last4: String, brand: FOMO_PR.CardBrand, expiryMonth: Int, expiryYear: Int, isDefault: Bool = false) {
         self.id = id
         self.last4 = last4
         self.brand = brand
@@ -26,6 +27,7 @@ public struct Card: Identifiable {
         self.isDefault = isDefault
     }
     
+    // This is just a reference to the actual CardBrand enum in FOMO_PR
     public enum CardBrand: String {
         case visa
         case mastercard

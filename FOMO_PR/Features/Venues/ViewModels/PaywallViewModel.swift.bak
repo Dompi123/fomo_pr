@@ -1,0 +1,361 @@
+import Foundation
+import SwiftUI
+import FOMO_PR
+
+// Import or use the global types
+#if PREVIEW_MODE || ENABLE_MOCK_DATA
+// In preview mode, use the types from FOMOImports.swift
+#else
+// In non-preview mode, ensure we can find the types directly
+import FOMOTypes
+import PricingTypes
+import SecurityTypes
+import PaymentTypes
+#endif
+
+// Define the PaywallError enum
+enum PaywallError: Error, Identifiable {
+    case noPricingTiers
+    case noSelectedTier
+    case paymentFailed(String)
+    
+    var id: String {
+        switch self {
+        case .noPricingTiers:
+            return "no_pricing_tiers"
+        case .noSelectedTier:
+            return "no_selected_tier"
+        case .paymentFailed(let message):
+            return "payment_failed_\(message)"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .noPricingTiers:
+            return "No pricing tiers available for this venue."
+        case .noSelectedTier:
+            return "Please select a pricing tier."
+        case .paymentFailed(let message):
+            return "Payment failed: \(message)"
+        }
+    }
+}
+
+// MARK: - Models
+
+// Using PricingTier from FOMO_PR module
+// Model is defined in the app's main module
+
+// Keep this struct as it's not defined elsewhere
+struct PricingTierFeature: Identifiable {
+    let id = UUID()
+    let name: String
+    let included: Bool
+    
+    static func features(for tier: PricingTier) -> [PricingTierFeature] {
+        switch tier.name {
+        case "Standard":
+            return [
+                PricingTierFeature(name: "Skip the line", included: true),
+                PricingTierFeature(name: "Guaranteed entry", included: true),
+                PricingTierFeature(name: "VIP area access", included: false),
+                PricingTierFeature(name: "Complimentary drink", included: false)
+            ]
+        case "Premium":
+            return [
+                PricingTierFeature(name: "Skip the line", included: true),
+                PricingTierFeature(name: "Guaranteed entry", included: true),
+                PricingTierFeature(name: "VIP area access", included: true),
+                PricingTierFeature(name: "Complimentary drink", included: true)
+            ]
+        default:
+            return []
+        }
+    }
+}
+
+// Remove the duplicate Venue struct definition
+// The Venue struct is already defined in FOMOTypes.swift
+
+// Wrapper class for PricingTier to add features
+class EnhancedPricingTier {
+    let tier: PricingTier
+    let features: [String]
+    
+    init(tier: PricingTier, features: [String]) {
+        self.tier = tier
+        self.features = features
+    }
+    
+    // Convenience initializer
+    init(id: String, name: String, price: Double, description: String, features: [String]) {
+        self.tier = PricingTier(id: id, name: name, price: Decimal(price), description: description)
+        self.features = features
+    }
+    
+    // Forward properties from the wrapped tier
+    var id: String { tier.id }
+    var name: String { tier.name }
+    var price: Decimal { tier.price }
+    var description: String { tier.description }
+}
+
+// MARK: - View Model
+
+class PaywallViewModel: ObservableObject {
+    @Published var isLoading = false
+    @Published var error: PaywallError?
+    @Published var tiers: [PricingTier] = []
+    @Published var selectedTierId: String?
+    @Published var isProcessingPayment = false
+    @Published var paymentResult: PaymentResult?
+    @Published var showPaymentSuccessView = false
+    
+    private var venue: Venue
+    
+    init(venue: Venue) {
+        self.venue = venue
+    }
+    
+    var navigationTitle: String {
+        return "Pass Options for \(venue.name)"
+    }
+    
+    var selectedTier: PricingTier? {
+        guard let selectedId = selectedTierId else { return nil }
+        return tiers.first { $0.id == selectedId }
+    }
+    
+    var formattedPrice: String {
+        guard let tier = selectedTier else { return "Select a tier" }
+        
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        
+        if let price = formatter.string(from: NSDecimalNumber(decimal: tier.price)) {
+            return price
+        } else {
+            return "$\(tier.price)"
+        }
+    }
+    
+    // MARK: - Public Methods
+    
+    func loadPricingTiers() {
+        isLoading = true
+        error = nil
+        
+        // In a real app, this would be an API call
+        // For preview mode, we're using mock data
+        #if PREVIEW_MODE || ENABLE_MOCK_DATA
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            
+            // Use mock pricing tiers
+            self.tiers = PricingTier.previewTiers
+            
+            if self.tiers.isEmpty {
+                self.error = .noPricingTiers
+            }
+            
+            self.isLoading = false
+        }
+        #else
+        // For production, this would make an actual API call
+        APIClient.shared.request(endpoint: "/venues/\(venue.id)/pricing") { [weak self] (result: Result<[PricingTier], Error>) in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                switch result {
+                case .success(let tiers):
+                    self.tiers = tiers
+                    
+                    if tiers.isEmpty {
+                        self.error = .noPricingTiers
+                    }
+                    
+                case .failure:
+                    self.error = .noPricingTiers
+                }
+            }
+        }
+        #endif
+    }
+    
+    func selectTier(id: String) {
+        selectedTierId = id
+    }
+    
+    func purchasePass() {
+        guard let tier = selectedTier else {
+            error = .noSelectedTier
+            return
+        }
+        
+        isProcessingPayment = true
+        error = nil
+        
+        // In a real app, this would be an API call to purchase the pass
+        // For preview mode, we simulate a successful purchase after a delay
+        #if PREVIEW_MODE || ENABLE_MOCK_DATA
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            guard let self = self else { return }
+            
+            // Simulate successful payment
+            let result = PaymentResult(
+                id: UUID().uuidString,
+                transactionId: "txn_\(UUID().uuidString)",
+                amount: tier.price,
+                status: .completed,
+                timestamp: Date(),
+                description: "Purchase of \(tier.name) for \(self.venue.name)"
+            )
+            
+            self.handlePaymentResult(result)
+        }
+        #else
+        // For production, this would make an actual API call
+        let paymentRequest = [
+            "tierId": tier.id,
+            "venueId": venue.id
+        ]
+        
+        APIClient.shared.request(
+            endpoint: "/payments/purchase-pass",
+            method: "POST",
+            body: try? JSONEncoder().encode(paymentRequest)
+        ) { [weak self] (result: Result<PaymentResult, Error>) in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let paymentResult):
+                    self.handlePaymentResult(paymentResult)
+                    
+                case .failure(let error):
+                    self.isProcessingPayment = false
+                    self.error = .paymentFailed(error.localizedDescription)
+                }
+            }
+        }
+        #endif
+    }
+    
+    // MARK: - Private Methods
+    
+    private func handlePaymentResult(_ result: PaymentResult) {
+        self.paymentResult = result
+        self.isProcessingPayment = false
+        
+        // Check payment status
+        switch result.status {
+        case .completed, .success:
+            // Show success view
+            self.showPaymentSuccessView = true
+            
+        case .failed, .cancelled:
+            self.error = .paymentFailed("Transaction failed or was cancelled")
+            
+        default:
+            // For pending or processing status, we might want to implement a polling mechanism
+            // to check the status periodically, but for simplicity, we'll treat it as an error
+            self.error = .paymentFailed("Payment is still processing. Please check your email for confirmation.")
+        }
+    }
+}
+
+// MARK: - Preview Helper
+
+extension PaywallViewModel {
+    static func preview() -> PaywallViewModel {
+        let previewVenue = Venue(
+            id: "venue1",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, New York, NY 10001",
+            imageURL: nil,
+            latitude: 40.7128,
+            longitude: -74.0060,
+            isPremium: true
+        )
+        
+        let viewModel = PaywallViewModel(venue: previewVenue)
+        viewModel.tiers = [
+            EnhancedPricingTier(
+                id: "basic",
+                name: "Basic Pass",
+                price: 19.99,
+                description: "Access to the venue for one day",
+                features: ["Entry to main areas", "Access to basic amenities"]
+            ),
+            EnhancedPricingTier(
+                id: "premium",
+                name: "Premium Pass",
+                price: 49.99,
+                description: "Full access to the venue for one day",
+                features: ["Entry to all areas", "Complimentary drink", "Priority entry", "Access to VIP lounge"]
+            )
+        ]
+        return viewModel
+    }
+}
+
+// Fix the extension with stored properties error by moving the property to a struct or class
+struct TierFeaturesContainer {
+    var tierFeatures: [String] = []
+}
+
+// Remove the stored property from the extension
+extension PricingTier {
+    // Use computed properties in extensions instead of stored properties
+    var featuresContainer: TierFeaturesContainer {
+        let container = TierFeaturesContainer()
+        return container
+    }
+    
+    // Other computed properties or methods can stay here
+}
+
+#if DEBUG
+struct PaywallViewModel_Previews: PreviewProvider {
+    static var previews: some View {
+        let previewVenue = Venue(
+            id: "venue1",
+            name: "The Rooftop Bar",
+            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
+            address: "123 Main St, New York, NY 10001",
+            imageURL: nil,
+            latitude: 40.7128,
+            longitude: -74.0060,
+            isPremium: true
+        )
+        
+        let viewModel = PaywallViewModel(venue: previewVenue)
+        viewModel.tiers = [
+            EnhancedPricingTier(
+                id: "basic",
+                name: "Basic Pass",
+                price: 19.99,
+                description: "Access to the venue for one day",
+                features: ["Entry to main areas", "Access to basic amenities"]
+            ),
+            EnhancedPricingTier(
+                id: "premium",
+                name: "Premium Pass",
+                price: 49.99,
+                description: "Full access to the venue for one day",
+                features: ["Entry to all areas", "Complimentary drink", "Priority entry", "Access to VIP lounge"]
+            )
+        ]
+        
+        // Return a View that uses the viewModel
+        return PaywallView(venue: previewVenue)
+            .environmentObject(viewModel)
+    }
+}
+#endif 
+

@@ -1,4 +1,19 @@
 import Foundation
+import SwiftUI
+import FOMO_PR
+
+// Internal type with specific name to avoid conflicts with other ReviewData declarations
+struct DrinkReviewSubmission: Codable {
+    let rating: Int
+    let comment: String
+    let userId: String
+    
+    init(rating: Int, comment: String, userId: String = UUID().uuidString) {
+        self.rating = rating
+        self.comment = comment
+        self.userId = userId
+    }
+}
 
 enum DrinkEndpoint {
     case getAll
@@ -6,7 +21,7 @@ enum DrinkEndpoint {
     case getFeatured
     case search(query: String)
     case getReviews(drinkId: String)
-    case postReview(drinkId: String, review: ReviewData)
+    case postReview(drinkId: String, review: DrinkReviewSubmission)
     case favorite(drinkId: String)
     case getCategories
     

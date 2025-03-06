@@ -1,56 +1,64 @@
 #!/bin/bash
 
-echo "=== Building and Running FOMO_PR ==="
+# Script to build and run FOMO_PR with all features enabled
 
-# Get available simulators
-echo "Finding available simulators..."
-SIMULATORS=$(xcrun simctl list devices available -j | grep -o '"name" : "[^"]*"' | cut -d '"' -f 4)
+# Set environment variables
+export ENABLE_PAYWALL=1
+export ENABLE_DRINK_MENU=1
+export ENABLE_CHECKOUT=1
+export ENABLE_SEARCH=1
+export ENABLE_PREMIUM_VENUES=1
+export ENABLE_MOCK_DATA=1
+export PREVIEW_MODE=1
 
-if [ -z "$SIMULATORS" ]; then
-    echo "❌ No available simulators found"
-    echo "Please create a simulator in Xcode and try again"
-    exit 1
-fi
+# Print setup information
+echo "🚀 Setting up FOMO_PR Preview Environment"
+echo "----------------------------------------"
+echo "🔑 Environment Configuration:"
+echo "  ✓ Paywall enabled"
+echo "  ✓ Drink Menu enabled"
+echo "  ✓ Checkout enabled"
+echo "  ✓ Search enabled" 
+echo "  ✓ Premium Venues enabled"
+echo "  ✓ Mock Data enabled"
+echo "  ✓ Preview Mode enabled"
+echo "----------------------------------------"
 
-# Use the first available simulator
-SIMULATOR=$(echo "$SIMULATORS" | head -n 1)
-echo "Using simulator: $SIMULATOR"
+# Define Journey iPhone simulator
+SIMULATOR_NAME="Journey iPhone"
+SIMULATOR_ID="58C8D7C8-CCFF-4669-8DF7-7F29F3447CC4"
 
 # Clean the build directory
-echo "Cleaning build directory..."
+echo "🧹 Cleaning build directory..."
 xcodebuild clean -project FOMO_PR.xcodeproj -scheme FOMO_PR
 
-# Build the app
-echo "Building app..."
-xcodebuild build -project FOMO_PR.xcodeproj -scheme FOMO_PR -destination "platform=iOS Simulator,name=$SIMULATOR" -configuration Debug
+# Build the app for the simulator
+echo "🔨 Building FOMO_PR with all features enabled..."
+xcodebuild build -project FOMO_PR.xcodeproj -scheme FOMO_PR -configuration Debug -sdk iphonesimulator -destination "platform=iOS Simulator,id=$SIMULATOR_ID"
 
 # Check if build was successful
-if [ $? -ne 0 ]; then
-    echo "❌ Build failed"
+if [ $? -eq 0 ]; then
+    echo "✅ Build successful. Preparing to launch on Journey iPhone simulator..."
+    
+    # Make sure the simulator is booted
+    echo "🚀 Ensuring simulator is running..."
+    xcrun simctl boot "$SIMULATOR_ID" 2>/dev/null || true
+    
+    # Install the app
+    echo "📲 Installing app on simulator..."
+    APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "FOMO_PR.app" -type d | grep -v "SourcePackages" | head -n 1)
+    echo "   App path: $APP_PATH"
+    xcrun simctl install "$SIMULATOR_ID" "$APP_PATH"
+    
+    # Launch the app
+    echo "🎮 Launching app..."
+    xcrun simctl launch "$SIMULATOR_ID" com.fomoapp.fomopr
+    
+    echo "✨ App launched in Journey iPhone simulator with all features enabled."
+    echo "   ✓ You can now see all UI elements with mock data"
+    echo "   ✓ Paywall, Drink Menu, and Checkout will display complete interfaces"
+    echo "   ✓ All navigation should work properly"
+else
+    echo "❌ Build failed. Please check the error messages above."
     exit 1
-fi
-
-echo "✅ Build successful"
-
-# Get the app bundle ID
-BUNDLE_ID=$(defaults read $(pwd)/FOMO_PR/Info.plist CFBundleIdentifier)
-if [ -z "$BUNDLE_ID" ]; then
-    # Try to extract it from the Info.plist file
-    BUNDLE_ID=$(grep -A1 "CFBundleIdentifier" FOMO_PR/Info.plist | grep string | sed -E 's/.*<string>(.*)<\/string>.*/\1/')
-fi
-
-if [ -z "$BUNDLE_ID" ]; then
-    echo "❌ Could not determine bundle ID"
-    echo "Using default bundle ID: com.fomopr.app"
-    BUNDLE_ID="com.fomopr.app"
-fi
-
-echo "Bundle ID: $BUNDLE_ID"
-
-# Launch the app
-echo "Launching app on simulator..."
-xcrun simctl boot "$SIMULATOR" 2>/dev/null || true
-xcrun simctl launch "$SIMULATOR" "$BUNDLE_ID"
-
-echo "=== App Launched ==="
-echo "Check the simulator to see if the app is running correctly" 
+fi 

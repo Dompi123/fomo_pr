@@ -87,14 +87,47 @@ struct VenuePreviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             // Venue image
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.gray.opacity(0.3))
-                .frame(height: 200)
-                .overlay(
-                    Text(venue.name.prefix(1))
-                        .font(.system(size: 48, weight: .bold))
-                        .foregroundColor(.white)
-                )
+            if let imageURL = venue.imageURL {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 200)
+                            .overlay(
+                                ProgressView()
+                            )
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    case .failure:
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 200)
+                            .overlay(
+                                Text(venue.name.prefix(1))
+                                    .font(.system(size: 48, weight: .bold))
+                                    .foregroundColor(.white)
+                            )
+                    @unknown default:
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 200)
+                    }
+                }
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(height: 200)
+                    .overlay(
+                        Text(venue.name.prefix(1))
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(.white)
+                    )
+            }
             
             // Venue name
             Text(venue.name)
@@ -178,6 +211,9 @@ struct VenuePreviewView: View {
         }
         .padding()
         .background(Color.white)
+        .onAppear {
+            viewModel.loadVenueDetails()
+        }
     }
 }
 

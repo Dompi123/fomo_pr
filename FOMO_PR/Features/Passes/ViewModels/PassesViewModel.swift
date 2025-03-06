@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import FOMO_PR
 
 // Define Pass model since Models module doesn't exist
 struct Pass: Identifiable, Decodable {

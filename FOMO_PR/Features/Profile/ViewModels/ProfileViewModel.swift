@@ -1,35 +1,25 @@
 import Foundation
 import SwiftUI
 import Combine
-// import FOMO_PR - Commenting out as it's causing issues
+import FOMO_PR
+// import FOMOTypes - Commenting out as it's causing issues
 
-// Define the Profile model
-struct Profile: Identifiable {
-    let id: String
-    var name: String
-    var email: String
-    var phone: String?
-    var profileImageURL: URL?
-    var preferences: [String: Bool]
-    
-    static var preview: Profile {
-        Profile(
+// Use the User type from FOMO_PR instead of defining Profile locally
+typealias Profile = User
+
+// Extension to add preview functionality to User/Profile
+extension User {
+    static var profilePreview: User {
+        User(
             id: "user-123",
-            name: "John Doe",
             email: "john.doe@example.com",
-            phone: "+1 (555) 123-4567",
+            firstName: "John",
+            lastName: "Doe",
             profileImageURL: URL(string: "https://example.com/profile.jpg"),
-            preferences: [
-                "emailNotifications": true,
-                "pushNotifications": true,
-                "smsNotifications": false
-            ]
+            phone: "+1 (555) 123-4567"
         )
     }
 }
-
-// Make Profile conform to Codable
-extension Profile: Codable {}
 
 @MainActor
 class ProfileViewModel: ObservableObject {
@@ -134,11 +124,11 @@ class ProfileViewModel: ObservableObject {
                 // Create updated profile
                 let updatedProfile = Profile(
                     id: profile.id,
-                    name: profile.name,
                     email: profile.email,
-                    phone: profile.phone,
+                    firstName: profile.firstName,
+                    lastName: profile.lastName,
                     profileImageURL: profile.profileImageURL,
-                    preferences: preferences
+                    phone: profile.phone
                 )
                 
                 // Update profile on server using direct URL request
@@ -168,16 +158,11 @@ extension ProfileViewModel {
         let viewModel = ProfileViewModel()
         viewModel.profile = Profile(
             id: "user123",
-            name: "John Doe",
             email: "john.doe@example.com",
-            phone: "+1 (555) 123-4567",
+            firstName: "John",
+            lastName: "Doe",
             profileImageURL: URL(string: "https://example.com/profile.jpg"),
-            preferences: [
-                "emailNotifications": true,
-                "pushNotifications": true,
-                "darkMode": false,
-                "savePaymentInfo": true
-            ]
+            phone: "+1 (555) 123-4567"
         )
         return viewModel
     }

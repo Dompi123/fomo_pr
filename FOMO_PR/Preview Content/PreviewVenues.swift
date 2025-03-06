@@ -1,51 +1,50 @@
 import Foundation
 import SwiftUI
-// import Models - Commenting out as it's causing ambiguity issues
+import FOMO_PR
 
-// Define the Drink type that was missing
-struct Drink: Identifiable, Codable {
-    let id: String
-    let name: String
-    let description: String
-    let price: Decimal
-    let imageURLString: String?
-    
-    // Remove the computed property and use a method instead
-    func getImageURL() -> URL? {
-        guard let urlString = imageURLString else { return nil }
-        return URL(string: urlString)
+#if PREVIEW_MODE || ENABLE_MOCK_DATA
+// Create a local struct for preview data to avoid ambiguity
+struct PreviewData {
+    static var previewDrinks: [DrinkItem] {
+        return [
+            DrinkItem(id: "1", name: "Espresso", description: "Strong coffee", imageURL: nil, price: 3.50, category: "Coffee"),
+            DrinkItem(id: "2", name: "Latte", description: "Coffee with milk", imageURL: nil, price: 4.50, category: "Coffee"),
+            DrinkItem(id: "3", name: "Cappuccino", description: "Coffee with foamed milk", imageURL: nil, price: 4.00, category: "Coffee")
+        ]
     }
     
-    init(id: String, name: String, description: String, price: Double, imageURL: URL? = nil) {
-        self.id = id
-        self.name = name
-        self.description = description
-        self.price = Decimal(price)
-        self.imageURLString = imageURL?.absoluteString
+    static var previewVenues: [Venue] {
+        return [
+            Venue(
+                id: "1",
+                name: "Coffee House",
+                description: "A cozy coffee shop",
+                address: "123 Main St",
+                imageURL: nil,
+                latitude: 0.0,
+                longitude: 0.0,
+                isPremium: false
+            ),
+            Venue(
+                id: "2",
+                name: "Tea Time",
+                description: "Specialty tea shop",
+                address: "456 Oak Ave",
+                imageURL: nil,
+                latitude: 0.0,
+                longitude: 0.0,
+                isPremium: false
+            )
+        ]
     }
 }
 
-// Remove the redundant import since we're already in the FOMO_PR module
-// import FOMO_PR
-
-// MARK: - Drink Preview Data
-extension Drink {
-    static var previewList: [Drink] = [
-        Drink(id: "1", name: "Mojito", description: "Classic mojito with mint and lime", price: 12.99),
-        Drink(id: "2", name: "Margarita", description: "Traditional margarita with salt rim", price: 10.99),
-        Drink(id: "3", name: "Old Fashioned", description: "Whiskey cocktail with bitters", price: 14.99)
-    ]
-}
-
-// Comment out this section until VenueListViewModel is properly defined
-/*
-#if DEBUG
+// VenueListViewModel extension for preview
 extension VenueListViewModel {
-    static let preview: VenueListViewModel = {
-        let model = VenueListViewModel()
-        model.venues = Venue.previewList
-        return model
-    }()
+    static var preview: VenueListViewModel {
+        let viewModel = VenueListViewModel()
+        viewModel.venues = PreviewData.previewVenues
+        return viewModel
+    }
 }
 #endif
-*/ 

@@ -50,49 +50,46 @@ extension Venue {
 }
 
 // Define the VenuePreviewViewModel class
-class VenuePreviewViewModel: ObservableObject {
-    @Published var venue: Venue?
-    @Published var isLoading = false
-    @Published var error: Error?
-    @Published var selectedTab = 0
-    
-    private var cancellables = Set<AnyCancellable>()
-    
-    init(venueId: String) {
-        loadVenue(id: venueId)
-    }
+class VenuePreviewViewModel: BaseViewModel {
+    @Published var venue: Venue
+    @Published var selectedTab: Int = 0
     
     init(venue: Venue) {
         self.venue = venue
+        super.init()
     }
     
-    func loadVenue(id: String) {
-        isLoading = true
-        
-        // Simulate network request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
-            self.venue = self.createMockVenue()
+    init(venueId: String) {
+        self.venue = getMockVenueDetails(id: venueId)
+        super.init()
+        loadVenueDetails()
+    }
+    
+    // Add missing startLoading and stopLoading methods
+    private func startLoading() {
+        DispatchQueue.main.async {
+            self.isLoading = true
+        }
+    }
+    
+    private func stopLoading() {
+        DispatchQueue.main.async {
             self.isLoading = false
         }
     }
     
-    func refreshVenue() {
-        guard let venue = venue else { return }
-        loadVenue(id: venue.id)
-    }
-    
-    // Helper function to create a mock venue
-    private func createMockVenue() -> Venue {
-        return Venue(
-            id: "venue_123",
-            name: "The Rooftop Bar",
-            description: "A trendy rooftop bar with amazing city views and craft cocktails.",
-            address: "123 Main St, San Francisco, CA 94105",
-            imageURL: URL(string: "https://example.com/venue.jpg"),
-            latitude: 37.7749,
-            longitude: -122.4194,
-            isPremium: true
-        )
+    func loadVenueDetails() {
+        startLoading()
+        
+        // Simulate network request
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            
+            // Update venue with mock data
+            self.venue = getMockVenueDetails(id: self.venue.id)
+            
+            self.stopLoading()
+        }
     }
 }
 

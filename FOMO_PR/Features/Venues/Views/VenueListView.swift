@@ -275,11 +275,7 @@ struct VenueListView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         logger.debug("Tapped venue: \(venue.name)")
-                        if venue.isPremium {
-                            navigationCoordinator.navigate(to: .drinkMenu(venue: venue))
-                        } else {
-                            navigationCoordinator.navigate(to: .paywall(venue: venue))
-                        }
+                        selectedVenue = venue
                     }
             }
         }

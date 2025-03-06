@@ -6,57 +6,129 @@ import OSLog
 
 struct VenueDetailView: View {
     let venue: Venue
+    @EnvironmentObject var navigationCoordinator: PreviewNavigationCoordinator
     @State private var selectedTab = 0
-    @State private var showingPassPurchase = false
-    @State private var showingMenu = false
+    @State private var showingPaywall = false
+    @State private var showingDrinkMenu = false
     @State private var isLoading = false
     @State private var error: Error?
     
     private let logger = Logger(subsystem: "com.fomo", category: "VenueDetail")
     
+    var isPaywallEnabled: Bool {
+        #if ENABLE_PAYWALL
+        return true
+        #else
+        return false
+        #endif
+    }
+    
+    var isDrinkMenuEnabled: Bool {
+        #if ENABLE_DRINK_MENU
+        return true
+        #else
+        return false
+        #endif
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // Venue Image
-                if let imageURL = venue.imageURL {
-                    AsyncImage(url: imageURL) { phase in
-                        if let image = phase.image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 200)
-                                .clipped()
-                        } else if phase.error != nil {
-                            Color.gray
-                                .frame(height: 200)
-                                .overlay(
-                                    Image(systemName: "photo")
-                                        .foregroundColor(.white)
-                                )
-                        } else {
-                            Color.gray.opacity(0.3)
-                                .frame(height: 200)
-                                .overlay(ProgressView())
-                        }
+                if let imageURLString = venue.imageURL, let imageURL = URL(string: imageURLString) {
+                    AsyncImage(url: imageURL) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(
+                                ProgressView()
+                            )
                     }
+                    .frame(height: 240)
+                    .clipped()
                 } else {
-                    Color.gray
-                        .frame(height: 200)
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 240)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                        )
                 }
                 
                 // Venue Info
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text(venue.name)
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    Text(venue.address)
+                    if venue.isPremium {
+                        HStack {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
+                            Text("Premium Venue")
+                                .font(.subheadline)
+                                .foregroundColor(.yellow)
+                        }
+                    }
+                    
+                    Text(venue.location)
                         .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                     
                     Text(venue.description)
                         .font(.body)
-                        .padding(.top, 8)
+                        .padding(.top, 4)
+                    
+                    // Action Buttons
+                    HStack(spacing: 20) {
+                        Button(action: {
+                            if isDrinkMenuEnabled {
+                                navigationCoordinator.navigateToDrinkMenu(venue: venue)
+                            } else {
+                                print("Drink menu feature is disabled")
+                            }
+                        }) {
+                            VStack {
+                                Image(systemName: "wineglass")
+                                    .font(.system(size: 24))
+                                Text("View Menu")
+                                    .font(.caption)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                        }
+                        .background(isDrinkMenuEnabled ? Color.blue : Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .disabled(!isDrinkMenuEnabled)
+                        
+                        Button(action: {
+                            if isPaywallEnabled {
+                                showingPaywall = true
+                            } else {
+                                print("Paywall feature is disabled")
+                            }
+                        }) {
+                            VStack {
+                                Image(systemName: "ticket")
+                                    .font(.system(size: 24))
+                                Text("Buy Pass")
+                                    .font(.caption)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                        }
+                        .background(isPaywallEnabled ? Color.blue : Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .disabled(!isPaywallEnabled)
+                    }
+                    .padding(.top, 8)
                 }
                 .padding(.horizontal)
                 
@@ -75,34 +147,6 @@ struct VenueDetailView: View {
                     }
                     .padding(.horizontal)
                 }
-                
-                // Action Buttons
-                HStack(spacing: 16) {
-                    Button(action: {
-                        showingMenu = true
-                    }) {
-                        Text("View Menu")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        showingPassPurchase = true
-                    }) {
-                        Text("Buy Pass")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.orange)
-                            .cornerRadius(8)
-                    }
-                }
-                .padding(.horizontal)
                 
                 // Tabs
                 VStack(spacing: 0) {
@@ -138,12 +182,25 @@ struct VenueDetailView: View {
                 }
             }
         }
+        .navigationTitle("Venue Details")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showingPassPurchase) {
-            PassPurchaseView(venue: venue)
+        .sheet(isPresented: $showingPaywall) {
+            #if ENABLE_PAYWALL
+            PaywallView(viewModel: PaywallViewModel(venue: venue))
+                .environmentObject(navigationCoordinator)
+            #else
+            Text("Paywall feature is disabled in this build")
+                .padding()
+            #endif
         }
-        .sheet(isPresented: $showingMenu) {
-            VenueMenuView(venue: venue)
+        .sheet(isPresented: $showingDrinkMenu) {
+            #if ENABLE_DRINK_MENU
+            DrinkListView(venue: venue)
+                .environmentObject(navigationCoordinator)
+            #else
+            Text("Drink menu is disabled in this build")
+                .padding()
+            #endif
         }
         .overlay {
             if isLoading {
@@ -309,18 +366,22 @@ struct ReviewRow: View {
     }
 }
 
-// Preview provider
+#if DEBUG
 struct VenueDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        VenueDetailView(venue: Venue(
-            id: "venue1",
-            name: "The Grand Ballroom",
-            description: "A luxurious ballroom for elegant events",
-            address: "123 Main Street, New York, NY",
-            imageURL: URL(string: "https://example.com/venue1.jpg"),
-            latitude: 40.7128,
-            longitude: -74.0060,
+        let previewVenue = Venue(
+            id: "123",
+            name: "Sample Venue",
+            description: "This is a beautiful venue with great atmosphere and amazing food. Perfect for a night out with friends or a romantic date.",
+            location: "123 Main St, City",
+            imageURL: nil,
             isPremium: true
-        ))
+        )
+        
+        return NavigationView {
+            VenueDetailView(venue: previewVenue)
+                .environmentObject(PreviewNavigationCoordinator())
+        }
     }
-} 
+}
+#endif 

@@ -1,16 +1,26 @@
 import Foundation
 import SwiftUI
 
-// MARK: - Security Namespace and TokenizationService
-// This file provides a single source of truth for Security and TokenizationService types
+#if PREVIEW_MODE
+// Define a namespace for security types
+enum FOMOSecurity {
+    // Mock implementation of LiveTokenizationService
+    class LiveTokenizationService {
+        static let shared = LiveTokenizationService()
+        
+        func tokenize(card: Card) -> String {
+            return "mock_token"
+        }
+    }
+}
+#endif 
 
-// TokenizationService protocol is now imported from FOMOTypes.swift
-// The implementation classes are defined in their respective files
-
-// MARK: - Helper Function
-// This function can be called to verify that the Security types are available
-public func verifySecurityTypes() {
-    print("Security namespace is available!")
-    print("LiveTokenizationService is available: \(Security.LiveTokenizationService.self)")
-    print("MockTokenizationService is available: \(Security.MockTokenizationService.self)")
+// Verify that security types are available
+func verifySecurityTypes() {
+    #if PREVIEW_MODE
+    print("FOMOSecurity namespace is available in preview mode")
+    print("LiveTokenizationService is available: \(FOMOSecurity.LiveTokenizationService.shared)")
+    #else
+    print("Using production Security module")
+    #endif
 }

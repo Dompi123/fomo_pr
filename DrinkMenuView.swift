@@ -8,6 +8,8 @@ struct DrinkMenuView: View {
     @StateObject private var viewModel = DrinkMenuViewModel()
     @State private var searchText = ""
     
+    var venue: Venue? = nil
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -235,62 +237,7 @@ class DrinkMenuViewModel: ObservableObject {
             
             // In a real app, this would be a network call
             // For now, use mock data
-            let mockDrinks = [
-                DrinkItem(
-                    name: "Classic Mojito",
-                    description: "Rum, mint, lime, sugar, and soda water",
-                    price: 12.99,
-                    category: "Cocktails"
-                ),
-                DrinkItem(
-                    name: "Margarita",
-                    description: "Tequila, lime juice, and orange liqueur",
-                    price: 10.99,
-                    category: "Cocktails"
-                ),
-                DrinkItem(
-                    name: "Old Fashioned",
-                    description: "Bourbon, sugar, bitters, and orange twist",
-                    price: 14.99,
-                    category: "Cocktails"
-                ),
-                DrinkItem(
-                    name: "Craft IPA",
-                    description: "Hoppy India Pale Ale with citrus notes",
-                    price: 8.99,
-                    category: "Beer"
-                ),
-                DrinkItem(
-                    name: "Stout",
-                    description: "Rich, dark beer with coffee and chocolate notes",
-                    price: 7.99,
-                    category: "Beer"
-                ),
-                DrinkItem(
-                    name: "House Red Wine",
-                    description: "Medium-bodied Cabernet Sauvignon",
-                    price: 9.99,
-                    category: "Wine"
-                ),
-                DrinkItem(
-                    name: "Sparkling Wine",
-                    description: "Crisp, dry sparkling wine with apple notes",
-                    price: 11.99,
-                    category: "Wine"
-                ),
-                DrinkItem(
-                    name: "Sparkling Water",
-                    description: "Refreshing carbonated water",
-                    price: 3.99,
-                    category: "Non-Alcoholic"
-                ),
-                DrinkItem(
-                    name: "Iced Tea",
-                    description: "Freshly brewed and chilled black tea",
-                    price: 4.99,
-                    category: "Non-Alcoholic"
-                )
-            ]
+            let mockDrinks = MockDataProvider.shared.drinks
             
             await MainActor.run {
                 self.drinks = mockDrinks
@@ -298,23 +245,36 @@ class DrinkMenuViewModel: ObservableObject {
             }
         } catch {
             await MainActor.run {
-                self.errorMessage = "Failed to load drinks: \(error.localizedDescription)"
+                self.errorMessage = error.localizedDescription
                 self.isLoading = false
             }
         }
     }
     
     func addToCart(_ drink: DrinkItem) {
+        // Check if the drink is already in the cart
         if let index = cart.firstIndex(where: { $0.id == drink.id }) {
+            // Increment quantity
             cart[index].quantity += 1
         } else {
-            var drinkCopy = drink
-            drinkCopy.quantity = 1
-            cart.append(drinkCopy)
+            // Add new item with quantity 1
+            var newItem = drink
+            newItem.quantity = 1
+            cart.append(newItem)
         }
     }
     
     func removeFromCart(_ drink: DrinkItem) {
+        cart.removeAll { $0.id == drink.id }
+    }
+    
+    func incrementQuantity(for drink: DrinkItem) {
+        if let index = cart.firstIndex(where: { $0.id == drink.id }) {
+            cart[index].quantity += 1
+        }
+    }
+    
+    func decrementQuantity(for drink: DrinkItem) {
         if let index = cart.firstIndex(where: { $0.id == drink.id }) {
             if cart[index].quantity > 1 {
                 cart[index].quantity -= 1

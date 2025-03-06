@@ -1,4 +1,26 @@
 import Foundation
+import FOMO_PR
+
+// Define the missing types
+struct ProfileData: Codable {
+    let firstName: String
+    let lastName: String
+    let email: String
+    let phone: String?
+    
+    init(from user: User) {
+        self.firstName = user.firstName
+        self.lastName = user.lastName
+        self.email = user.email
+        self.phone = user.phone
+    }
+}
+
+struct NotificationSettings: Codable {
+    var emailEnabled: Bool
+    var pushEnabled: Bool
+    var smsEnabled: Bool
+}
 
 enum ProfileEndpoint {
     case getProfile
@@ -50,19 +72,6 @@ enum ProfileEndpoint {
         case .getSettings: return "getProfileSettings"
         }
     }
-}
-
-struct ProfileData: Codable {
-    let name: String
-    let email: String
-    let phone: String?
-    let preferences: [String: Bool]
-}
-
-struct NotificationSettings: Codable {
-    let pushEnabled: Bool
-    let emailEnabled: Bool
-    let types: [String: Bool]
 }
 
 #if DEBUG
