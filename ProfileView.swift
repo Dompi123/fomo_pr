@@ -1,4 +1,6 @@
 import SwiftUI
+import FOMO_PR  // Import for FOMOTheme
+import FOMOThemeExtensions
 
 struct ProfileView: View {
     @State private var name = "John Doe"
@@ -6,57 +8,56 @@ struct ProfileView: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Personal Information")) {
+            Section(header: Text("Personal Information").profileSectionStyle()) {
                 HStack {
                     Image(systemName: "person.circle.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.blue)
+                        .profileAvatarStyle()
                     
                     VStack(alignment: .leading) {
                         Text(name)
-                            .font(.headline)
+                            .profileHeadingStyle()
                         Text(email)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .profileSubheadingStyle()
                     }
                 }
-                .padding(.vertical, 10)
+                .profileRowStyle()
             }
             
-            Section(header: Text("Account")) {
+            Section(header: Text("Account").profileSectionStyle()) {
                 NavigationLink(destination: PlaceholderView()) {
                     Label("Payment Methods", systemImage: "creditcard")
+                        .profileRowStyle()
                 }
                 
                 NavigationLink(destination: PlaceholderView()) {
-                    Label("Purchase History", systemImage: "bag")
+                    Label("Subscription", systemImage: "star")
+                        .profileRowStyle()
                 }
                 
                 NavigationLink(destination: PlaceholderView()) {
-                    Label("Notifications", systemImage: "bell")
+                    Label("Order History", systemImage: "bag")
+                        .profileRowStyle()
                 }
             }
             
-            Section(header: Text("App")) {
+            Section(header: Text("Preferences").profileSectionStyle()) {
                 NavigationLink(destination: PlaceholderView()) {
-                    Label("Settings", systemImage: "gear")
+                    Label("Notifications", systemImage: "bell")
+                        .profileRowStyle()
                 }
                 
                 NavigationLink(destination: PlaceholderView()) {
-                    Label("Help & Support", systemImage: "questionmark.circle")
-                }
-                
-                NavigationLink(destination: PlaceholderView()) {
-                    Label("About", systemImage: "info.circle")
+                    Label("Appearance", systemImage: "paintbrush")
+                        .profileRowStyle()
                 }
             }
             
             Section {
-                Button(action: {
-                    // Sign out action
-                }) {
+                Button(action: {}) {
                     Text("Sign Out")
-                        .foregroundColor(.red)
+                        .foregroundColor(FOMOTheme.Colors.error)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .profileRowStyle()
                 }
             }
         }
@@ -72,5 +73,6 @@ struct ProfileView_Previews: PreviewProvider {
         }
     }
 }
+#endif 
 #endif 
 #endif 
