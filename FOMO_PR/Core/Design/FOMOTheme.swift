@@ -1,94 +1,193 @@
 import SwiftUI
 
-public enum FOMOTheme {
+/**
+ * FOMOTheme: Central theme configuration for the FOMO app
+ * This struct contains all the design tokens for colors, typography, spacing, etc.
+ */
+public struct FOMOTheme {
     // MARK: - Colors
-    public enum Colors {
-        public static let primary = Color("Primary", bundle: .module)
-        public static let secondary = Color("Secondary", bundle: .main)
-        public static let accent = Color("Accent", bundle: .main)
-        public static let background = Color("Background", bundle: .main)
-        public static let surface = Color("Surface", bundle: .module)
-        public static let error = Color("Error", bundle: .module)
-        public static let success = Color("Success", bundle: .module)
-        public static let warning = Color("Warning", bundle: .main)
-        public static let text = Color("Text", bundle: .module)
-        public static let textSecondary = Color("TextSecondary", bundle: .module)
+    
+    public struct Colors {
+        // Main colors
+        public static let primary = Color(hex: "#9C30FF")       // Primary purple
+        public static let primaryVariant = Color(hex: "#7917D1") // Darker purple
+        public static let secondary = Color(hex: "#1DB954")     // Spotify green
+        public static let accent = Color(hex: "#BB86FC")        // Lighter purple
         
-        // Fallback colors in case the named colors are not found
-        public static let primaryFallback = Color(hex: "#4B0082") // Deep Purple
-        public static let secondaryFallback = Color.black
-        public static let accentFallback = Color.purple
-        public static let backgroundFallback = Color(hex: "#1A1A1A") // Dark Background
-        public static let surfaceFallback = Color(hex: "#2A2A2A")
-        public static let errorFallback = Color.red
-        public static let successFallback = Color.green
-        public static let warningFallback = Color.yellow
-        public static let textFallback = Color.white
-        public static let textSecondaryFallback = Color.gray
+        // Background colors
+        public static let background = Color(hex: "#121212")    // Main background (very dark)
+        public static let surface = Color(hex: "#282828")       // Card/surface background
+        public static let surfaceVariant = Color(hex: "#3E3E3E") // Lighter surface
+        
+        // Text colors
+        public static let text = Color.white                     // Primary text
+        public static let textSecondary = Color(hex: "#B3B3B3") // Secondary text
+        
+        // Status colors
+        public static let success = Color(hex: "#1DB954")       // Success/positive (green)
+        public static let warning = Color(hex: "#FFBD00")       // Warning (yellow)
+        public static let error = Color(hex: "#E61E32")         // Error/negative (red)
+        
+        // Gradient definitions
+        public static let primaryGradient = LinearGradient(
+            gradient: Gradient(colors: [primary, primaryVariant]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        
+        public static let premiumGradient = LinearGradient(
+            gradient: Gradient(colors: [Color(hex: "#B07CFF"), Color(hex: "#5D26C1")]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
     }
     
     // MARK: - Typography
-    public enum Typography {
-        public static let largeTitle = Font.custom("Poppins-Bold", size: 34)
-        public static let title1 = Font.system(size: 24, weight: .bold)
-        public static let title2 = Font.custom("Poppins-SemiBold", size: 22)
-        public static let title3 = Font.custom("Poppins-SemiBold", size: 20)
-        public static let headline = Font.custom("Poppins-SemiBold", size: 17)
-        public static let body = Font.system(size: 16, weight: .regular)
-        public static let callout = Font.custom("Poppins-Regular", size: 16)
-        public static let subheadline = Font.custom("Poppins-Regular", size: 15)
-        public static let footnote = Font.custom("Poppins-Regular", size: 13)
-        public static let caption1 = Font.system(size: 12, weight: .medium)
-        public static let caption2 = Font.custom("Poppins-Regular", size: 11)
+    
+    public struct Typography {
+        // Font sizes
+        public static let fontSizeDisplay: CGFloat = 34
+        public static let fontSizeTitle1: CGFloat = 28
+        public static let fontSizeTitle2: CGFloat = 22
+        public static let fontSizeHeadline: CGFloat = 17
+        public static let fontSizeSubheadline: CGFloat = 15
+        public static let fontSizeBody: CGFloat = 17
+        public static let fontSizeBodyLarge: CGFloat = 19
+        public static let fontSizeCaption: CGFloat = 13
+        public static let fontSizeButton: CGFloat = 16
         
-        // Fallback fonts in case the custom fonts are not found
-        public static let largeTitleFallback = Font.system(size: 34, weight: .bold, design: .rounded)
-        public static let title1Fallback = Font.system(size: 26, weight: .bold, design: .default)
-        public static let title2Fallback = Font.system(size: 22, weight: .bold, design: .default)
-        public static let headlineFallback = Font.system(size: 17, weight: .semibold, design: .default)
-        public static let subheadlineFallback = Font.system(size: 15, weight: .regular, design: .default)
-        public static let bodyFallback = Font.system(size: 17, weight: .regular, design: .default)
-        public static let headlineLarge = Font.system(size: 28, weight: .bold, design: .rounded)
-        public static let headlineMedium = Font.system(size: 22, weight: .bold, design: .rounded)
-        public static let headlineSmall = Font.system(size: 20, weight: .bold, design: .rounded)
-        public static let bodyLarge = Font.system(size: 18)
-        public static let bodyRegular = Font.system(size: 16)
-        public static let bodySmall = Font.system(size: 14)
+        // Font weights
+        public static let fontWeightRegular = Font.Weight.regular
+        public static let fontWeightMedium = Font.Weight.medium
+        public static let fontWeightSemibold = Font.Weight.semibold
+        public static let fontWeightBold = Font.Weight.bold
+        
+        // Line heights
+        public static let lineHeightDefault: CGFloat = 1.2
+        public static let lineHeightRelaxed: CGFloat = 1.5
+        
+        // Letter spacing
+        public static let letterSpacingTight: CGFloat = -0.5
+        public static let letterSpacingNormal: CGFloat = 0
+        public static let letterSpacingWide: CGFloat = 0.5
     }
     
-    // MARK: - Spacing
-    public enum Spacing {
-        public static let xxxSmall: CGFloat = 2
-        public static let xxSmall: CGFloat = 4
-        public static let xSmall: CGFloat = 8
-        public static let small: CGFloat = 8
-        public static let medium: CGFloat = 16
-        public static let large: CGFloat = 24
-        public static let xLarge: CGFloat = 32
-        public static let xxLarge: CGFloat = 40
-        public static let xxxLarge: CGFloat = 48
+    // MARK: - Layout
+    
+    public struct Layout {
+        // Spacing
+        public static let spacingXS: CGFloat = 4
+        public static let spacingS: CGFloat = 8
+        public static let spacingM: CGFloat = 16
+        public static let spacingL: CGFloat = 24
+        public static let spacingXL: CGFloat = 32
+        public static let spacingXXL: CGFloat = 48
+        
+        // Corner radius
+        public static let cornerRadiusSmall: CGFloat = 8
+        public static let cornerRadiusRegular: CGFloat = 12
+        public static let cornerRadiusLarge: CGFloat = 16
+        public static let cornerRadiusXL: CGFloat = 24
+        
+        // Shadows
+        public static let shadowSmall: Shadow = Shadow(
+            color: Color.black.opacity(0.15),
+            radius: 4,
+            x: 0,
+            y: 2
+        )
+        
+        public static let shadowMedium: Shadow = Shadow(
+            color: Color.black.opacity(0.2),
+            radius: 8,
+            x: 0,
+            y: 4
+        )
+        
+        public static let shadowLarge: Shadow = Shadow(
+            color: Color.black.opacity(0.25),
+            radius: 16,
+            x: 0,
+            y: 8
+        )
+        
+        // Button sizes
+        public static let buttonHeightSmall: CGFloat = 36
+        public static let buttonHeightMedium: CGFloat = 44
+        public static let buttonHeightLarge: CGFloat = 56
+        
+        // Tag sizes
+        public static let tagHeightSmall: CGFloat = 24
+        public static let tagHeightMedium: CGFloat = 32
+        public static let tagHeightLarge: CGFloat = 40
     }
     
-    // MARK: - Radius
-    public enum Radius {
-        public static let small: CGFloat = 4
-        public static let medium: CGFloat = 8
-        public static let large: CGFloat = 16
-        public static let circle: CGFloat = .infinity
-    }
+    // MARK: - Animations
     
-    // MARK: - Shadow
-    public enum Shadow {
-        public static let light = Color.black.opacity(0.1)
-        public static let medium = Color.black.opacity(0.1)
-        public static let dark = Color.black.opacity(0.2)
+    public struct Animations {
+        public static let defaultDuration: Double = 0.25
+        public static let slowDuration: Double = 0.4
+        public static let defaultSpring = Animation.spring(response: 0.3, dampingFraction: 0.7)
+        public static let defaultEasing = Animation.easeInOut(duration: defaultDuration)
+        public static let defaultDelay: Double = 0.05
     }
+}
+
+// MARK: - Shadow
+
+public struct Shadow {
+    let color: Color
+    let radius: CGFloat
+    let x: CGFloat
+    let y: CGFloat
     
-    // MARK: - Animation
-    public enum Animation {
-        public static let standard = SwiftUI.Animation.easeInOut(duration: 0.3)
-        public static let quick = SwiftUI.Animation.easeInOut(duration: 0.15)
-        public static let spring = SwiftUI.Animation.spring(response: 0.3, dampingFraction: 0.6)
+    public init(color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
+        self.color = color
+        self.radius = radius
+        self.x = x
+        self.y = y
+    }
+}
+
+// MARK: - Color Extension
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
+
+// MARK: - View Extension for Shadow Application
+
+extension View {
+    func withShadow(_ shadow: Shadow) -> some View {
+        self.shadow(
+            color: shadow.color,
+            radius: shadow.radius,
+            x: shadow.x,
+            y: shadow.y
+        )
     }
 }
 
@@ -108,33 +207,6 @@ public extension View {
     
     func fomoCornerRadius(_ radius: CGFloat = FOMOTheme.Radius.medium) -> some View {
         self.cornerRadius(radius)
-    }
-}
-
-// Helper extension for Color to support hex values
-extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (1, 1, 1, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
     }
 }
 
