@@ -14,6 +14,9 @@ public enum ColorSystem {
         
         /// Third level brand color
         public static let tertiary = Color("TertiaryBrand", bundle: .main)
+        
+        /// Accent brand color for highlights and special elements
+        public static let accent = Color("AccentBrand", bundle: .main)
     }
     
     /// Semantic status colors
@@ -203,6 +206,7 @@ struct ColorSystem_Previews: PreviewProvider {
                         ColorSwatch(color: ColorSystem.Brand.primary, name: "Primary")
                         ColorSwatch(color: ColorSystem.Brand.secondary, name: "Secondary")
                         ColorSwatch(color: ColorSystem.Brand.tertiary, name: "Tertiary")
+                        ColorSwatch(color: ColorSystem.Brand.accent, name: "Accent")
                     }
                 }
                 

@@ -54,6 +54,7 @@ public enum TypographySystem {
         case xLarge
         case xxLarge
         case xxxLarge
+        case jumbo
         case custom(CGFloat)
         
         var size: CGFloat {
@@ -76,6 +77,8 @@ public enum TypographySystem {
                 return 28
             case .xxxLarge:
                 return 32
+            case .jumbo:
+                return 42
             case .custom(let size):
                 return size
             }

@@ -41,6 +41,11 @@ public enum AnimationSystem {
         public static let spring = { (duration: Double, response: Double = 0.55, dampingFraction: Double = 0.825) in
             SwiftUI.Animation.spring(response: response, dampingFraction: dampingFraction, blendDuration: duration)
         }
+        
+        /// Extra bouncy spring animation for playful elements
+        public static let bouncySpring = { (duration: Double) in
+            SwiftUI.Animation.spring(response: 0.6, dampingFraction: 0.6, blendDuration: duration)
+        }
     }
     
     // MARK: - Predefined Animations

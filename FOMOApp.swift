@@ -2,6 +2,151 @@ import SwiftUI
 import UIKit
 import OSLog
 import Foundation
+// Import our extracted models
+import Models
+// Import our extracted navigation types
+// import Navigation
+// Import our feature management system
+import Features
+
+// Define necessary navigation types directly
+import SwiftUI
+
+// MARK: - Navigation Types
+public struct NavigationState {
+    public var path = NavigationPath()
+    public var activeSheet: Sheet?
+    
+    public init(path: NavigationPath = NavigationPath(), activeSheet: Sheet? = nil) {
+        self.path = path
+        self.activeSheet = activeSheet
+    }
+}
+
+public enum Sheet: Identifiable, Hashable {
+    case paywall
+    case drinkMenu(venueId: String)
+    case checkout(venueId: String, items: [String: Int])
+    
+    public var id: String {
+        switch self {
+        case .paywall:
+            return "paywall"
+        case .drinkMenu(let venueId):
+            return "drinkMenu-\(venueId)"
+        case .checkout(let venueId, _):
+            return "checkout-\(venueId)"
+        }
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    public static func == (lhs: Sheet, rhs: Sheet) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+public enum Route: Hashable {
+    case venueDetail(id: String)
+    case profile
+    case passes
+    case settings
+    
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .venueDetail(let id):
+            hasher.combine("venueDetail")
+            hasher.combine(id)
+        case .profile:
+            hasher.combine("profile")
+        case .passes:
+            hasher.combine("passes")
+        case .settings:
+            hasher.combine("settings")
+        }
+    }
+    
+    public static func == (lhs: Route, rhs: Route) -> Bool {
+        switch (lhs, rhs) {
+        case (.venueDetail(let lhsId), .venueDetail(let rhsId)):
+            return lhsId == rhsId
+        case (.profile, .profile), (.passes, .passes), (.settings, .settings):
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+public protocol FeatureAvailabilityChecking {
+    func isEnabled(_ feature: Feature) -> Bool
+}
+
+public struct DefaultFeatureAvailability: FeatureAvailabilityChecking {
+    public func isEnabled(_ feature: Feature) -> Bool {
+        return true
+    }
+    
+    public init() {}
+}
+
+public final class NavigationCoordinator: ObservableObject {
+    public static let shared = NavigationCoordinator()
+    
+    private let logger = Logger(subsystem: "com.fomo.pr", category: "Navigation")
+    
+    @Published public var path = NavigationPath()
+    @Published public var activeSheet: Sheet?
+    
+    private var featureAvailability: FeatureAvailabilityChecking
+    
+    public init(featureAvailability: FeatureAvailabilityChecking = DefaultFeatureAvailability()) {
+        self.featureAvailability = featureAvailability
+        logger.debug("NavigationCoordinator initialized")
+    }
+    
+    // MARK: - Navigation Methods
+    
+    public func navigateTo(_ route: Route) {
+        path.append(route)
+    }
+    
+    public func presentSheet(_ sheet: Sheet) {
+        activeSheet = sheet
+    }
+    
+    public func dismissSheet() {
+        activeSheet = nil
+    }
+    
+    public func popToRoot() {
+        path = NavigationPath()
+    }
+    
+    public func goBack() {
+        if !path.isEmpty {
+            path.removeLast()
+        }
+    }
+}
+
+// MARK: - RuntimeFeatureAvailability
+class RuntimeFeatureAvailability: FeatureAvailabilityChecking {
+    static let shared = RuntimeFeatureAvailability()
+    
+    var logger = Logger(subsystem: "com.fomo.pr", category: "FeatureManagement")
+    
+    init() {
+        logger.debug("RuntimeFeatureAvailability initialized")
+    }
+    
+    func isEnabled(_ feature: Feature) -> Bool {
+        return FeatureManager.shared.isEnabled(feature)
+    }
+}
+
 // Using PaymentTypes types from local file instead of as a module
 // import FOMO_PR - Commented out as this file is part of the module
 
@@ -77,257 +222,19 @@ public let isMockDataEnabled = false
 public let isPreviewMode = false
 #endif
 
-// MARK: - Core Types
-// Define the Venue struct
-public struct Venue: Identifiable, Codable, Hashable {
-    public let id: String
-    public let name: String
-    public let description: String
-    public let address: String
-    public let imageURL: URL?
-    public let latitude: Double
-    public let longitude: Double
-    public let isPremium: Bool
-    public let rating: Double
+// MARK: - Feature Availability
+/// Runtime feature checker that uses the FeatureManager
+public class RuntimeFeatureAvailability: FeatureAvailabilityChecking {
+    static let shared = RuntimeFeatureAvailability()
     
-    public init(
-        id: String,
-        name: String,
-        description: String,
-        address: String,
-        imageURL: URL?,
-        latitude: Double = 0.0,
-        longitude: Double = 0.0,
-        rating: Double = 4.5,
-        isPremium: Bool = false
-    ) {
-        self.id = id
-        self.name = name
-        self.description = description
-        self.address = address
-        self.imageURL = imageURL
-        self.latitude = latitude
-        self.longitude = longitude
-        self.isPremium = isPremium
-        self.rating = rating
+    var logger = Logger(subsystem: "com.fomo.pr", category: "FeatureManagement")
+    
+    init() {
+        logger.debug("RuntimeFeatureAvailability initialized")
     }
     
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    public static func == (lhs: Venue, rhs: Venue) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
-// Define the DrinkItem struct
-public struct DrinkItem: Identifiable, Codable, Hashable {
-    public let id: String
-    public let name: String
-    public let description: String
-    public let price: Decimal
-    public let imageURL: URL?
-    public let category: String
-    
-    public init(
-        id: String,
-        name: String,
-        description: String,
-        imageURL: URL?,
-        price: Double,
-        category: String
-    ) {
-        self.id = id
-        self.name = name
-        self.description = description
-        self.imageURL = imageURL
-        self.price = Decimal(price)
-        self.category = category
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    public static func == (lhs: DrinkItem, rhs: DrinkItem) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
-// Define the PricingTier struct if it's not already defined
-public struct PricingTier: Identifiable, Codable, Hashable {
-    public let id: String
-    public let name: String
-    public let price: Decimal
-    public let description: String
-    
-    public init(
-        id: String,
-        name: String,
-        price: Decimal,
-        description: String
-    ) {
-        self.id = id
-        self.name = name
-        self.price = price
-        self.description = description
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    public static func == (lhs: PricingTier, rhs: PricingTier) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    // Add preview tiers for testing
-    public static var previewTiers: [PricingTier] {
-        return [
-            PricingTier(
-                id: "standard",
-                name: "Standard",
-                price: Decimal(19.99),
-                description: "Basic venue access"
-            ),
-            PricingTier(
-                id: "premium",
-                name: "Premium",
-                price: Decimal(39.99),
-                description: "Priority entry and exclusive areas"
-            ),
-            PricingTier(
-                id: "vip",
-                name: "VIP",
-                price: Decimal(99.99),
-                description: "All access pass with complimentary drinks"
-            )
-        ]
-    }
-}
-
-// MARK: - Navigation Types
-public enum Sheet: Identifiable {
-    case profile
-    case settings
-    case payment
-    case drinkDetails(DrinkItem)
-    case checkout(order: DrinkOrder)
-    case paywall(venue: Venue)
-    case drinkMenu(venue: Venue)
-    case designSystem // New case for the design system showcase
-    
-    public var id: String {
-        switch self {
-        case .profile: return "profile"
-        case .settings: return "settings"
-        case .payment: return "payment"
-        case .drinkDetails(let drink): return "drink_\(drink.id)"
-        case .checkout: return "checkout"
-        case .paywall(let venue): return "paywall_\(venue.id)"
-        case .drinkMenu(let venue): return "drink_menu_\(venue.id)"
-        case .designSystem: return "design_system"
-        }
-    }
-}
-
-// MARK: - Preview Navigation Coordinator
-@MainActor
-public final class PreviewNavigationCoordinator: ObservableObject {
-    public static let shared = PreviewNavigationCoordinator()
-    
-    @Published public var path = NavigationPath()
-    @Published public var presentedSheet: Sheet?
-    
-    private init() {
-        logger.debug("PreviewNavigationCoordinator initialized")
-    }
-    
-    public func navigate(to destination: Sheet) {
-        logger.debug("Navigating to: \(destination.id)")
-        presentedSheet = destination
-    }
-    
-    public func navigateToVenueDetails(venue: Venue) {
-        logger.debug("Navigating to venue details: \(venue.name)")
-        // In a real app, this would modify the navigation path
-        print("Navigating to venue details: \(venue.name)")
-    }
-    
-    public func navigateToDrinkMenu(venue: Venue) {
-        if isDrinkMenuEnabled {
-            navigate(to: .drinkMenu(venue: venue))
-        } else {
-            logger.debug("Drink menu is disabled")
-        }
-    }
-    
-    public func navigateToPaywall(venue: Venue) {
-        if isPaywallEnabled {
-            navigate(to: .paywall(venue: venue))
-        } else {
-            logger.debug("Paywall is disabled")
-        }
-    }
-    
-    public func navigateToCheckout(order: DrinkOrder) {
-        if isCheckoutEnabled {
-            navigate(to: .checkout(order: order))
-        } else {
-            logger.debug("Checkout is disabled")
-        }
-    }
-    
-    public func navigateToDesignSystem() {
-        navigate(to: .designSystem)
-    }
-    
-    public func dismissSheet() {
-        presentedSheet = nil
-    }
-    
-    public func goBack() {
-        if !path.isEmpty {
-            path.removeLast()
-        } else {
-            presentedSheet = nil
-        }
-    }
-}
-
-// MARK: - Payment Manager
-public class PaymentManager: ObservableObject {
-    public static func createMock() async -> PaymentManager {
-        return PaymentManager()
-    }
-    
-    public static func create() async -> PaymentManager {
-        return PaymentManager()
-    }
-    
-    public init() {}
-}
-
-// Define the DrinkOrder struct
-public struct DrinkOrder: Identifiable, Codable, Hashable {
-    public let id: String
-    public var items: [DrinkItem]
-    public var totalPrice: Decimal {
-        items.reduce(Decimal(0)) { $0 + $1.price }
-    }
-    
-    public init(id: String = UUID().uuidString, items: [DrinkItem] = []) {
-        self.id = id
-        self.items = items
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    public static func == (lhs: DrinkOrder, rhs: DrinkOrder) -> Bool {
-        lhs.id == rhs.id
+    func isEnabled(_ feature: Feature) -> Bool {
+        return FeatureManager.shared.isEnabled(feature)
     }
 }
 
@@ -345,7 +252,7 @@ public class MockDataProvider {
                 imageURL: nil,
                 latitude: 37.7749,
                 longitude: -122.4194,
-                isPremium: isPremiumVenuesEnabled
+                isPremium: FeatureManager.shared.isEnabled(.premiumVenues)
             ),
             Venue(
                 id: "2",
@@ -365,7 +272,7 @@ public class MockDataProvider {
                 imageURL: nil,
                 latitude: 37.7833,
                 longitude: -122.4167,
-                isPremium: isPremiumVenuesEnabled
+                isPremium: FeatureManager.shared.isEnabled(.premiumVenues)
             ),
             Venue(
                 id: "4",
@@ -452,8 +359,8 @@ public class MockDataProvider {
 
 // MARK: - Root View
 struct RootView: View {
-    @EnvironmentObject var navigationCoordinator: PreviewNavigationCoordinator
-    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var navigationCoordinator: NavigationCoordinator
+    @ObservedObject private var featureManager = FeatureManager.shared
     
     var body: some View {
         NavigationStack(path: $navigationCoordinator.path) {
@@ -463,15 +370,15 @@ struct RootView: View {
                         Label("Venues", systemImage: "building.2")
                     }
                 
-                if isDrinkMenuEnabled {
+                if featureManager.isEnabled(.drinkMenu) {
                     Text("Drinks")
                         .tabItem {
                             Label("Drinks", systemImage: "wineglass")
                         }
                 }
                 
-                if isPaywallEnabled {
-                PassesView()
+                if featureManager.isEnabled(.paywall) {
+                    PassesView()
                     .tabItem {
                         Label("Passes", systemImage: "ticket")
                     }
@@ -489,6 +396,16 @@ struct RootView: View {
                 .tabItem {
                     Label("Design", systemImage: "paintpalette")
                 }
+                
+                #if DEBUG
+                // Add feature toggle UI in debug builds
+                Button("Features") {
+                    navigationCoordinator.navigate(to: .featureToggles)
+                }
+                .tabItem {
+                    Label("Features", systemImage: "switch.2")
+                }
+                #endif
             }
             .navigationTitle("FOMO")
             .navigationBarTitleDisplayMode(.inline)
@@ -498,12 +415,12 @@ struct RootView: View {
                         // Theme selection options
                         ForEach(ThemeType.allCases) { themeType in
                             Button(themeType.rawValue) {
-                                themeManager.selectedThemeType = themeType
+                                // themeManager.selectedThemeType = themeType
                             }
                         }
                     } label: {
                         Image(systemName: "paintpalette")
-                            .foregroundColor(themeManager.activeTheme.primary)
+                            .foregroundColor(.primary)
                     }
                 }
             }
@@ -524,32 +441,23 @@ struct RootView: View {
                     price: drink.price,
                     quantity: 1
                 ))
-            case .checkout(let order):
-                if isCheckoutEnabled {
-                    DrinkCartView()
-                } else {
-                    Text("Checkout is disabled in this build")
-                }
+            case .checkout(let _):
+                // Handle checkout
+                EmptyView()
             case .paywall(let venue):
-                if isPaywallEnabled {
-                    PaywallView(viewModel: PaywallViewModel(venue: venue))
+                if featureManager.isEnabled(.paywall) {
+                    PaywallView(venue: venue)
                 } else {
                     Text("Paywall is disabled in this build")
                 }
-            case .drinkMenu(let venue):
-                if isDrinkMenuEnabled {
-                    DrinkListView()
-                        .environmentObject(navigationCoordinator)
-                } else {
-                    Text("Drink Menu is disabled in this build")
-                }
+            case .drinkMenu(let _):
+                // Handle drink menu
+                EmptyView()
             case .designSystem:
                 // Display the design system showcase
                 ThemeShowcaseTabView()
-                    .environmentObject(themeManager)
             }
         }
-        .withTheme() // Apply the active theme to the entire app
     }
 }
 
@@ -558,14 +466,11 @@ struct RootView: View {
 struct FOMOApp: App {
     @Environment(\.scenePhase) private var scenePhase
     
-    // Navigation
-    @StateObject private var navigationCoordinator = PreviewNavigationCoordinator.shared
+    // Navigation with runtime feature availability
+    @StateObject private var navigationCoordinator = NavigationCoordinator(featureAvailability: RuntimeFeatureAvailability.shared)
     
     // Payment
     @StateObject private var paymentManager = PaymentManager()
-    
-    // Theme management
-    @StateObject private var themeManager = ThemeManager.shared
     
     init() {
         // Register fonts at app startup
@@ -582,7 +487,7 @@ struct FOMOApp: App {
             // Update the system dark mode flag
             let isDarkMode = UITraitCollection.current.userInterfaceStyle == .dark
             UserDefaults.standard.set(isDarkMode, forKey: "isSystemInDarkMode")
-            NotificationCenter.default.post(name: Notification.Name("systemAppearanceChanged"), object: nil)
+            NotificationCenter.default.post(name: .init("systemAppearanceChanged"), object: nil)
         }
     }
     
@@ -591,12 +496,6 @@ struct FOMOApp: App {
             RootView()
                 .environmentObject(navigationCoordinator)
                 .environmentObject(paymentManager)
-                .environmentObject(themeManager)
-                .onAppear {
-                    // Log environment info at startup
-                    logger.debug("App started in Preview Mode: \(isPreviewMode)")
-                    logger.debug("Feature flags: Paywall=\(isPaywallEnabled), DrinkMenu=\(isDrinkMenuEnabled), Checkout=\(isCheckoutEnabled), Search=\(isSearchEnabled), PremiumVenues=\(isPremiumVenuesEnabled), MockData=\(isMockDataEnabled)")
-                }
         }
     }
 }
@@ -604,26 +503,7 @@ struct FOMOApp: App {
 // MARK: - Stub Views for Preview
 #if PREVIEW_MODE
 // These views are now imported from FOMO_PR/Features/Root/Views directory
-// struct ProfileView: View {
-//     var body: some View {
-//         Text("Profile View")
-//     }
-// }
-
-// struct PassesView: View {
-//     var body: some View {
-//         Text("Passes View")
-//     }
-// }
-
-// struct PaywallView: View {
-//     var viewModel: PaywallViewModel
-//     
-//     var body: some View {
-//         Text("Paywall View")
-//     }
-// }
-
+// No need for stub implementations as they exist as separate files
 #if ENABLE_DRINK_MENU
 // These views are already defined in DrinkListView.swift
 // Commenting out to avoid duplicate declarations
@@ -645,4 +525,661 @@ struct DrinkCartView: View {
 #endif
 
 // Add the missing #endif for PREVIEW_MODE
-#endif 
+#endif
+
+// MARK: - Theme Definitions
+struct ThemeShowcaseTabView: View {
+    @StateObject private var themeManager = ThemeManager.shared
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        NavigationView {
+            TabView(selection: $selectedTab) {
+                ThemeColorShowcase()
+                    .tabItem {
+                        Label("Colors", systemImage: "paintpalette")
+                    }
+                    .tag(0)
+                
+                ThemeTypographyShowcase()
+                    .tabItem {
+                        Label("Typography", systemImage: "textformat")
+                    }
+                    .tag(1)
+                
+                ThemeComponentShowcase()
+                    .tabItem {
+                        Label("Components", systemImage: "square.on.square")
+                    }
+                    .tag(2)
+                
+                ThemeSpacingShowcase()
+                    .tabItem {
+                        Label("Layout", systemImage: "ruler")
+                    }
+                    .tag(3)
+                
+                ThemeSettingsView()
+                    .tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    .tag(4)
+            }
+            .navigationTitle(navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .environmentObject(themeManager)
+        }
+    }
+    
+    private var navigationTitle: String {
+        switch selectedTab {
+        case 0: return "Colors"
+        case 1: return "Typography"
+        case 2: return "Components"
+        case 3: return "Layout"
+        case 4: return "Settings"
+        default: return "Design System"
+        }
+    }
+}
+
+// MARK: - Color Showcase View
+struct ThemeColorShowcase: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                sectionHeader("Color System")
+                
+                colorSection(title: "Brand Colors", colors: [
+                    ("Primary", FOMOTheme.Colors.primary),
+                    ("Secondary", FOMOTheme.Colors.secondary),
+                    ("Accent", FOMOTheme.Colors.accent)
+                ])
+                
+                colorSection(title: "Status Colors", colors: [
+                    ("Success", FOMOTheme.Colors.success),
+                    ("Warning", FOMOTheme.Colors.warning),
+                    ("Error", FOMOTheme.Colors.error)
+                ])
+                
+                colorSection(title: "Background Colors", colors: [
+                    ("Background", FOMOTheme.Colors.background),
+                    ("Surface", FOMOTheme.Colors.surface)
+                ])
+                
+                colorSection(title: "Text Colors", colors: [
+                    ("Text", FOMOTheme.Colors.text),
+                    ("Text Secondary", FOMOTheme.Colors.textSecondary)
+                ])
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineLarge)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+    }
+    
+    private func colorSection(title: String, colors: [(String, Color)]) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                ForEach(colors, id: \.0) { name, color in
+                    colorItem(name, color)
+                }
+            }
+        }
+    }
+    
+    private func colorItem(_ name: String, _ color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Rectangle()
+                .fill(color)
+                .frame(height: 80)
+                .cornerRadius(FOMOTheme.Radius.small)
+                .shadow(radius: 2)
+            
+            Text(name)
+                .font(FOMOTheme.Typography.headline)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            // Color value placeholder - in a real implementation we'd extract the hex value
+            Text("#Color")
+                .font(FOMOTheme.Typography.caption1)
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
+        }
+    }
+}
+
+// MARK: - Typography Showcase View
+struct ThemeTypographyShowcase: View {
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                sectionHeader("Typography System")
+                
+                typographySection(title: "Headlines", items: [
+                    ("headlineLarge", FOMOTheme.Typography.headlineLarge, "28pt Bold"),
+                    ("headlineMedium", FOMOTheme.Typography.headlineMedium, "22pt Bold"),
+                    ("headlineSmall", FOMOTheme.Typography.headlineSmall, "20pt Bold")
+                ])
+                
+                typographySection(title: "Body Text", items: [
+                    ("bodyLarge", FOMOTheme.Typography.bodyLarge, "18pt Regular"),
+                    ("bodyRegular", FOMOTheme.Typography.bodyRegular, "16pt Regular"),
+                    ("bodySmall", FOMOTheme.Typography.bodySmall, "14pt Regular")
+                ])
+                
+                typographySection(title: "Captions", items: [
+                    ("caption1", FOMOTheme.Typography.caption1, "12pt Regular"),
+                    ("caption2", FOMOTheme.Typography.caption2, "10pt Regular")
+                ])
+                
+                typographySection(title: "Original Styles", items: [
+                    ("display", FOMOTheme.Typography.display, "34pt Bold Rounded"),
+                    ("title1", FOMOTheme.Typography.title1, "26pt Bold"),
+                    ("title2", FOMOTheme.Typography.title2, "22pt Bold"),
+                    ("headline", FOMOTheme.Typography.headline, "17pt Semibold"),
+                    ("subheadline", FOMOTheme.Typography.subheadline, "15pt Regular"),
+                    ("body", FOMOTheme.Typography.body, "17pt Regular")
+                ])
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineLarge)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+    }
+    
+    private func typographySection(title: String, items: [(String, Font, String)]) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            VStack(spacing: 16) {
+                ForEach(items, id: \.0) { name, font, description in
+                    typographyItem(name, font, description)
+                }
+            }
+        }
+    }
+    
+    private func typographyItem(_ name: String, _ font: Font, _ description: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(name)
+                    .font(FOMOTheme.Typography.headline)
+                    .foregroundColor(FOMOTheme.Colors.text)
+                
+                Spacer()
+                
+                Text(description)
+                    .font(FOMOTheme.Typography.caption1)
+                    .foregroundColor(FOMOTheme.Colors.textSecondary)
+            }
+            
+            Text("The quick brown fox jumps over the lazy dog")
+                .font(font)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            Divider()
+        }
+    }
+}
+
+// MARK: - Component Showcase View
+struct ThemeComponentShowcase: View {
+    @State private var textFieldValue = "Input Text"
+    @State private var toggleValue = false
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                sectionHeader("UI Components")
+                
+                buttonSection
+                
+                cardSection
+                
+                inputSection
+                
+                toggleSection
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineLarge)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+    }
+    
+    private var buttonSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Buttons")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            VStack(spacing: 16) {
+                // Primary Button
+                Button("Primary Button") { }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, FOMOTheme.Spacing.small)
+                    .background(FOMOTheme.Colors.primary)
+                    .foregroundColor(FOMOTheme.Colors.text)
+                    .cornerRadius(FOMOTheme.Radius.medium)
+                
+                // Secondary Button
+                Button("Secondary Button") { }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, FOMOTheme.Spacing.small)
+                    .background(FOMOTheme.Colors.surface)
+                    .foregroundColor(FOMOTheme.Colors.primary)
+                    .cornerRadius(FOMOTheme.Radius.medium)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: FOMOTheme.Radius.medium)
+                            .stroke(FOMOTheme.Colors.primary, lineWidth: 1)
+                    )
+                
+                // Disabled Button
+                Button("Disabled Button") { }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, FOMOTheme.Spacing.small)
+                    .background(Color.gray.opacity(0.3))
+                    .foregroundColor(Color.gray)
+                    .cornerRadius(FOMOTheme.Radius.medium)
+                    .disabled(true)
+            }
+        }
+    }
+    
+    private var cardSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Cards")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            VStack(spacing: 16) {
+                // Basic Card
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Basic Card")
+                        .font(FOMOTheme.Typography.headline)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                    
+                    Text("This is a basic card component with standard styling applied.")
+                        .font(FOMOTheme.Typography.body)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                }
+                .padding(FOMOTheme.Spacing.medium)
+                .background(FOMOTheme.Colors.surface)
+                .cornerRadius(FOMOTheme.Radius.medium)
+                
+                // Card with Image
+                VStack(alignment: .leading, spacing: 8) {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 120)
+                    
+                    Text("Card with Image")
+                        .font(FOMOTheme.Typography.headline)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                    
+                    Text("This card includes an image placeholder at the top.")
+                        .font(FOMOTheme.Typography.body)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                }
+                .background(FOMOTheme.Colors.surface)
+                .cornerRadius(FOMOTheme.Radius.medium)
+                .shadow(color: FOMOTheme.Shadow.medium, radius: 4, x: 0, y: 2)
+            }
+        }
+    }
+    
+    private var inputSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Text Inputs")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            VStack(spacing: 16) {
+                // Standard Text Field
+                TextField("Standard Input", text: $textFieldValue)
+                    .padding()
+                    .background(FOMOTheme.Colors.surface)
+                    .cornerRadius(FOMOTheme.Radius.small)
+                
+                // Secure Field
+                SecureField("Password Input", text: $textFieldValue)
+                    .padding()
+                    .background(FOMOTheme.Colors.surface)
+                    .cornerRadius(FOMOTheme.Radius.small)
+            }
+        }
+    }
+    
+    private var toggleSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Toggles & Controls")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            Toggle("Toggle Option", isOn: $toggleValue)
+                .padding()
+                .background(FOMOTheme.Colors.surface)
+                .cornerRadius(FOMOTheme.Radius.small)
+        }
+    }
+}
+
+// MARK: - Spacing Showcase View
+struct ThemeSpacingShowcase: View {
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                sectionHeader("Layout System")
+                
+                spacingSection
+                
+                radiusSection
+                
+                gridSection
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineLarge)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+    }
+    
+    private var spacingSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Spacing")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            VStack(spacing: 20) {
+                spacingItem("xxSmall", FOMOTheme.Spacing.xxSmall)
+                spacingItem("small", FOMOTheme.Spacing.small)
+                spacingItem("medium", FOMOTheme.Spacing.medium)
+                spacingItem("large", FOMOTheme.Spacing.large)
+                spacingItem("xLarge", FOMOTheme.Spacing.xLarge)
+                spacingItem("xxLarge", FOMOTheme.Spacing.xxLarge)
+            }
+        }
+    }
+    
+    private func spacingItem(_ name: String, _ spacing: CGFloat) -> some View {
+        HStack {
+            Text(name)
+                .font(FOMOTheme.Typography.headline)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(width: 100, alignment: .leading)
+            
+            Text("\(Int(spacing))pt")
+                .font(FOMOTheme.Typography.caption1)
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
+                .frame(width: 50)
+            
+            Rectangle()
+                .fill(FOMOTheme.Colors.primary)
+                .frame(width: spacing, height: 40)
+            
+            Spacer()
+        }
+    }
+    
+    private var radiusSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Corner Radius")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            HStack(spacing: 20) {
+                radiusItem("small", FOMOTheme.Radius.small)
+                radiusItem("medium", FOMOTheme.Radius.medium)
+                radiusItem("large", FOMOTheme.Radius.large)
+            }
+        }
+    }
+    
+    private func radiusItem(_ name: String, _ radius: CGFloat) -> some View {
+        VStack {
+            Rectangle()
+                .fill(FOMOTheme.Colors.primary)
+                .frame(width: 80, height: 80)
+                .cornerRadius(radius)
+            
+            Text(name)
+                .font(FOMOTheme.Typography.caption1)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            Text("\(Int(radius))pt")
+                .font(FOMOTheme.Typography.caption2)
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
+        }
+    }
+    
+    private var gridSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Grid & Layout")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            // Simple grid example
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 2), spacing: 16) {
+                ForEach(1..<5) { index in
+                    Rectangle()
+                        .fill(FOMOTheme.Colors.primary.opacity(0.7))
+                        .frame(height: 80)
+                        .overlay(
+                            Text("Item \(index)")
+                                .foregroundColor(.white)
+                        )
+                }
+            }
+            
+            Text("2-column grid with 16pt spacing")
+                .font(FOMOTheme.Typography.caption1)
+                .foregroundColor(FOMOTheme.Colors.textSecondary)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 8)
+        }
+    }
+}
+
+// MARK: - Settings View
+struct ThemeSettingsView: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                sectionHeader("Theme Settings")
+                
+                themeSelectionSection
+                
+                debuggingTools
+            }
+            .padding()
+        }
+    }
+    
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(FOMOTheme.Typography.headlineLarge)
+                .foregroundColor(FOMOTheme.Colors.text)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+    }
+    
+    private var themeSelectionSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Select Theme")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            ForEach(ThemeType.allCases) { themeType in
+                themeButton(for: themeType)
+            }
+        }
+    }
+    
+    private func themeButton(for themeType: ThemeType) -> some View {
+        Button(action: {
+            themeManager.selectedThemeType = themeType
+        }) {
+            HStack {
+                Text(themeType.rawValue)
+                    .font(FOMOTheme.Typography.headline)
+                    .foregroundColor(FOMOTheme.Colors.text)
+                
+                Spacer()
+                
+                if themeManager.selectedThemeType == themeType {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(FOMOTheme.Colors.primary)
+                }
+            }
+            .padding()
+            .background(FOMOTheme.Colors.surface)
+            .cornerRadius(FOMOTheme.Radius.medium)
+            .overlay(
+                RoundedRectangle(cornerRadius: FOMOTheme.Radius.medium)
+                    .stroke(
+                        themeManager.selectedThemeType == themeType ? 
+                            FOMOTheme.Colors.primary : 
+                            Color.clear,
+                        lineWidth: 2
+                    )
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private var debuggingTools: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Debugging Tools")
+                .font(FOMOTheme.Typography.headlineSmall)
+                .foregroundColor(FOMOTheme.Colors.text)
+            
+            Button(action: {
+                // Toggle layout guides
+            }) {
+                HStack {
+                    Image(systemName: "square.grid.2x2")
+                        .foregroundColor(FOMOTheme.Colors.primary)
+                    
+                    Text("Toggle Layout Guides")
+                        .font(FOMOTheme.Typography.headline)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                    
+                    Spacer()
+                }
+                .padding()
+                .background(FOMOTheme.Colors.surface)
+                .cornerRadius(FOMOTheme.Radius.medium)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            Button(action: {
+                // Show color palette
+            }) {
+                HStack {
+                    Image(systemName: "paintpalette")
+                        .foregroundColor(FOMOTheme.Colors.primary)
+                    
+                    Text("Show Color Palette")
+                        .font(FOMOTheme.Typography.headline)
+                        .foregroundColor(FOMOTheme.Colors.text)
+                    
+                    Spacer()
+                }
+                .padding()
+                .background(FOMOTheme.Colors.surface)
+                .cornerRadius(FOMOTheme.Radius.medium)
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+    }
+}
+
+// MARK: - Missing Type Definitions
+enum ThemeType: String, CaseIterable, Identifiable {
+    case light, dark, system
+    
+    var id: String { self.rawValue }
+}
+
+struct TypographySystem {
+    static func registerFonts() {
+        // Register custom fonts if needed
+    }
+}
+
+// MARK: - Theme Manager
+class ThemeManager: ObservableObject {
+    /// Singleton instance
+    static let shared = ThemeManager()
+    
+    /// Currently selected theme type
+    @Published var selectedThemeType: ThemeType = .system {
+        didSet {
+            UserDefaults.standard.set(selectedThemeType.rawValue, forKey: "selectedTheme")
+            updateActiveTheme()
+            objectWillChange.send()
+        }
+    }
+    
+    private init() {
+        // Load saved theme preference
+        if let savedTheme = UserDefaults.standard.string(forKey: "selectedTheme"),
+           let themeType = ThemeType(rawValue: savedTheme) {
+            self.selectedThemeType = themeType
+        } else {
+            self.selectedThemeType = .system
+        }
+    }
+    
+    private func updateActiveTheme() {
+        // Here we would update active theme colors
+        // This is a placeholder for actual theme switching logic
+    }
+} 

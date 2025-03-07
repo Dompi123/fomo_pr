@@ -13,6 +13,18 @@ public enum FOMOTheme {
         public static let warning = Color("Warning", bundle: .main)
         public static let text = Color("Text", bundle: .module)
         public static let textSecondary = Color("TextSecondary", bundle: .module)
+        
+        // Fallback colors in case the named colors are not found
+        public static let primaryFallback = Color(hex: "#4B0082") // Deep Purple
+        public static let secondaryFallback = Color.black
+        public static let accentFallback = Color.purple
+        public static let backgroundFallback = Color(hex: "#1A1A1A") // Dark Background
+        public static let surfaceFallback = Color(hex: "#2A2A2A")
+        public static let errorFallback = Color.red
+        public static let successFallback = Color.green
+        public static let warningFallback = Color.yellow
+        public static let textFallback = Color.white
+        public static let textSecondaryFallback = Color.gray
     }
     
     // MARK: - Typography
@@ -28,6 +40,20 @@ public enum FOMOTheme {
         public static let footnote = Font.custom("Poppins-Regular", size: 13)
         public static let caption1 = Font.system(size: 12, weight: .medium)
         public static let caption2 = Font.custom("Poppins-Regular", size: 11)
+        
+        // Fallback fonts in case the custom fonts are not found
+        public static let largeTitleFallback = Font.system(size: 34, weight: .bold, design: .rounded)
+        public static let title1Fallback = Font.system(size: 26, weight: .bold, design: .default)
+        public static let title2Fallback = Font.system(size: 22, weight: .bold, design: .default)
+        public static let headlineFallback = Font.system(size: 17, weight: .semibold, design: .default)
+        public static let subheadlineFallback = Font.system(size: 15, weight: .regular, design: .default)
+        public static let bodyFallback = Font.system(size: 17, weight: .regular, design: .default)
+        public static let headlineLarge = Font.system(size: 28, weight: .bold, design: .rounded)
+        public static let headlineMedium = Font.system(size: 22, weight: .bold, design: .rounded)
+        public static let headlineSmall = Font.system(size: 20, weight: .bold, design: .rounded)
+        public static let bodyLarge = Font.system(size: 18)
+        public static let bodyRegular = Font.system(size: 16)
+        public static let bodySmall = Font.system(size: 14)
     }
     
     // MARK: - Spacing
@@ -82,6 +108,33 @@ public extension View {
     
     func fomoCornerRadius(_ radius: CGFloat = FOMOTheme.Radius.medium) -> some View {
         self.cornerRadius(radius)
+    }
+}
+
+// Helper extension for Color to support hex values
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 
