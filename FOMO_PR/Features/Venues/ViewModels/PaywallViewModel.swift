@@ -40,16 +40,43 @@ enum PaywallError: Error, LocalizedError {
     }
 }
 
+// Add the missing PricingTierFeature type
+public struct PricingTierFeature: Identifiable, Codable, Hashable {
+    public var id: String
+    public var name: String
+    public var description: String
+    
+    public init(id: String, name: String, description: String) {
+        self.id = id
+        self.name = name
+        self.description = description
+    }
+    
+    // Static method to get features for a tier
+    public static func features(for tier: PricingTier) -> [PricingTierFeature] {
+        // Generate mock features based on the tier name
+        let featureCount = tier.name.lowercased().contains("premium") ? 5 : 3
+        var features: [PricingTierFeature] = []
+        
+        for i in 1...featureCount {
+            let featureName = "Feature \(i) for \(tier.name)"
+            features.append(PricingTierFeature(id: UUID().uuidString, name: featureName, description: featureName))
+        }
+        
+        return features
+    }
+}
+
 @available(iOS 15.0, macOS 12.0, *)
 public class PaywallViewModel: ObservableObject {
     // Use the Venue type from the main app
     @Published var venue: Venue
     
-    // Use a typealias to avoid ambiguity
-    typealias AppPricingTier = FOMOApp.PricingTier
+    // Remove the typealias and use PricingTier directly
+    // typealias AppPricingTier = PricingTier
     
-    @Published var pricingTiers: [AppPricingTier] = []
-    @Published var selectedTier: AppPricingTier?
+    @Published var pricingTiers: [PricingTier] = []
+    @Published var selectedTier: PricingTier?
     @Published var isLoading: Bool = false
     @Published var error: Error?
     @Published var showAlert: Bool = false
@@ -71,26 +98,23 @@ public class PaywallViewModel: ObservableObject {
     
     private func loadMockData() {
         self.pricingTiers = [
-            AppPricingTier(
+            PricingTier(
                 id: "basic",
                 name: "Basic Pass",
                 price: 19.99,
-                description: "Basic venue access",
-                features: ["Entry to venue", "Access to main areas"]
+                description: "Basic venue access"
             ),
-            AppPricingTier(
+            PricingTier(
                 id: "premium",
                 name: "Premium Pass",
                 price: 49.99,
-                description: "Premium venue access with perks",
-                features: ["Entry to venue", "Access to all areas", "1 complimentary drink", "Priority entry"]
+                description: "Premium venue access with perks"
             ),
-            AppPricingTier(
+            PricingTier(
                 id: "vip",
                 name: "VIP Pass",
                 price: 99.99,
-                description: "Full VIP experience",
-                features: ["Entry to venue", "Access to all areas", "VIP lounge access", "3 complimentary drinks", "Priority entry", "Meet & greet"]
+                description: "Full VIP experience"
             )
         ]
     }
@@ -129,12 +153,13 @@ public class PaywallViewModel: ObservableObject {
         #endif
     }
     
-    public func selectTier(_ tier: AppPricingTier) {
-        self.selectedTier = tier
+    /// Selects a pricing tier
+    func selectTier(_ tier: PricingTier) {
+        selectedTier = tier
     }
     
     public func processPurchase() async {
-        guard let tier = selectedTier else {
+        guard selectedTier != nil else {
             await MainActor.run {
                 self.error = PaywallError.invalidPricingData
                 self.showAlert = true
@@ -193,7 +218,7 @@ extension PaywallViewModel {
         )
         
         let viewModel = PaywallViewModel(venue: previewVenue)
-        viewModel.pricingTiers = PricingTier.previewTiers.map { EnhancedPricingTier(tier: $0) }
+        viewModel.pricingTiers = PricingTier.previewTiers
         return viewModel
     }
 }
@@ -233,7 +258,7 @@ struct PaywallViewModel_Previews: PreviewProvider {
         )
         
         let viewModel = PaywallViewModel(venue: previewVenue)
-        viewModel.pricingTiers = PricingTier.previewTiers.map { EnhancedPricingTier(tier: $0) }
+        viewModel.pricingTiers = PricingTier.previewTiers
         
         // Return a simple Text view instead of PaywallView
         return Text("PaywallViewModel Preview")

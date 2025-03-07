@@ -1,4 +1,8 @@
 import SwiftUI
+import FOMO_PR // Import for FOMOTheme
+
+// Remove separate import for theme extensions since it's part of FOMO_PR now
+// import FOMOThemeExtensions
 
 #if ENABLE_DRINK_MENU || PREVIEW_MODE
 struct DrinkListView: View {
@@ -23,33 +27,29 @@ struct DrinkListView: View {
                 } else if !viewModel.errorMessage.isEmpty {
                     VStack {
                         Image(systemName: "exclamationmark.triangle")
-                            .font(.system(size: 50))
-                            .foregroundColor(.red)
-                            .padding()
+                            .drinkErrorIconStyle()
                         
                         Text(viewModel.errorMessage)
                             .multilineTextAlignment(.center)
-                            .padding()
+                            .padding(FOMOTheme.Spacing.medium)
                         
                         Button("Try Again") {
                             viewModel.loadDrinks()
                         }
-                        .buttonStyle(.bordered)
+                        .drinkButtonStyle()
                     }
                 } else if viewModel.drinks.isEmpty {
                     VStack {
                         Image(systemName: "wineglass")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                            .padding()
+                            .drinkEmptyIconStyle()
                         
                         Text("No drinks available")
-                            .font(.headline)
+                            .drinkTitleStyle()
                         
                         Text("This venue hasn't added any drinks to their menu yet.")
                             .multilineTextAlignment(.center)
-                            .foregroundColor(.secondary)
-                            .padding()
+                            .foregroundColor(FOMOTheme.Colors.textSecondary)
+                            .padding(FOMOTheme.Spacing.medium)
                     }
                 } else {
                     VStack {
@@ -121,43 +121,32 @@ struct DrinkRow: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 60, height: 60)
-                            .cornerRadius(8)
+                            .drinkImageStyle()
                     } placeholder: {
                         Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(width: 60, height: 60)
-                            .cornerRadius(8)
+                            .drinkPlaceholderStyle()
                     }
                 } else {
                     Image(systemName: "wineglass")
-                        .font(.system(size: 30))
-                        .foregroundColor(.gray)
-                        .frame(width: 60, height: 60)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
+                        .drinkIconStyle()
                 }
                 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: FOMOTheme.Spacing.xxSmall) {
                     Text(drink.name)
-                        .font(.headline)
+                        .drinkTitleStyle()
                     
                     Text(drink.description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
+                        .drinkDescriptionStyle()
                     
                     Text("$\(String(format: "%.2f", drink.price))")
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
+                        .drinkPriceStyle()
                 }
                 
                 Spacer()
                 
                 if viewModel.cartItems.contains(where: { $0.drink.id == drink.id }) {
                     Text("\(viewModel.cartItems.first(where: { $0.drink.id == drink.id })?.quantity ?? 0)×")
-                        .font(.headline)
-                        .foregroundColor(.blue)
+                        .drinkQuantityStyle()
                 }
             }
         }

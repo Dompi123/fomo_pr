@@ -1,5 +1,7 @@
 import Foundation
 import SwiftUI
+// Remove the PaymentTypes import since we'll use the local file
+// import PaymentTypes
 
 // This file provides a single import point for all the types
 // needed in the Xcode project
@@ -14,6 +16,13 @@ import SwiftUI
 
 // When using Xcode directly, the types are defined in FOMOTypes.swift
 // No additional imports needed
+
+// Import views from Features/Root/Views directory
+#if PREVIEW_MODE
+@_exported import struct FOMO_PR.ProfileView
+@_exported import struct FOMO_PR.PassesView
+@_exported import struct FOMO_PR.PaywallView
+#endif
 
 // Add local Models implementation
 public enum Models {
@@ -49,10 +58,35 @@ public enum Models {
         }
     }
     
-    public struct Venue: Model {
+    public struct Venue: Model, Codable {
         public let id: String
         public let name: String
         public let description: String
+        public let address: String
+        public let imageURL: URL?
+        public let latitude: Double
+        public let longitude: Double
+        public let isPremium: Bool
+        
+        public init(
+            id: String,
+            name: String,
+            description: String,
+            address: String,
+            imageURL: URL?,
+            latitude: Double,
+            longitude: Double,
+            isPremium: Bool
+        ) {
+            self.id = id
+            self.name = name
+            self.description = description
+            self.address = address
+            self.imageURL = imageURL
+            self.latitude = latitude
+            self.longitude = longitude
+            self.isPremium = isPremium
+        }
         
         public static func == (lhs: Venue, rhs: Venue) -> Bool {
             return lhs.id == rhs.id
@@ -63,6 +97,10 @@ public enum Models {
         }
     }
 }
+
+// Ensure we're using the PricingTier from FOMOApp.swift
+// The PricingTier is defined in FOMOApp.swift and is public
+// No need to redefine it here
 
 // MARK: - Payment Types
 public enum PaymentStatus: String, Equatable, Codable {
@@ -92,8 +130,6 @@ public struct PaymentResult: Identifiable, Codable, Equatable {
         self.timestamp = timestamp
     }
 }
-
-// PricingTier is now defined in FOMOApp.swift to avoid duplicate definitions
 
 // Helper extension for PricingTier
 public extension PricingTier {
@@ -148,13 +184,13 @@ public func verifyCommonTypesAvailable() {
     
     // Venue type
     let venue = Venue(
-        id: "test",
-        name: "Test Venue",
-        description: "Test description",
-        address: "123 Test St",
+        id: "test-id", 
+        name: "Test Venue", 
+        description: "A test venue description",
+        address: "123 Test St", 
         imageURL: nil,
-        latitude: 0.0,
-        longitude: 0.0,
+        latitude: 37.7749,
+        longitude: -122.4194,
         isPremium: false
     )
     print("Venue type is available: \(venue)")
@@ -210,7 +246,16 @@ func verifyFOMOImports() {
     print("User is available: \(user)")
     
     // Create a Venue instance
-    let venue = Models.Venue(id: "test-id", name: "Test Venue", address: "123 Test St", createdAt: Date(), updatedAt: Date())
+    let venue = Models.Venue(
+        id: "test-id", 
+        name: "Test Venue", 
+        description: "A test venue description",
+        address: "123 Test St", 
+        imageURL: nil,
+        latitude: 37.7749,
+        longitude: -122.4194,
+        isPremium: false
+    )
     print("Venue is available: \(venue)")
     
     // Create a PaymentResult instance

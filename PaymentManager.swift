@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import FOMO_PR
+import PaymentTypes
 
 // MARK: - Payment Card
 public struct PaymentCard: Identifiable, Codable {
@@ -50,26 +51,23 @@ public enum CardBrand: String, Codable {
         case .discover:
             return "Discover"
         case .unknown:
-            return "Card"
+            return "Unknown"
         }
     }
 }
 
 // MARK: - Payment Manager
-// This file provides a single implementation of PaymentManager that uses our Security types
-
-public final class PaymentManager: ObservableObject {
-    public static let shared = PaymentManager()
+@MainActor
+public class PaymentManager: ObservableObject {
+    @Published public private(set) var currentTier: PricingTier = .free
+    @Published public private(set) var savedCards: [PaymentCard] = []
+    @Published public private(set) var isProcessing: Bool = false
     
-    public var tokenizationService: TokenizationService = Security.LiveTokenizationService.shared
+    private let networkClient: NetworkClient
     
-    @Published public var cards: [PaymentCard] = []
-    @Published public var selectedCard: PaymentCard?
-    @Published public var isProcessingPayment: Bool = false
-    @Published public var lastPaymentResult: PaymentResult?
-    @Published public var paymentError: Error?
-    
-    private init() {}
+    public init(networkClient: NetworkClient) {
+        self.networkClient = networkClient
+    }
     
     // MARK: - Public Methods
     

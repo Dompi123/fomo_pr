@@ -8,6 +8,7 @@ export ENABLE_SEARCH=1
 export ENABLE_PREMIUM_VENUES=1
 export ENABLE_MOCK_DATA=1
 export PREVIEW_MODE=1
+export ENABLE_DESIGN_SYSTEM=1
 
 # Print setup
 echo "🚀 Setting up FOMO_PR Preview Environment"
@@ -20,11 +21,12 @@ echo "  ✓ Search enabled: $ENABLE_SEARCH"
 echo "  ✓ Premium Venues enabled: $ENABLE_PREMIUM_VENUES"
 echo "  ✓ Mock Data enabled: $ENABLE_MOCK_DATA"
 echo "  ✓ Preview Mode enabled: $PREVIEW_MODE"
+echo "  ✓ Design System enabled: $ENABLE_DESIGN_SYSTEM"
 echo "----------------------------------------"
 
 # Define simulator
-SIMULATOR_NAME="Journey iPhone"
-SIMULATOR_ID="iPhone 15"
+SIMULATOR_NAME="iPhone 16"
+SIMULATOR_ID="CC00CCA5-1AD0-44BE-9820-D0F2DC2B93D5"
 
 # Clean build directory
 xcodebuild clean -project FOMO_PR.xcodeproj -scheme FOMO_PR -destination "platform=iOS Simulator,name=$SIMULATOR_NAME"
@@ -41,6 +43,25 @@ cp FOMO_PR/Models/SecurityTypes.swift $TEMP_DIR/
 
 # Copy FOMOImports.swift to the temporary directory
 cp FOMOImports.swift $TEMP_DIR/
+
+# Make sure the Design directory exists
+mkdir -p FOMO_PR/Core/Design
+
+# Make sure the Components directory exists
+mkdir -p FOMO_PR/Core/Design/Components
+
+# Make sure the Testing directory exists
+mkdir -p FOMO_PR/Core/Design/Testing
+
+# Use the files from Features/Root/Views instead of the root directory
+# This ensures we're using the correct versions of these files
+if [ -d "FOMO_PR/Features/Root/Views" ]; then
+  echo "Using views from FOMO_PR/Features/Root/Views directory"
+  # Comment out the stub implementations in FOMOApp.swift
+  sed -i '' 's/^struct ProfileView: View {/\/\/ struct ProfileView: View {/' FOMOApp.swift
+  sed -i '' 's/^struct PassesView: View {/\/\/ struct PassesView: View {/' FOMOApp.swift
+  sed -i '' 's/^struct PaywallView: View {/\/\/ struct PaywallView: View {/' FOMOApp.swift
+fi
 
 # Create a simplified SecurityTypes.swift file if it doesn't exist
 if [ ! -f "FOMO_PR/Models/SecurityTypes.swift" ]; then
@@ -176,7 +197,7 @@ xcodebuild build \
   -destination "platform=iOS Simulator,name=$SIMULATOR_NAME" \
   -configuration Debug \
   EXCLUDED_SOURCE_FILE_NAMES="PaymentManager.swift" \
-  OTHER_SWIFT_FLAGS="-DPREVIEW_MODE -DENABLE_MOCK_DATA -DENABLE_PAYWALL -DENABLE_DRINK_MENU -DENABLE_CHECKOUT -DENABLE_SEARCH -DENABLE_PREMIUM_VENUES" \
+  OTHER_SWIFT_FLAGS="-DPREVIEW_MODE -DENABLE_MOCK_DATA -DENABLE_PAYWALL -DENABLE_DRINK_MENU -DENABLE_CHECKOUT -DENABLE_SEARCH -DENABLE_PREMIUM_VENUES -DENABLE_DESIGN_SYSTEM" \
   | tee build_log_preview.txt
 
 # Check if the build was successful
@@ -193,9 +214,10 @@ if [ $? -eq 0 ]; then
   
   # Launch the app
   echo "Launching app..."
-  xcrun simctl launch "$SIMULATOR_NAME" "com.journey.fomo-pr"
+  xcrun simctl launch "$SIMULATOR_NAME" "com.fomoapp.fomopr"
   
   echo "✅ App is now available on the simulator with all preview features enabled!"
+  echo "✅ The new design system is accessible from the 'Design' tab in the app!"
 else
   echo "❌ Build failed!"
   
@@ -214,6 +236,18 @@ else
   
   if grep -q "cannot find type 'Card'" build_log_preview.txt; then
     echo "Error: Cannot find type 'Card'. Make sure SecurityTypes.swift is properly included."
+  fi
+  
+  if grep -q "no such module 'FOMOThemeExtensions'" build_log_preview.txt; then
+    echo "Error: Cannot find module 'FOMOThemeExtensions'. Make sure all imports are using FOMO_PR instead."
+  fi
+  
+  if grep -q "cannot find type 'ThemeManager'" build_log_preview.txt; then
+    echo "Error: Cannot find type 'ThemeManager'. Make sure the design system files are properly included."
+  fi
+  
+  if grep -q "cannot find type 'TypographySystem'" build_log_preview.txt; then
+    echo "Error: Cannot find type 'TypographySystem'. Make sure the typography system files are properly included."
   fi
 fi
 

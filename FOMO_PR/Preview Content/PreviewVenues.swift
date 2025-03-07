@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
-import FOMO_PR
+// Remove the FOMO_PR import as it's causing ambiguity
+// import FOMO_PR
 
 #if PREVIEW_MODE || ENABLE_MOCK_DATA
 // Create a local struct for preview data to avoid ambiguity
