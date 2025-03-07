@@ -17,6 +17,13 @@ import SwiftUI
 // When using Xcode directly, the types are defined in FOMOTypes.swift
 // No additional imports needed
 
+// Import views from Features/Root/Views directory
+#if PREVIEW_MODE
+@_exported import struct FOMO_PR.ProfileView
+@_exported import struct FOMO_PR.PassesView
+@_exported import struct FOMO_PR.PaywallView
+#endif
+
 // Add local Models implementation
 public enum Models {
     public struct ModelVersion: Model {

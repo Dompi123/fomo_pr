@@ -88,6 +88,7 @@ public struct Venue: Identifiable, Codable, Hashable {
     public let latitude: Double
     public let longitude: Double
     public let isPremium: Bool
+    public let rating: Double
     
     public init(
         id: String,
@@ -95,9 +96,10 @@ public struct Venue: Identifiable, Codable, Hashable {
         description: String,
         address: String,
         imageURL: URL?,
-        latitude: Double,
-        longitude: Double,
-        isPremium: Bool
+        latitude: Double = 0.0,
+        longitude: Double = 0.0,
+        rating: Double = 4.5,
+        isPremium: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -107,6 +109,7 @@ public struct Venue: Identifiable, Codable, Hashable {
         self.latitude = latitude
         self.longitude = longitude
         self.isPremium = isPremium
+        self.rating = rating
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -213,6 +216,7 @@ public enum Sheet: Identifiable {
     case checkout(order: DrinkOrder)
     case paywall(venue: Venue)
     case drinkMenu(venue: Venue)
+    case designSystem // New case for the design system showcase
     
     public var id: String {
         switch self {
@@ -223,6 +227,7 @@ public enum Sheet: Identifiable {
         case .checkout: return "checkout"
         case .paywall(let venue): return "paywall_\(venue.id)"
         case .drinkMenu(let venue): return "drink_menu_\(venue.id)"
+        case .designSystem: return "design_system"
         }
     }
 }
@@ -272,6 +277,14 @@ public final class PreviewNavigationCoordinator: ObservableObject {
         } else {
             logger.debug("Checkout is disabled")
         }
+    }
+    
+    public func navigateToDesignSystem() {
+        navigate(to: .designSystem)
+    }
+    
+    public func dismissSheet() {
+        presentedSheet = nil
     }
     
     public func goBack() {
@@ -440,6 +453,7 @@ public class MockDataProvider {
 // MARK: - Root View
 struct RootView: View {
     @EnvironmentObject var navigationCoordinator: PreviewNavigationCoordinator
+    @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
         NavigationStack(path: $navigationCoordinator.path) {
@@ -467,12 +481,35 @@ struct RootView: View {
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
+                
+                // Add a new tab for design system access
+                Button("Design System") {
+                    navigationCoordinator.navigateToDesignSystem()
+                }
+                .tabItem {
+                    Label("Design", systemImage: "paintpalette")
+                }
             }
             .navigationTitle("FOMO")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        // Theme selection options
+                        ForEach(ThemeType.allCases) { themeType in
+                            Button(themeType.rawValue) {
+                                themeManager.selectedThemeType = themeType
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "paintpalette")
+                            .foregroundColor(themeManager.activeTheme.primary)
+                    }
+                }
             }
-            .sheet(item: $navigationCoordinator.presentedSheet) { sheet in
-                switch sheet {
+        }
+        .sheet(item: $navigationCoordinator.presentedSheet) { sheet in
+            switch sheet {
             case .profile:
                 ProfileView()
             case .settings:
@@ -499,15 +536,20 @@ struct RootView: View {
                 } else {
                     Text("Paywall is disabled in this build")
                 }
-                case .drinkMenu(let venue):
+            case .drinkMenu(let venue):
                 if isDrinkMenuEnabled {
                     DrinkListView()
                         .environmentObject(navigationCoordinator)
                 } else {
                     Text("Drink Menu is disabled in this build")
                 }
+            case .designSystem:
+                // Display the design system showcase
+                ThemeShowcaseTabView()
+                    .environmentObject(themeManager)
             }
         }
+        .withTheme() // Apply the active theme to the entire app
     }
 }
 
@@ -522,11 +564,34 @@ struct FOMOApp: App {
     // Payment
     @StateObject private var paymentManager = PaymentManager()
     
+    // Theme management
+    @StateObject private var themeManager = ThemeManager.shared
+    
+    init() {
+        // Register fonts at app startup
+        TypographySystem.registerFonts()
+        
+        // Monitor for system appearance changes
+        let name = UIDevice.current.userInterfaceIdiom == .pad ? UIDevice.orientationDidChangeNotification : UIApplication.didBecomeActiveNotification
+        
+        NotificationCenter.default.addObserver(
+            forName: name,
+            object: nil,
+            queue: .main
+        ) { _ in
+            // Update the system dark mode flag
+            let isDarkMode = UITraitCollection.current.userInterfaceStyle == .dark
+            UserDefaults.standard.set(isDarkMode, forKey: "isSystemInDarkMode")
+            NotificationCenter.default.post(name: Notification.Name("systemAppearanceChanged"), object: nil)
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(navigationCoordinator)
                 .environmentObject(paymentManager)
+                .environmentObject(themeManager)
                 .onAppear {
                     // Log environment info at startup
                     logger.debug("App started in Preview Mode: \(isPreviewMode)")
@@ -538,25 +603,26 @@ struct FOMOApp: App {
 
 // MARK: - Stub Views for Preview
 #if PREVIEW_MODE
-struct ProfileView: View {
-    var body: some View {
-        Text("Profile View")
-    }
-}
+// These views are now imported from FOMO_PR/Features/Root/Views directory
+// struct ProfileView: View {
+//     var body: some View {
+//         Text("Profile View")
+//     }
+// }
 
-struct PassesView: View {
-    var body: some View {
-        Text("Passes View")
-    }
-}
+// struct PassesView: View {
+//     var body: some View {
+//         Text("Passes View")
+//     }
+// }
 
-struct PaywallView: View {
-    var viewModel: PaywallViewModel
-    
-    var body: some View {
-        Text("Paywall View")
-    }
-}
+// struct PaywallView: View {
+//     var viewModel: PaywallViewModel
+//     
+//     var body: some View {
+//         Text("Paywall View")
+//     }
+// }
 
 #if ENABLE_DRINK_MENU
 // These views are already defined in DrinkListView.swift

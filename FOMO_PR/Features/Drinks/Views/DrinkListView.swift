@@ -1,8 +1,8 @@
 import SwiftUI
 import FOMO_PR // Import for FOMOTheme
 
-// Import the theme extensions
-import FOMOThemeExtensions
+// Remove separate import for theme extensions since it's part of FOMO_PR now
+// import FOMOThemeExtensions
 
 #if ENABLE_DRINK_MENU || PREVIEW_MODE
 struct DrinkListView: View {

@@ -5,8 +5,8 @@ import FOMO_PR  // Import for FOMOTheme
 // import Models // Commenting out Models import to use local implementations instead
 // import Core // Commenting out Core import to use local implementations instead
 
-// Import the theme extensions
-import FOMOThemeExtensions
+// Remove separate import for theme extensions since it's part of FOMO_PR now
+// import FOMOThemeExtensions
 
 // MARK: - VenueDetail-specific Extensions
 extension View {
