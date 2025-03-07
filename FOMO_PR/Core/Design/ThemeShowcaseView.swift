@@ -15,6 +15,9 @@ public struct ThemeShowcaseView: View {
     @State private var passwordFieldValue: String = "password123"
     @State private var toggleValue: Bool = true
     @State private var premiumToggleValue: Bool = false
+    @State private var termsCheckboxValue: Bool = false
+    @State private var selectedPickerValue: String? = "standard"
+    @State private var selectedFilterValue: String? = "nearby"
     
     // MARK: - Body
     
@@ -116,6 +119,22 @@ public struct ThemeShowcaseView: View {
                     isOn: $toggleValue,
                     label: "Toggle setting",
                     icon: "switch.2"
+                )
+                
+                FOMOCheckbox(
+                    isSelected: $termsCheckboxValue,
+                    label: "Checkbox option",
+                    icon: "checkmark.square"
+                )
+                
+                FOMOPicker(
+                    options: [
+                        .init(id: "option1", label: "Option 1", icon: "1.circle"),
+                        .init(id: "option2", label: "Option 2", icon: "2.circle"),
+                        .init(id: "option3", label: "Option 3", icon: "3.circle")
+                    ],
+                    selectedID: $selectedPickerValue,
+                    displayMode: .segmented
                 )
             }
             
@@ -245,40 +264,105 @@ public struct ThemeShowcaseView: View {
                 }
             }
             
-            // Toggle Styles
+            // Checkboxes
             Group {
-                FOMOText("Toggle Styles", style: .headline)
+                FOMOText("Checkboxes", style: .headline)
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    FOMOToggle(
-                        isOn: .constant(true),
-                        label: "Primary Toggle",
-                        style: .primary
+                VStack(alignment: .leading, spacing: 16) {
+                    FOMOCheckbox(
+                        isSelected: $termsCheckboxValue,
+                        label: "Terms and Conditions",
+                        secondaryText: "I agree to the terms of service",
+                        icon: "doc.text"
                     )
                     
-                    FOMOToggle(
-                        isOn: .constant(true),
-                        label: "Success Toggle",
-                        style: .success
+                    HStack(spacing: 16) {
+                        VStack {
+                            FOMOCheckbox(
+                                isSelected: .constant(true),
+                                label: "Checkbox",
+                                style: .checkbox
+                            )
+                            FOMOText(".checkbox", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                        
+                        VStack {
+                            FOMOCheckbox(
+                                isSelected: .constant(true),
+                                label: "Radio",
+                                style: .radio
+                            )
+                            FOMOText(".radio", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                        
+                        VStack {
+                            FOMOCheckbox(
+                                isSelected: .constant(true),
+                                label: "Switch",
+                                style: .switch
+                            )
+                            FOMOText(".switch", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                    }
+                }
+            }
+            
+            // Pickers
+            Group {
+                FOMOText("Pickers", style: .headline)
+                
+                VStack(alignment: .leading, spacing: 24) {
+                    // Dropdown style
+                    FOMOPicker(
+                        options: [
+                            .init(id: "standard", label: "Standard Ticket - $29.99", icon: "ticket"),
+                            .init(id: "vip", label: "VIP Ticket - $99.99", icon: "ticket.fill"),
+                            .init(id: "group", label: "Group Package - $199.99", icon: "person.3")
+                        ],
+                        selectedID: $selectedPickerValue,
+                        title: "Ticket Options",
+                        placeholder: "Select a ticket type"
                     )
                     
-                    FOMOToggle(
-                        isOn: .constant(true),
-                        label: "Premium Toggle",
-                        style: .premium
+                    // Segmented style
+                    FOMOPicker(
+                        options: [
+                            .init(id: "day", label: "Day", icon: "sun.max"),
+                            .init(id: "week", label: "Week", icon: "calendar"),
+                            .init(id: "month", label: "Month", icon: "calendar.badge.clock")
+                        ],
+                        selectedID: $selectedFilterValue,
+                        title: "Time Period",
+                        style: .primary,
+                        displayMode: .segmented
                     )
                     
-                    FOMOToggle(
-                        isOn: .constant(true),
-                        label: "Minimal Toggle",
-                        style: .minimal
-                    )
+                    // Display modes
+                    FOMOText("Picker Display Modes", style: .subheadline)
                     
-                    FOMOToggle(
-                        isOn: .constant(false),
-                        label: "Disabled Toggle",
-                        isEnabled: false
-                    )
+                    HStack(spacing: 12) {
+                        VStack {
+                            FOMOText(".dropdown", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                            FOMOText("For single selection from many options", style: .caption)
+                        }
+                        
+                        VStack {
+                            FOMOText(".segmented", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                            FOMOText("For 2-5 options with equal importance", style: .caption)
+                        }
+                    }
+                    
+                    HStack(spacing: 12) {
+                        VStack {
+                            FOMOText(".buttons", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                            FOMOText("For vertical stacked options", style: .caption)
+                        }
+                        
+                        VStack {
+                            FOMOText(".radio", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                            FOMOText("For vertical radio button style", style: .caption)
+                        }
+                    }
                 }
             }
             
