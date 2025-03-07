@@ -9,6 +9,13 @@ public struct ThemeShowcaseView: View {
     
     @State private var selectedSection: Section = .overview
     
+    // Form component states
+    @State private var textFieldValue: String = ""
+    @State private var emailFieldValue: String = "user@example.com"
+    @State private var passwordFieldValue: String = "password123"
+    @State private var toggleValue: Bool = true
+    @State private var premiumToggleValue: Bool = false
+    
     // MARK: - Body
     
     public var body: some View {
@@ -51,6 +58,8 @@ public struct ThemeShowcaseView: View {
             colorsSection
         case .typography:
             typographySection
+        case .forms:
+            formsSection
         case .buttons:
             buttonsSection
         case .cards:
@@ -93,6 +102,23 @@ public struct ThemeShowcaseView: View {
                 }
             }
             
+            // Form components preview
+            Group {
+                FOMOText("Form Components", style: .headline)
+                
+                FOMOTextField(
+                    text: $textFieldValue,
+                    placeholder: "Enter text",
+                    icon: "text.cursor"
+                )
+                
+                FOMOToggle(
+                    isOn: $toggleValue,
+                    label: "Toggle setting",
+                    icon: "switch.2"
+                )
+            }
+            
             // Component previews
             Group {
                 FOMOText("Components", style: .headline)
@@ -117,6 +143,193 @@ public struct ThemeShowcaseView: View {
                     FOMOTag("Popular", style: .primary)
                     FOMOTag("Premium", icon: "star.fill", style: .premium)
                     FOMOTag("New", style: .success)
+                }
+            }
+        }
+        .padding(.vertical, 8)
+    }
+    
+    // MARK: - Forms Section
+    
+    private var formsSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            FOMOText("Form Components", style: .title1)
+            FOMOText("Our form components provide consistent input methods across the app with validation states and various styles.", style: .body)
+            
+            // Text Fields
+            Group {
+                FOMOText("Text Fields", style: .headline)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    FOMOTextField(
+                        text: $textFieldValue,
+                        placeholder: "Enter your name",
+                        title: "Full Name",
+                        icon: "person",
+                        helperText: "Please enter your legal name"
+                    )
+                    
+                    FOMOTextField(
+                        text: $emailFieldValue,
+                        placeholder: "Enter your email",
+                        title: "Email Address",
+                        icon: "envelope",
+                        errorMessage: emailFieldValue.contains("@") ? nil : "Please enter a valid email address",
+                        inputType: .email
+                    )
+                    
+                    FOMOTextField(
+                        text: $passwordFieldValue,
+                        placeholder: "Enter your password",
+                        title: "Password",
+                        icon: "lock",
+                        helperText: "Must be at least 8 characters",
+                        inputType: .password
+                    )
+                }
+            }
+            
+            // Field Styles
+            Group {
+                FOMOText("Field Styles", style: .headline)
+                
+                HStack(spacing: 12) {
+                    VStack {
+                        FOMOTextField(
+                            text: .constant("Default"),
+                            placeholder: "Default",
+                            style: .default
+                        )
+                        FOMOText(".default", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                    }
+                    
+                    VStack {
+                        FOMOTextField(
+                            text: .constant("Filled"),
+                            placeholder: "Filled",
+                            style: .filled
+                        )
+                        FOMOText(".filled", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                    }
+                    
+                    VStack {
+                        FOMOTextField(
+                            text: .constant("Minimal"),
+                            placeholder: "Minimal",
+                            style: .minimal
+                        )
+                        FOMOText(".minimal", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                    }
+                }
+            }
+            
+            // Toggle Switches
+            Group {
+                FOMOText("Toggle Switches", style: .headline)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    FOMOToggle(
+                        isOn: $toggleValue,
+                        label: "Notifications",
+                        secondaryText: "Enable push notifications",
+                        icon: "bell.fill"
+                    )
+                    
+                    FOMOToggle(
+                        isOn: $premiumToggleValue,
+                        label: "Premium Features",
+                        secondaryText: "Enable exclusive premium features",
+                        icon: "star.fill",
+                        style: .premium
+                    )
+                }
+            }
+            
+            // Toggle Styles
+            Group {
+                FOMOText("Toggle Styles", style: .headline)
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    FOMOToggle(
+                        isOn: .constant(true),
+                        label: "Primary Toggle",
+                        style: .primary
+                    )
+                    
+                    FOMOToggle(
+                        isOn: .constant(true),
+                        label: "Success Toggle",
+                        style: .success
+                    )
+                    
+                    FOMOToggle(
+                        isOn: .constant(true),
+                        label: "Premium Toggle",
+                        style: .premium
+                    )
+                    
+                    FOMOToggle(
+                        isOn: .constant(true),
+                        label: "Minimal Toggle",
+                        style: .minimal
+                    )
+                    
+                    FOMOToggle(
+                        isOn: .constant(false),
+                        label: "Disabled Toggle",
+                        isEnabled: false
+                    )
+                }
+            }
+            
+            // Input Types
+            Group {
+                FOMOText("Input Types", style: .headline)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 12) {
+                        VStack {
+                            FOMOTextField(
+                                text: .constant("Text"),
+                                placeholder: "Text",
+                                inputType: .text
+                            )
+                            .frame(maxWidth: 120)
+                            FOMOText(".text", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                        
+                        VStack {
+                            FOMOTextField(
+                                text: .constant("user@mail.com"),
+                                placeholder: "Email",
+                                inputType: .email
+                            )
+                            .frame(maxWidth: 120)
+                            FOMOText(".email", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                    }
+                    
+                    HStack(spacing: 12) {
+                        VStack {
+                            FOMOTextField(
+                                text: .constant("123"),
+                                placeholder: "Number",
+                                inputType: .number
+                            )
+                            .frame(maxWidth: 120)
+                            FOMOText(".number", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                        
+                        VStack {
+                            FOMOTextField(
+                                text: .constant("******"),
+                                placeholder: "Password",
+                                inputType: .password
+                            )
+                            .frame(maxWidth: 120)
+                            FOMOText(".password", style: .caption, color: FOMOTheme.Colors.textSecondary)
+                        }
+                    }
                 }
             }
         }
@@ -630,6 +843,7 @@ public struct ThemeShowcaseView: View {
         case overview
         case colors
         case typography
+        case forms
         case buttons
         case cards
         case tags
@@ -639,6 +853,7 @@ public struct ThemeShowcaseView: View {
             case .overview: return "Overview"
             case .colors: return "Colors"
             case .typography: return "Typography"
+            case .forms: return "Forms"
             case .buttons: return "Buttons"
             case .cards: return "Cards"
             case .tags: return "Tags"
