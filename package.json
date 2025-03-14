@@ -10,5 +10,8 @@
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
     "security-check": "npm run security-check --workspaces"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1"
   }
 }
