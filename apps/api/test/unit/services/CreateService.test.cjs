@@ -1,6 +1,6 @@
-const createService = require('../../utils/createService.cjs');
-const metrics = require('../../utils/monitoring.cjs');
-const { ERROR_CODES } = require('../../utils/errors.cjs');
+const createService = require('../../../utils/createService.cjs');
+const metrics = require('../../../utils/monitoring.cjs');
+const { ERROR_CODES } = require('../../../utils/errors.cjs');
 
 describe('Service Wrapper', () => {
     let service;

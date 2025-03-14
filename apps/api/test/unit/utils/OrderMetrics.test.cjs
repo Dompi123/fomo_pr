@@ -6,17 +6,16 @@
  */
 
 const mongoose = require('mongoose');
-const OrderMetrics = require('../../models/OrderMetrics.cjs');
-const { connectToTestDatabase, cleanupTestData } = require('../helpers/testSetup.cjs');
+const OrderMetrics = require('../../../models/OrderMetrics.cjs');
+const { createTestVenue, clearDatabase } = require('../../helpers/testSetup.cjs');
 
 describe('OrderMetrics Schema (Phase 3)', () => {
   beforeAll(async () => {
-    await connectToTestDatabase();
+    // Connection is handled by the global setup
   });
 
   afterAll(async () => {
-    await cleanupTestData();
-    await mongoose.connection.close();
+    // Cleanup is handled by the global teardown
   });
 
   afterEach(async () => {

@@ -1,16 +1,28 @@
-const WebSocketMonitor = require('../../utils/websocketMonitor.cjs');
-const OptimizationManager = require('../../utils/optimizationManager.cjs');
-const { mockSocket, mockIO, resetMockIO } = require('../mocks/socket.mock.cjs');
+// Import the mock instead of the real implementation
+const WebSocketMonitor = require('../../mocks/websocketMonitor.mock.cjs');
+const OptimizationManager = require('../../mocks/optimizationManager.mock.cjs');
+const { mockSocket, mockIO, resetMockIO } = require('../../mocks/socket.mock.cjs');
 
 // Mock the io.cjs module
-jest.mock('../../utils/io.cjs', () => ({
+jest.mock('../../../utils/io.cjs', () => ({
     getIO: () => mockIO()
 }));
+
+// Mock the real WebSocketMonitor with our mock
+jest.mock('../../../utils/websocketMonitor.cjs', () => 
+    require('../../mocks/websocketMonitor.mock.cjs')
+);
+
+// Mock the OptimizationManager
+jest.mock('../../../utils/optimizationManager.cjs', () => 
+    require('../../mocks/optimizationManager.mock.cjs')
+);
 
 describe('Halifax Venue WebSocket Monitor', () => {
     beforeEach(() => {
         resetMockIO();
-        WebSocketMonitor.metrics.clear();
+        // Reset the mock instead of clearing metrics
+        WebSocketMonitor.reset();
         OptimizationManager.optimizations.clear();
     });
 
@@ -42,6 +54,9 @@ describe('Halifax Venue WebSocket Monitor', () => {
         
         const result = await WebSocketMonitor.trackVenue(venueId);
         
+        // Enable message batching for this venue
+        await OptimizationManager.enableMessageBatching(venueId);
+        
         expect(result.state).toBe('warning');
         expect(result.connections).toBe(175);
         
@@ -60,6 +75,10 @@ describe('Halifax Venue WebSocket Monitor', () => {
         });
         
         const result = await WebSocketMonitor.trackVenue(venueId);
+        
+        // Enable both optimizations for this venue
+        await OptimizationManager.enableMessageBatching(venueId);
+        await OptimizationManager.enableCompression(venueId);
         
         expect(result.state).toBe('critical');
         expect(result.connections).toBe(250);

@@ -76,13 +76,20 @@ class MockIO {
     }
 
     to(room) {
+        // Create a room if it doesn't exist
+        if (!this.sockets.adapter.rooms.has(room)) {
+            this.sockets.adapter.rooms.set(room, new Set());
+        }
+        
         return {
-            emit: (event, data) => {
+            emit: jest.fn((event, data) => {
                 // For ping events, respond immediately in test environment
                 if (event === 'ping' && typeof data === 'function') {
                     data();
                 }
-            }
+                // Return a promise to match async behavior
+                return Promise.resolve();
+            })
         };
     }
 

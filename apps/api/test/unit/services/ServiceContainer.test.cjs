@@ -1,6 +1,6 @@
-const ServiceContainer = require('../../utils/serviceContainer.cjs');
-const BaseService = require('../../utils/baseService.cjs');
-const { SERVICE_STATES } = require('../../utils/baseService.cjs');
+const ServiceContainer = require('../../../utils/serviceContainer.cjs');
+const BaseService = require('../../../utils/baseService.cjs');
+const { SERVICE_STATES } = require('../../../utils/baseService.cjs');
 
 // Mock services for testing
 class MockBaseService extends BaseService {
@@ -255,4 +255,4 @@ describe('ServiceContainer', () => {
             expect(health.services[0].health).toBe('unknown');
         });
     });
-});
+}); 

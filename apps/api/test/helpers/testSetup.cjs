@@ -1,132 +1,411 @@
+/**
+ * Test Setup Utilities
+ * 
+ * This file contains helper functions for setting up test environments,
+ * creating test data, and managing test database connections.
+ */
+
 const mongoose = require('mongoose');
-const User = require('../../models/User.cjs');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const { User } = require('../../models/User.cjs');
 const Venue = require('../../models/Venue.cjs');
+const Pass = require('../../models/Pass.cjs');
 const OrderMetrics = require('../../models/OrderMetrics.cjs');
-const { connectDB } = require('../../config/database.cjs');
-const featureManager = require('../../services/payment/FeatureManager.cjs');
+const OrderLock = require('../../models/OrderLock.cjs');
+const dbConnectionManager = require('../../utils/dbConnectionManager.cjs');
+const testServiceRegistry = require('./TestServiceRegistry.cjs');
+const FeatureFlagTestContext = require('./FeatureFlagTestContext.cjs');
+const mockRegistry = require('./MockRegistry.cjs');
+const { 
+  createTestVenueData, 
+  createTestUserData, 
+  createTestPassData, 
+  createTestOrderLockData 
+} = require('./testFactories.cjs');
+const { mockStripe } = require('../mocks/stripe.mock.cjs');
+const { mongodbMock } = require('../mocks/mongodb.mock.cjs');
+const authTestHelper = require('./AuthTestHelper.cjs');
+const { ApiTestHelper, createApiTestHelper } = require('./ApiTestHelper.cjs');
+const {
+  createMockRequest,
+  createMockResponse,
+  createMockNext,
+  runMiddleware
+} = require('./RequestResponseHelpers.cjs');
+
+// Get the feature flag context singleton
+const featureFlagContext = require('./FeatureFlagTestContext.cjs');
+
+// Use the mockRegistry singleton directly instead of creating a new instance
+// const mockRegistry = new MockRegistry();
+
+// Register core service mocks
+mockRegistry.registerServiceMock('stripe', mockStripe);
+mockRegistry.registerServiceMock('mongodb', mongodbMock);
+// Register socket.io mock
+const socketIoMock = require('../mocks/socket.mock.cjs');
+mockRegistry.registerServiceMock('socket.io', socketIoMock);
 
 /**
- * Create a test user with specified role
- * @param {Object} options - User creation options
- * @param {String} options.role - User role (default: 'customer')
- * @param {String} options.email - User email (default: random)
- * @returns {Promise<Object>} Created user document
+ * Connect to an in-memory MongoDB instance for testing
  */
-async function createTestUser(options = {}) {
-  const defaultOptions = {
-    role: 'customer',
-    email: `test-${Date.now()}@example.com`,
-    name: 'Test User'
+async function connectToTestDatabase() {
+  // Set environment to indicate in-memory database should be used
+  process.env.USE_MEMORY_DB = 'true';
+  
+  // Use the connection manager to connect
+  await dbConnectionManager.connect();
+  
+  console.log(`Connected to test database at ${await dbConnectionManager.getConnectionUri()}`);
+}
+
+/**
+ * Disconnect from the test database and stop the MongoDB server
+ */
+async function disconnectFromTestDatabase() {
+  await dbConnectionManager.disconnect();
+  console.log('Disconnected from test database');
+}
+
+/**
+ * Clean up all test data from the database
+ */
+async function cleanupTestData() {
+  await dbConnectionManager.clearDatabase();
+  console.log('Test data cleaned up');
+}
+
+/**
+ * Set up a test environment with required dependencies and mocks
+ * @param {Object} options - Setup options
+ * @param {Object} options.services - Services to register/mock
+ * @param {Object} options.features - Feature flags to set
+ * @param {Object} options.mocks - Additional service mocks to register
+ * @param {Object} options.mockConfig - Configuration for service mocks
+ */
+async function setupTestEnvironment(options = {}) {
+  // Initialize service registry
+  if (options.services) {
+    for (const [name, implementation] of Object.entries(options.services)) {
+      testServiceRegistry.registerMock(name, implementation);
+    }
+  }
+  
+  // Initialize mock registry
+  if (options.mocks) {
+    for (const [name, implementation] of Object.entries(options.mocks)) {
+      mockRegistry.registerServiceMock(name, implementation);
+    }
+  }
+  
+  // Configure mocks if needed
+  if (options.mockConfig) {
+    if (options.mockConfig.stripe) {
+      mockStripe.configure(options.mockConfig.stripe);
+    }
+    if (options.mockConfig.mongodb) {
+      mongodbMock.configure(options.mockConfig.mongodb);
+    }
+  }
+  
+  // Initialize feature flags
+  if (options.features) {
+    await featureFlagContext.initialize();
+    for (const [feature, state] of Object.entries(options.features)) {
+      if (typeof state === 'boolean') {
+        state ? await featureFlagContext.enableFeature(feature) : 
+                await featureFlagContext.disableFeature(feature);
+      } else {
+        await featureFlagContext.setFeatureState(feature, state);
+      }
+    }
+  }
+  
+  // Apply module mocks if needed
+  if (options.applyModuleMocks) {
+    testServiceRegistry.applyModuleMocks();
+  }
+  
+  // Apply service mocks with Jest
+  if (options.applyServiceMocks !== false) {
+    console.log('[TEST] Applying service mocks via MockRegistry...');
+    const mockResult = mockRegistry.applyMocks();
+    console.log(`[TEST] Applied ${mockResult.appliedCount} service mocks with ${mockResult.errorCount} errors`);
+    
+    // Log any failures for easier debugging
+    if (mockResult.errorCount > 0 && mockResult.results && mockResult.results.failed) {
+      console.error('[TEST] Failed to apply these mocks:', 
+        mockResult.results.failed.map(f => `${f.service}: ${f.error}`).join(', '));
+    }
+  }
+  
+  return {
+    testServiceRegistry,
+    featureFlagContext,
+    mockRegistry
   };
+}
+
+/**
+ * Reset all mocks and restore original implementations
+ */
+function resetAllMocks() {
+  // Reset service registry mocks
+  testServiceRegistry.resetAllMocks();
   
-  const userOptions = { ...defaultOptions, ...options };
+  // Reset dedicated service mocks
+  mockStripe.reset();
+  mongodbMock.reset();
   
-  const user = new User({
-    name: userOptions.name,
-    email: userOptions.email,
-    role: userOptions.role,
-    auth0Id: `auth0|${Date.now()}`
+  // Reset all other mocks
+  mockRegistry.resetAllMocks();
+}
+
+/**
+ * Tear down the test environment and reset state
+ */
+async function teardownTestEnvironment() {
+  // Reset feature flags
+  try {
+    await featureFlagContext.resetFeatures();
+    console.log('[TEST] Feature flags reset successfully');
+  } catch (error) {
+    console.warn('[TEST] Error resetting feature flags:', error);
+    // Continue cleanup despite errors
+  }
+  
+  // Reset all mocks
+  resetAllMocks();
+  
+  // Cleanup service registry
+  await testServiceRegistry.cleanup();
+  
+  // Reset mock registry
+  mockRegistry.resetAll();
+}
+
+/**
+ * Create a test user with specified properties
+ * @param {Object} props - Properties to override default user data
+ * @returns {Promise<Object>} The created user document
+ */
+async function createTestUser(props = {}) {
+  const userData = createTestUserData(props);
+  const user = new User(userData);
+  return await user.save();
+}
+
+/**
+ * Create a test admin user
+ * @returns {Promise<Object>} The created admin user document
+ */
+async function createTestAdmin() {
+  return await createTestUser({
+    email: 'admin@example.com',
+    role: 'admin',
+    firstName: 'Admin',
+    lastName: 'User'
   });
-  
-  // Add generateAuthToken method for testing
-  user.generateAuthToken = () => 'test-auth-token';
-  
-  await user.save();
-  return user;
 }
 
 /**
  * Create a test venue
- * @param {Object} options - Venue creation options
- * @returns {Promise<Object>} Created venue document
+ * @param {Object} props - Properties to override default venue data
+ * @returns {Promise<Object>} The created venue document
  */
-async function createTestVenue(options = {}) {
-  const defaultOptions = {
-    name: 'Test Venue',
-    location: {
-      address: '123 Test St',
-      city: 'Test City',
-      state: 'TS',
-      zipCode: '12345'
+async function createTestVenue(props = {}) {
+  const venueData = createTestVenueData(props);
+  const venue = new Venue(venueData);
+  return await venue.save();
+}
+
+/**
+ * Create a test pass
+ * @param {Object} props - Properties to override default pass data
+ * @returns {Promise<Object>} The created pass document
+ */
+async function createTestPass(props = {}) {
+  const passData = createTestPassData(props);
+  const pass = new Pass(passData);
+  return await pass.save();
+}
+
+/**
+ * Create a test order lock
+ * @param {Object} props - Properties to override default order lock data
+ * @returns {Promise<Object>} The created order lock document
+ */
+async function createTestOrderLock(props = {}) {
+  const lockData = createTestOrderLockData(props);
+  const lock = new OrderLock(lockData);
+  return await lock.save();
+}
+
+/**
+ * Initialize metrics for testing
+ * @param {Object} props - Properties to override default metrics
+ * @returns {Promise<Object>} The created metrics document
+ */
+async function initializeMetrics(props = {}) {
+  const defaults = {
+    totalOrders: 0,
+    successfulOrders: 0,
+    failedOrders: 0,
+    totalRevenue: 0,
+    refunds: 0,
+    averageOrderValue: 0
+  };
+  
+  const metricsData = { ...defaults, ...props };
+  const metrics = new OrderMetrics(metricsData);
+  return await metrics.save();
+}
+
+/**
+ * Get a dependency injection getter function
+ * This can be used to replace the getDependency function in services
+ * @returns {Function} A dependency getter function
+ */
+function getDependencyGetter() {
+  return testServiceRegistry.createDependencyGetter();
+}
+
+/**
+ * Create an authenticated user with a JWT token
+ * @param {Object} userProps - User properties
+ * @returns {Object} User object with token
+ */
+async function createAuthenticatedUser(userProps = {}) {
+  const user = await createTestUser(userProps);
+  const token = authTestHelper.generateAuthToken(user);
+  return { user, token };
+}
+
+/**
+ * Create an authenticated admin with a JWT token
+ * @returns {Object} Admin user object with token
+ */
+async function createAuthenticatedAdmin() {
+  const admin = await createTestAdmin();
+  const token = authTestHelper.generateAuthToken(admin);
+  return { user: admin, token };
+}
+
+/**
+ * Create Jest beforeAll hook for test setup
+ * @param {Object} options - Setup options
+ * @returns {Function} A beforeAll hook function
+ */
+function createTestSetup(options = {}) {
+  return async () => {
+    // Connect to test database if needed
+    if (options.database !== false) {
+      await connectToTestDatabase();
+    }
+    
+    // Set up test environment
+    await setupTestEnvironment(options);
+    
+    // Initialize with test data if needed
+    if (options.seedData) {
+      for (const [modelName, data] of Object.entries(options.seedData)) {
+        switch (modelName) {
+          case 'users':
+            await Promise.all(data.map(user => createTestUser(user)));
+            break;
+          case 'venues':
+            await Promise.all(data.map(venue => createTestVenue(venue)));
+            break;
+          case 'passes':
+            await Promise.all(data.map(pass => createTestPass(pass)));
+            break;
+          case 'orderLocks':
+            await Promise.all(data.map(lock => createTestOrderLock(lock)));
+            break;
+          default:
+            console.warn(`Unknown model type: ${modelName}`);
+        }
+      }
     }
   };
-  
-  const venueOptions = { ...defaultOptions, ...options };
-  
-  const venue = new Venue(venueOptions);
-  await venue.save();
-  return venue;
 }
 
 /**
- * Create test OrderMetrics documents
- * @param {Object} options - Options for creating metrics
- * @param {String} options.verifiedBy - Who verified the order ('staff', 'system', 'customer')
- * @param {String} options.eventType - Type of event
- * @param {Object} options.venueId - Venue ID
- * @param {Object} options.orderId - Order ID
- * @returns {Promise<Object>} Created OrderMetrics document
+ * Create Jest afterAll hook for test teardown
+ * @param {Object} options - Teardown options
+ * @returns {Function} An afterAll hook function
  */
-async function createTestOrderMetrics(options = {}) {
-  const defaultOptions = {
-    verifiedBy: 'system',
-    eventType: 'status_change',
-    orderType: 'drink',
-    processingTime: 1000,
-    metadata: {}
+function createTestTeardown(options = {}) {
+  return async () => {
+    // Clean up test environment
+    await teardownTestEnvironment();
+    
+    // Clean up test data if needed
+    if (options.cleanupData !== false) {
+      await cleanupTestData();
+    }
+    
+    // Disconnect from test database if needed
+    if (options.database !== false) {
+      await disconnectFromTestDatabase();
+    }
   };
-  
-  const metricsOptions = { ...defaultOptions, ...options };
-  
-  if (!metricsOptions.venueId) {
-    const venue = await createTestVenue();
-    metricsOptions.venueId = venue._id;
-  }
-  
-  if (!metricsOptions.orderId) {
-    metricsOptions.orderId = new mongoose.Types.ObjectId();
-  }
-  
-  const metrics = new OrderMetrics(metricsOptions);
-  await metrics.save();
-  return metrics;
 }
 
 /**
- * Set feature flag for testing
- * @param {String} featureName - Name of the feature flag
- * @param {Boolean} enabled - Whether the feature should be enabled
+ * Create a Jest beforeEach hook to reset mocks
+ * @returns {Function} A beforeEach hook function
  */
-async function setFeatureFlag(featureName, enabled) {
-  await featureManager.setFeatureState(featureName, enabled);
-}
-
-/**
- * Clean up test data
- */
-async function cleanupTestData() {
-  await User.deleteMany({ email: /^test-.*@example.com$/ });
-  await Venue.deleteMany({ name: 'Test Venue' });
-  await OrderMetrics.deleteMany({ 
-    $or: [
-      { orderId: { $in: await OrderMetrics.find().distinct('orderId') } },
-      { venueId: { $in: await Venue.find({ name: 'Test Venue' }).distinct('_id') } }
-    ]
-  });
-}
-
-/**
- * Connect to test database
- */
-async function connectToTestDatabase() {
-  await connectDB();
+function createMockResetter() {
+  return () => {
+    resetAllMocks();
+  };
 }
 
 module.exports = {
-  createTestUser,
-  createTestVenue,
-  createTestOrderMetrics,
-  setFeatureFlag,
+  // Core test setup functions
+  connectToTestDatabase,
+  disconnectFromTestDatabase,
   cleanupTestData,
-  connectToTestDatabase
+  setupTestEnvironment,
+  teardownTestEnvironment,
+  resetAllMocks,
+  
+  // Test data creation
+  createTestUser,
+  createTestAdmin,
+  createTestVenue,
+  createTestPass,
+  createTestOrderLock,
+  initializeMetrics,
+  
+  // Authentication helpers
+  createAuthenticatedUser,
+  createAuthenticatedAdmin,
+  
+  // Test lifecycle helpers
+  createTestSetup,
+  createTestTeardown,
+  createMockResetter,
+  
+  // Dependency injection
+  getDependencyGetter,
+  
+  // Core objects
+  testServiceRegistry,
+  featureFlagContext,
+  mockRegistry,
+  mockStripe,
+  mongodbMock,
+  
+  // Request/response mocking
+  createMockRequest,
+  createMockResponse,
+  createMockNext,
+  runMiddleware,
+  ApiTestHelper,
+  createApiTestHelper,
+  
+  // Auth testing
+  authTestHelper
 }; 

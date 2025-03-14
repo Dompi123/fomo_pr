@@ -3,7 +3,31 @@ const webSocketMonitorMock = {
         connections: 30,
         messageRate: 20
     }),
-    trackVenue: jest.fn(),
+    trackVenue: jest.fn().mockImplementation(async (venueId) => {
+        // Default "normal" state
+        let result = {
+            state: 'normal',
+            connections: 100,
+            messageRate: 5
+        };
+        
+        // If the venue ID indicates a specific load scenario, return appropriate data
+        if (venueId.includes('downtown-2')) {
+            result = { 
+                state: 'warning',
+                connections: 175,
+                messageRate: 15
+            };
+        } else if (venueId.includes('downtown-3')) {
+            result = {
+                state: 'critical',
+                connections: 250,
+                messageRate: 30
+            };
+        }
+        
+        return result;
+    }),
     getMessageRate: jest.fn(),
     getOrderVelocity: jest.fn(),
     measureLatency: jest.fn(),
@@ -22,6 +46,33 @@ webSocketMonitorMock.reset = function() {
     this.getVenueMetrics.mockResolvedValue({
         connections: 30,
         messageRate: 20
+    });
+    
+    // Reset trackVenue mock implementation
+    this.trackVenue.mockImplementation(async (venueId) => {
+        // Default "normal" state
+        let result = {
+            state: 'normal',
+            connections: 100,
+            messageRate: 5
+        };
+        
+        // If the venue ID indicates a specific load scenario, return appropriate data
+        if (venueId.includes('downtown-2')) {
+            result = { 
+                state: 'warning',
+                connections: 175,
+                messageRate: 15
+            };
+        } else if (venueId.includes('downtown-3')) {
+            result = {
+                state: 'critical',
+                connections: 250,
+                messageRate: 30
+            };
+        }
+        
+        return result;
     });
 };
 

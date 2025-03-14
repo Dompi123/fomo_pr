@@ -1,5 +1,5 @@
-const createService = require('../../utils/createService.cjs');
-const metrics = require('../../utils/monitoring.cjs');
+const createService = require('../../../utils/createService.cjs');
+const metrics = require('../../../utils/monitoring.cjs');
 
 describe('Service Metrics Collection', () => {
     let service;
@@ -16,6 +16,9 @@ describe('Service Metrics Collection', () => {
 
     describe('Basic Metrics', () => {
         it('tracks operation attempts and success', async () => {
+            // Add a small delay to ensure uptime is measurable
+            await new Promise(resolve => setTimeout(resolve, 5));
+            
             const operation = async () => 'success';
             await service.execute(operation);
 

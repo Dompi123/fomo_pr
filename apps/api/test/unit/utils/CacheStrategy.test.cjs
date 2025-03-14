@@ -1,4 +1,4 @@
-const cacheStrategy = require('../../utils/cacheStrategy.cjs');
+const cacheStrategy = require('../../../utils/cacheStrategy.cjs');
 
 describe('CacheStrategy', () => {
     beforeEach(async () => {

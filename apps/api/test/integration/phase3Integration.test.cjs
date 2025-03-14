@@ -7,7 +7,7 @@
 
 const mongoose = require('mongoose');
 const OrderMetrics = require('../../models/OrderMetrics.cjs');
-const User = require('../../models/User.cjs');
+const { User } = require('../../models/User.cjs');
 const featureManager = require('../../services/payment/FeatureManager.cjs');
 const migrateBartenderFields = require('../../scripts/migrations/update-bartender-fields');
 const { 
@@ -16,6 +16,8 @@ const {
   createTestUser, 
   createTestOrderMetrics 
 } = require('../helpers/testSetup.cjs');
+const request = require('supertest');
+const { app } = require('../../app.cjs');
 
 describe('Phase 3 Integration Tests', () => {
   beforeAll(async () => {

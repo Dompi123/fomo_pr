@@ -4,6 +4,7 @@ const { app } = require('../../app.cjs');
 const PaymentProcessor = require('../../services/payment/PaymentProcessor.cjs');
 const FeatureManager = require('../../services/payment/FeatureManager.cjs');
 const { createTestUser, createTestVenue } = require('../helpers/testSetup.cjs');
+const { enhanceUserWithAuth } = require('../helpers/testAuth.cjs');
 
 describe('Payment Routes Integration', () => {
     let testUser;
@@ -13,6 +14,7 @@ describe('Payment Routes Integration', () => {
     beforeAll(async () => {
         testUser = await createTestUser();
         testVenue = await createTestVenue();
+        testUser = enhanceUserWithAuth(testUser);
         authToken = testUser.generateAuthToken();
     });
 

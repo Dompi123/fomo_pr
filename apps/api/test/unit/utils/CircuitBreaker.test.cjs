@@ -1,10 +1,10 @@
-const VenueAwareBreaker = require('../../utils/circuitBreaker.cjs');
-const optimizationManagerMock = require('../mocks/optimizationManager.mock.cjs');
-const webSocketMonitorMock = require('../mocks/websocketMonitor.mock.cjs');
+const { VenueAwareBreaker, BREAKER_STATES } = require('../../../utils/circuitBreaker.cjs');
+const optimizationManagerMock = require('../../../test/mocks/optimizationManager.mock.cjs');
+const webSocketMonitorMock = require('../../../test/mocks/websocketMonitor.mock.cjs');
 
 // Mock dependencies
-jest.mock('../../utils/optimizationManager.cjs', () => optimizationManagerMock);
-jest.mock('../../utils/websocketMonitor.cjs', () => webSocketMonitorMock);
+jest.mock('../../../utils/optimizationManager.cjs', () => optimizationManagerMock);
+jest.mock('../../../utils/websocketMonitor.cjs', () => webSocketMonitorMock);
 
 describe('VenueAwareBreaker Integration Tests', () => {
     const venueId = 'test-venue-123';
@@ -14,17 +14,19 @@ describe('VenueAwareBreaker Integration Tests', () => {
         // Reset mocks
         jest.clearAllMocks();
         
+        // Reset the singleton instance
+        VenueAwareBreaker.resetInstance();
+        
         // Initialize breaker
         breaker = new VenueAwareBreaker({
             service: 'stripe',
             venueId,
             optimizationManager: optimizationManagerMock,
             wsMonitor: webSocketMonitorMock,
-            options: {
-                failureThreshold: 2,
-                resetTimeout: 1000,
-                maxHalfOpenAttempts: 3
-            }
+            failureThreshold: 2,
+            resetTimeout: 1000,
+            maxHalfOpenAttempts: 3,
+            halfOpenSuccessThreshold: 1
         });
 
         // Default mock responses
@@ -36,7 +38,7 @@ describe('VenueAwareBreaker Integration Tests', () => {
 
     describe('Circuit State Management', () => {
         test('starts in closed state', () => {
-            expect(breaker.getState().state).toBe('CLOSED');
+            expect(breaker.getState().state).toBe(BREAKER_STATES.CLOSED);
         });
 
         test('opens after failures', async () => {
@@ -44,11 +46,11 @@ describe('VenueAwareBreaker Integration Tests', () => {
             
             // First failure
             await expect(breaker.execute(failingFn)).rejects.toThrow();
-            expect(breaker.getState().state).toBe('CLOSED');
+            expect(breaker.getState().state).toBe(BREAKER_STATES.CLOSED);
             
             // Second failure - should open circuit
             await expect(breaker.execute(failingFn)).rejects.toThrow();
-            expect(breaker.getState().state).toBe('OPEN');
+            expect(breaker.getState().state).toBe(BREAKER_STATES.OPEN);
             
             // Verify optimization manager called
             expect(optimizationManagerMock.handleBreakerOpen)
@@ -66,7 +68,7 @@ describe('VenueAwareBreaker Integration Tests', () => {
             
             // Next execution should be in half-open state
             const state = breaker.getState();
-            expect(state.state).toBe('HALF_OPEN');
+            expect(state.state).toBe(BREAKER_STATES.HALF_OPEN);
             expect(state.halfOpenAttempts).toBe(0);
         });
     });
@@ -115,7 +117,7 @@ describe('VenueAwareBreaker Integration Tests', () => {
             await breaker.execute(successFn);
             
             const state = breaker.getState();
-            expect(state.state).toBe('CLOSED');
+            expect(state.state).toBe(BREAKER_STATES.CLOSED);
             expect(state.failures).toBe(0);
             expect(optimizationManagerMock.handleServiceRecovery)
                 .toHaveBeenCalledWith(venueId, 'stripe');
@@ -130,13 +132,34 @@ describe('VenueAwareBreaker Integration Tests', () => {
             // Wait for half-open
             await new Promise(resolve => setTimeout(resolve, 1100));
             
-            // Fail max half-open attempts
-            for (let i = 0; i < 3; i++) {
-                await expect(breaker.execute(failingFn)).rejects.toThrow();
-            }
+            // The first execution in half-open state should update the counter
+            await expect(breaker.execute(failingFn)).rejects.toThrow();
             
-            const state = breaker.getState();
-            expect(state.state).toBe('OPEN');
+            // Verify we're back in open state with an attempt tracked
+            let state = breaker.getState();
+            expect(state.state).toBe(BREAKER_STATES.OPEN);
+            expect(state.halfOpenAttempts).toBe(1);
+            
+            // Wait for half-open again
+            await new Promise(resolve => setTimeout(resolve, 1100));
+            
+            // Second attempt
+            await expect(breaker.execute(failingFn)).rejects.toThrow();
+            
+            // Check state again
+            state = breaker.getState();
+            expect(state.state).toBe(BREAKER_STATES.OPEN);
+            expect(state.halfOpenAttempts).toBe(2);
+            
+            // Wait for half-open once more
+            await new Promise(resolve => setTimeout(resolve, 1100));
+            
+            // Third attempt
+            await expect(breaker.execute(failingFn)).rejects.toThrow();
+            
+            // Final state check
+            state = breaker.getState();
+            expect(state.state).toBe(BREAKER_STATES.OPEN);
             expect(state.halfOpenAttempts).toBe(3);
         });
     });

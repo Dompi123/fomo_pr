@@ -1,8 +1,8 @@
 const request = require('supertest');
 const express = require('express');
 const mongoose = require('mongoose');
-const { mockStripe } = require('../mocks/stripe.mock.cjs');
-const { config } = require('../../config/environment.cjs');
+const { mockStripe } = require('../../../test/mocks/stripe.mock.cjs');
+const { config } = require('../../../config/environment.cjs');
 const promClient = require('prom-client');
 
 // Enhanced test registry initialization
@@ -92,15 +92,15 @@ const updateBusinessMetrics = (metric, labels, value) => {
 };
 
 // Mock external dependencies
-jest.mock('../../middleware/authMiddleware.cjs', () => ({
+jest.mock('../../../middleware/authMiddleware.cjs', () => ({
     requireAuth: () => (req, res, next) => next()
 }));
 
 jest.mock('stripe', () => mockStripe);
 
 // Mock monitoring module
-jest.mock('../../middleware/monitoring.cjs', () => {
-    const originalModule = jest.requireActual('../../middleware/monitoring.cjs');
+jest.mock('../../../middleware/monitoring.cjs', () => {
+    const originalModule = jest.requireActual('../../../middleware/monitoring.cjs');
     return {
         ...originalModule,
         metrics: testMetrics,
@@ -132,7 +132,7 @@ jest.mock('../../middleware/monitoring.cjs', () => {
     };
 });
 
-const { monitoringMiddleware, metricsEndpoint } = require('../../middleware/monitoring.cjs');
+const { monitoringMiddleware, metricsEndpoint } = require('../../../middleware/monitoring.cjs');
 
 // Safe metric value retrieval with error handling
 const getMetricValue = async (metric, labels = {}) => {
