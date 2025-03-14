@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth0 Test Result</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Auth0 Authentication Result</h1>
+    
+    <div id="status">Checking authentication status...</div>
+    
+    <div id="tokenInfo" style="display:none;">
+        <h2>Token Information</h2>
+        <pre id="tokenDisplay"></pre>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusElement = document.getElementById('status');
+            const tokenInfoElement = document.getElementById('tokenInfo');
+            const tokenDisplayElement = document.getElementById('tokenDisplay');
+            
+            // Check for access token in URL hash (implicit flow)
+            const hashParams = {};
+            window.location.hash.substring(1).split('&').forEach(pair => {
+                const [key, value] = pair.split('=');
+                if (key && value) hashParams[key] = decodeURIComponent(value);
+            });
+            
+            // Check for code in URL query params (authorization code flow)
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
+            
+            if (hashParams.access_token) {
+                // Success with implicit flow
+                statusElement.innerHTML = '<p class="success">Authentication successful!</p>';
+                statusElement.innerHTML += '<p>You have been successfully authenticated with Auth0 using implicit flow.</p>';
+                
+                // Display token info
+                tokenInfoElement.style.display = 'block';
+                tokenDisplayElement.textContent = JSON.stringify({
+                    access_token: hashParams.access_token.substring(0, 10) + '...',
+                    token_type: hashParams.token_type,
+                    expires_in: hashParams.expires_in
+                }, null, 2);
+            } else if (code) {
+                // Success with authorization code flow
+                statusElement.innerHTML = '<p class="success">Authentication successful!</p>';
+                statusElement.innerHTML += '<p>You have been successfully authenticated with Auth0 using authorization code flow.</p>';
+                
+                // Display code info
+                tokenInfoElement.style.display = 'block';
+                tokenDisplayElement.textContent = JSON.stringify({
+                    code: code.substring(0, 10) + '...',
+                    message: 'Authorization code received. This would typically be exchanged for tokens on the server.'
+                }, null, 2);
+            } else if (error) {
+                // Error occurred
+                statusElement.innerHTML = `<p class="error">Authentication failed: ${error}</p>`;
+                if (errorDescription) {
+                    statusElement.innerHTML += `<p>${errorDescription}</p>`;
+                }
+            } else {
+                // No authentication info found
+                statusElement.innerHTML = '<p class="error">No authentication information found.</p>';
+                statusElement.innerHTML += '<p>Please try logging in again.</p>';
+            }
+        });
+    </script>
+</body>
+</html> 
