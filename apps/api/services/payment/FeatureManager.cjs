@@ -49,6 +49,11 @@ class FeatureManager extends BaseService {
                 rolloutPercentage: 0,
                 description: 'Enable payment request batching'
             },
+            USE_CLIENT_SIDE_VERIFICATION: {
+                enabled: false,
+                rolloutPercentage: 0,
+                description: 'Enable client-side verification for user roles'
+            },
             USE_ENHANCED_MONITORING: {
                 enabled: true,
                 rolloutPercentage: 100,
@@ -101,12 +106,67 @@ class FeatureManager extends BaseService {
         });
     }
 
+    /**
+     * Register a new feature dynamically
+     * @param {string} feature - Feature name
+     * @param {Object} config - Feature configuration
+     * @returns {Object} - Created feature configuration
+     */
+    registerFeature(feature, config = {}) {
+        if (this.features.has(feature)) {
+            this.logger.warn(`Feature ${feature} already exists, use setFeatureState to modify`);
+            return this.features.get(feature);
+        }
+
+        const featureConfig = {
+            enabled: config.enabled ?? false,
+            rolloutPercentage: config.rolloutPercentage ?? 0,
+            description: config.description || `Dynamically registered feature: ${feature}`,
+            lastUpdated: new Date().toISOString(),
+            state: config.enabled ? 'active' : 'inactive',
+            metrics: {
+                usageCount: 0,
+                lastUsed: null,
+                errors: 0
+            },
+            isDynamic: true,
+            ...config
+        };
+
+        this.features.set(feature, featureConfig);
+        
+        this.logger.info(`Feature ${feature} dynamically registered`, {
+            feature,
+            config: featureConfig
+        });
+
+        return featureConfig;
+    }
+
     async isEnabled(feature, context = {}) {
         const featureConfig = this.features.get(feature);
         if (!featureConfig) {
-            this.logger.warn(`Feature not found: ${feature}`);
+            this.logger.warn(`Feature not found: ${feature}, returning false`, {
+                feature,
+                context,
+                featureCount: this.features.size,
+                availableFeatures: Array.from(this.features.keys())
+            });
+            
+            // Try to register the missing feature with a default config
+            // This ensures code depending on this feature doesn't break
+            this.registerFeature(feature, {
+                enabled: false,
+                rolloutPercentage: 0,
+                description: `Automatically registered missing feature: ${feature}`,
+                isAutoRegistered: true
+            });
+            
             return false;
         }
+
+        // Increment usage metrics
+        this._updateFeatureUsageMetrics(feature);
 
         // Check if fully enabled
         if (featureConfig.enabled && featureConfig.rolloutPercentage === 100) {
@@ -146,8 +206,11 @@ class FeatureManager extends BaseService {
 
     async setFeatureState(feature, config) {
         const currentConfig = this.features.get(feature);
+        
+        // Create feature if it doesn't exist
         if (!currentConfig) {
-            throw new Error(`Feature ${feature} not found`);
+            this.logger.warn(`Feature ${feature} not found, creating with provided config`);
+            return this.registerFeature(feature, config);
         }
 
         const newConfig = {
@@ -174,7 +237,8 @@ class FeatureManager extends BaseService {
                 description: value.description,
                 rolloutPercentage: value.rolloutPercentage,
                 state: value.state,
-                lastUpdated: value.lastUpdated
+                lastUpdated: value.lastUpdated,
+                isDynamic: value.isDynamic || false
             };
         }
         return states;
@@ -183,7 +247,19 @@ class FeatureManager extends BaseService {
     async getFeatureState(feature) {
         const config = this.features.get(feature);
         if (!config) {
-            throw new Error(`Feature ${feature} not found`);
+            this.logger.warn(`Feature ${feature} not found, returning null`, {
+                feature,
+                availableFeatures: Array.from(this.features.keys())
+            });
+            
+            // Return a safe default config rather than null
+            return {
+                enabled: false,
+                rolloutPercentage: 0,
+                description: `Feature not found: ${feature}`,
+                state: 'inactive',
+                isFallback: true
+            };
         }
         return config;
     }
@@ -205,6 +281,42 @@ class FeatureManager extends BaseService {
                 percentage: (enabledFeatures.length / this.features.size) * 100
             }
         };
+    }
+
+    // Add helper method to update feature usage metrics
+    _updateFeatureUsageMetrics(feature) {
+        const featureConfig = this.features.get(feature);
+        if (featureConfig && featureConfig.metrics) {
+            featureConfig.metrics.usageCount += 1;
+            featureConfig.metrics.lastUsed = new Date().toISOString();
+        }
+    }
+
+    /**
+     * Check if a feature exists in the feature manager
+     * 
+     * @param {string} feature - The name of the feature to check
+     * @returns {Promise<boolean>} - True if the feature exists, false otherwise
+     */
+    async featureExists(feature) {
+        return this.features.has(feature);
+    }
+
+    /**
+     * Remove a feature from the feature manager
+     * Primarily used in testing to clean up test-added features
+     * 
+     * @param {string} feature - The name of the feature to remove
+     * @returns {Promise<boolean>} - True if the feature was removed, false if it didn't exist
+     */
+    async removeFeature(feature) {
+        if (!this.features.has(feature)) {
+            return false;
+        }
+        
+        this.features.delete(feature);
+        this.logger.info(`Feature ${feature} removed`);
+        return true;
     }
 }
 

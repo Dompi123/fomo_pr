@@ -8,8 +8,9 @@ const { auth } = require('express-openid-connect');
 const { AuthenticationClient } = require('auth0');
 const { config } = require('../../config/environment.cjs');
 const jwt = require('jsonwebtoken');
-const User = require('../../models/User.cjs');
+const { User } = require('../../models/User.cjs');
 const { authEvents } = require('../../utils/authEvents.cjs');
+const bcrypt = require('bcryptjs');
 
 // Maintain singleton for backward compatibility
 let instance = null;
@@ -304,6 +305,43 @@ class AuthenticationService extends BaseService {
     async resetLoginAttempts(email) {
         const cache = this.getDependency('cache');
         await cache.delete(`login_attempts:${email}`);
+    }
+
+    /**
+     * Verify a token and return the decoded user information
+     * @param {string} token - The token to verify
+     * @returns {Object} The decoded token payload
+     * @throws {Error} If the token is invalid
+     */
+    async verifyToken(token) {
+        if (!token) {
+            throw createError.authentication(
+                ERROR_CODES.TOKEN_MISSING,
+                'Token is required'
+            );
+        }
+
+        try {
+            // Use the TokenService to verify the token
+            const decoded = await TokenService.verifyAuth0Token(token);
+            
+            // Get or create user based on the decoded token
+            const user = await this.getOrCreateUser(decoded);
+            
+            return {
+                userId: user._id.toString(),
+                role: user.role || 'customer',
+                email: user.email
+            };
+        } catch (error) {
+            logger.error('Token verification failed:', {
+                error: error.message
+            });
+            throw createError.authentication(
+                ERROR_CODES.TOKEN_INVALID,
+                'Invalid token'
+            );
+        }
     }
 
     async _cleanup() {
