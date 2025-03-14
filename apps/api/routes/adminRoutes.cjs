@@ -3,7 +3,7 @@ const router = express.Router();
 const { requireAdmin } = require('../middleware/authMiddleware.cjs');
 const { validateVenue } = require('../middleware/validationMiddleware.cjs');
 const Venue = require('../models/Venue.cjs');
-const User = require('../models/User.cjs');
+const { User } = require('../models/User.cjs');
 const { getMigrationStats } = require('../middleware/metricsProxy.cjs');
 
 // Apply admin check to all routes

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { requireCustomer } = require('../middleware/authMiddleware.cjs');
 const Venue = require('../models/Venue.cjs');
-const User = require('../models/User.cjs');
+const { User } = require('../models/User.cjs');
 const { emitVenueUpdate } = require('../websocket/socketManager.cjs');
 const { userPresence } = require('../websocket/socketManager.cjs');
 

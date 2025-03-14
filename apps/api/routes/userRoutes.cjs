@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware.cjs');
-const User = require('../models/User.cjs');
+const { User } = require('../models/User.cjs');
 const logger = require('../utils/logger.cjs');
 const { createError, ERROR_CODES } = require('../utils/errors.cjs');
 
