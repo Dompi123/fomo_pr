@@ -1,7 +1,7 @@
 const { auth } = require('express-openid-connect');
 const { config } = require('../config/environment.cjs');
 const logger = require('../utils/logger.cjs');
-const User = require('../models/User.cjs');
+const { User } = require('../models/User.cjs');
 const Pass = require('../models/Pass.cjs');
 const tokenService = require('../utils/auth.cjs');
 const { USER_ROLES } = require('../utils/constants.cjs');
@@ -10,6 +10,7 @@ const sessionManager = require('../utils/sessionManager.cjs');
 const { authEvents } = require('../utils/authEvents.cjs');
 const authUtils = require('../utils/authUtils.cjs');
 const featureManager = require('../services/payment/FeatureManager.cjs');
+const jwt = require('jsonwebtoken');
 
 // Create specialized logger
 const authLogger = logger.child({

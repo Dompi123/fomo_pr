@@ -15,6 +15,7 @@
     "@opentelemetry/sdk-node": "^0.48.0",
     "@opentelemetry/semantic-conventions": "^1.21.0",
     "auth0": "^4.18.0",
+    "bcryptjs": "^3.0.2",
     "compression": "^1.7.5",
     "connect-timeout": "^1.9.0",
     "cookie-parser": "^1.4.7",
@@ -53,13 +54,20 @@
   "scripts": {
     "start": "node server.cjs",
     "dev": "nodemon server.cjs",
-    "test": "NODE_ENV=test jest --config test/config/jest.config.cjs",
-    "test:smoke": "NODE_ENV=test node --experimental-json-modules test/smoke.cjs",
+    "test": "test/scripts/run-tests.js",
+    "test:unit": "test/scripts/run-tests.js --unit",
+    "test:integration": "test/scripts/run-tests.js --integration",
+    "test:e2e": "test/scripts/run-tests.js --e2e",
+    "test:performance": "test/scripts/run-tests.js --performance",
+    "test:smoke": "NODE_ENV=test node --experimental-json-modules test/smoke/smoke.cjs",
+    "test:list-unit": "test/scripts/run-tests.js --list-only --unit",
+    "test:list-integration": "test/scripts/run-tests.js --list-only --integration",
     "test:circular": "npx dpdm server.cjs --circular --warning",
     "start:safe": "npm run test:smoke && npm run test:circular && node server.cjs",
     "deploy:metrics": "NODE_ENV=production node scripts/deployMetrics.cjs",
     "monitor:health": "watch -n 60 'curl -s localhost:3000/api/health | jq .circuitBreakers'",
-    "test:payments": "NODE_ENV=test jest --config test/config/jest.config.cjs --runInBand --detectOpenHandles test/unit/payments.test.cjs",
-    "test:all": "npm run test:smoke && npm run test:payments"
+    "test:coverage": "NODE_ENV=test jest --config test/config/jest.config.cjs --coverage",
+    "test:watch": "NODE_ENV=test jest --config test/config/jest.config.cjs --watch",
+    "test:clean": "bash test/scripts/test-cleanup.sh"
   }
 }

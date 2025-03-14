@@ -8,13 +8,15 @@ class CacheStrategy {
             ttl: 60 * 60 * 1000 // 1 hour
         });
         this.isRedisHealthy = false;
+        this.retryAttempts = 0;
 
         logger.info('Running with local cache only');
     }
 
     async get(key) {
         try {
-            return this.localCache.get(key);
+            const value = this.localCache.get(key);
+            return value === undefined ? null : value;
         } catch (error) {
             logger.error('Cache get error:', { error: error.message, key });
             return null;
@@ -45,7 +47,9 @@ class CacheStrategy {
         return {
             status: 'healthy',
             mode: 'local',
-            localCacheSize: this.localCache.size
+            localCacheSize: this.localCache.size,
+            redisConnected: false,
+            retryAttempts: this.retryAttempts
         };
     }
 

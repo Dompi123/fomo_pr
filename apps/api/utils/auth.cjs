@@ -97,6 +97,15 @@ class TokenService extends BaseService {
                 code: error.code
             });
 
+            // Check if the error is related to missing kid
+            const decodedToken = jwt.decode(token, { complete: true });
+            if (error.message && (error.message.includes('jwt malformed') || !decodedToken || !decodedToken.header || !decodedToken.header.kid)) {
+                throw createError.authentication(
+                    ERROR_CODES.TOKEN_INVALID,
+                    'Invalid token format: missing key ID (kid)'
+                );
+            }
+
             throw createError.authentication(
                 ERROR_CODES.TOKEN_INVALID,
                 'Invalid token'

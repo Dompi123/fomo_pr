@@ -38,6 +38,9 @@ const ERROR_CODES = {
     SERVICE_UNAVAILABLE: 'service/unavailable',
     SERVICE_TIMEOUT: 'service/timeout',
     EXTERNAL_SERVICE_ERROR: 'service/external-error',
+    SERVICE_INIT_FAILED: 'service/init-failed',
+    SERVICE_CLEANUP_FAILED: 'service/cleanup-failed',
+    MISSING_DEPENDENCIES: 'service/missing-dependencies',
 
     // Database Errors
     DB_ERROR: 'database/error',
@@ -147,6 +150,7 @@ class AppError extends Error {
 
     // Internal helper methods
     #deriveCategory(code) {
+        if (!code) return 'system'; // Default to system category for undefined codes
         return code.split('/')[0];
     }
 
@@ -247,6 +251,13 @@ const createError = {
     business: (code, message, data = {}) => 
         new AppError(code, message, 422, {
             severity: ERROR_SEVERITY.WARNING,
+            ...data
+        }),
+    
+    conflict: (code, message, data = {}) => 
+        new AppError(code, message, 409, {
+            severity: ERROR_SEVERITY.WARNING,
+            action: ERROR_ACTIONS.BACK,
             ...data
         }),
     

@@ -41,6 +41,14 @@ class WebSocketEnhancer extends BaseService {
     }
 
     /**
+     * Reset the singleton instance (for testing purposes only)
+     */
+    static resetInstance() {
+        instance = null;
+        return instance;
+    }
+
+    /**
      * Internal initialization
      */
     async _init() {

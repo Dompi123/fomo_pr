@@ -199,7 +199,8 @@ const createService = (name, options = {}) => {
          */
         resetMetrics() {
             serviceState.operations.clear();
-            serviceState.lastReset = Date.now();
+            // Ensure lastReset is always at least 1ms greater than before
+            serviceState.lastReset = Math.max(Date.now(), serviceState.lastReset + 1);
             serviceLogger.info('Service metrics reset');
         }
     };
